@@ -1,8 +1,7 @@
 package com.ozius.internship.project.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = Product.TABLE_NAME)
@@ -34,4 +33,14 @@ public class Product extends BaseEntity {
 
     @Column(name = Columns.PRICE, nullable = false)
     private float price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.CATEGORY_ID, nullable = false)
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.SELLER_ID, nullable = false)
+    private SellerInfo sellerInfo;
+
+
 }

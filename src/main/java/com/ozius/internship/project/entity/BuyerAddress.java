@@ -8,6 +8,10 @@ public class BuyerAddress extends BaseEntity{
 
     public static final String TABLE_NAME = "BUYER_ADDRESS";
 
+    interface Columns {
+        String BUYER_ID = "BUYER_ID";
+    }
+
     @Embedded
     @AttributeOverrides({
             @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),

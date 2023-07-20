@@ -2,6 +2,8 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = SellerInfo.TABLE_NAME)
 public class SellerInfo extends BaseEntity{
@@ -10,8 +12,7 @@ public class SellerInfo extends BaseEntity{
 
     interface Columns{
         String ACCOUNT_ID = "ACCOUNT_ID";
-        String FULL_NAME = "FULL_NAME";
-        String LEGAL_ADDRESS = "LEGAL_ADDRESS";
+        String ALIAS = "ALIAS";
     }
 
     @Embedded
@@ -24,5 +25,20 @@ public class SellerInfo extends BaseEntity{
             @AttributeOverride( name = "zipCode", column = @Column(name = "ZIP_CODE"))
     })
     private Address legalAddress;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
+    private UserAccount account;
+
+    @OneToMany(mappedBy = "sellerInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> products;
+
+    @OneToMany(mappedBy = "sellerInfo")
+    private Set<Review> reviews;
+
+    @Column(name = Columns.ALIAS, nullable = false)
+    private String alias;
+
+
 
 }
