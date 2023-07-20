@@ -1,7 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = OrderItem.TABLE_NAME)
@@ -15,7 +14,23 @@ public class OrderItem extends BaseEntity{
         String NAME = "NAME";
         String PRICE = "PRICE";
         String DESCRIPTION = "DESCRIPTION";
-        String SELLER_ID = "SELLER_ID";
+        String ORDER_ID = "ORDER_ID";
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.PRODUCT_ID)
+    private Product product;
+
+    @Column(name = Columns.QUANTITY, nullable = false)
+    private float quantity;
+
+    @Column(name = Columns.NAME, nullable = false)
+    private String name;
+
+    @Column(name = Columns.PRICE, nullable = false)
+    private float price;
+
+    @Column(name = Columns.DESCRIPTION, nullable = false)
+    private String description;
 
 }

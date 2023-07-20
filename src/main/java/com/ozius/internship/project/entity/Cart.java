@@ -1,7 +1,8 @@
 package com.ozius.internship.project.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.util.Set;
 
 @Entity
 @Table(name = Cart.TABLE_NAME)
@@ -9,11 +10,11 @@ public class Cart extends BaseEntity {
     public static final String TABLE_NAME = "cart";
 
     interface Columns {
-        String BUYER_ID = "BUYER_ID";
     }
 
-    // list<cartItems>: cartItems
-    // buyer: buyer
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
+    private Set<CartItem> cartItems;
 
     public float calculateTotalPrice() { return 0; }
 

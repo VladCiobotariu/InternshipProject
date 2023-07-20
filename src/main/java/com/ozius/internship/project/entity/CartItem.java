@@ -1,8 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = CartItem.TABLE_NAME)
@@ -17,4 +15,8 @@ public class CartItem extends BaseEntity {
 
     @Column(name = Columns.QUANTITY, nullable = false)
     private float quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.PRODUCT_ID, nullable = false)
+    private Product product;
 }

@@ -2,15 +2,17 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.Set;
+
 @Entity
 @Table(name = Order.TABLE_NAME)
 public class Order extends BaseEntity{
 
-    public static final String TABLE_NAME = "ORDER";
+    public static final String TABLE_NAME = "[ORDER]";
 
     interface Columns{
         String BUYER_EMAIL = "BUYER_EMAIL";
-        String ADDRESS = "ADDRESS";
         String SELLER_ID = "SELLER_ID";
         String BUYER_ID = "BUYER_ID";
         String TELEPHONE = "TELEPHONE";
@@ -33,5 +35,29 @@ public class Order extends BaseEntity{
             @AttributeOverride( name = "zipCode", column = @Column(name = "ZIP_CODE"))
     })
     private Address address;
+
+    @ManyToOne
+    @JoinColumn(name = Columns.BUYER_ID)
+    private BuyerInfo buyerInfo;
+
+    @ManyToOne
+    @JoinColumn(name = Columns.SELLER_ID)
+    private SellerInfo sellerInfo;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = OrderItem.Columns.ORDER_ID, nullable = false)
+    private Set<OrderItem> orderItems;
+
+    @Column(name = Columns.BUYER_EMAIL, nullable = false)
+    private String buyerEmail;
+
+    @Column(name = Columns.ORDER_DATE, nullable = false)
+    private LocalDateTime orderDate;
+
+    @Column(name = Columns.TELEPHONE, nullable = false, length = 10)
+    private String telephone;
+
+    @Column(name = Columns.TOTAL_PRICE, nullable = false)
+    private float totalPrice;
 
 }
