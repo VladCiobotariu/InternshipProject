@@ -4,8 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table
-public class OrderItem {
+@Table(name = OrderItem.TABLE_NAME)
+public class OrderItem extends BaseEntity{
 
     public static final String TABLE_NAME = "ORDER_ITEM";
 
