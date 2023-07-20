@@ -5,7 +5,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = UserAccount.TABLE_NAME)
-public class UserAccount {
+public class UserAccount extends BaseEntity{
 
     public static final String TABLE_NAME = "USER_ACCOUNT";
 

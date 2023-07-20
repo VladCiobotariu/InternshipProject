@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = SellerInfo.TABLE_NAME)
-public class SellerInfo {
+public class SellerInfo extends BaseEntity{
 
     public static final String TABLE_NAME = "SELLER_INFO";
 
