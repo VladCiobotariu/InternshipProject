@@ -37,5 +37,39 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.TELEPHONE, length = 10, nullable = false)
     private String telephone;
 
+    public UserAccount() {
+    }
 
+    public UserAccount(String firstName, String lastName, String email, String passwordHash, String imageName, String telephone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.imageName = imageName;
+        this.telephone = telephone;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
 }

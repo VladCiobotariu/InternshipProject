@@ -3,6 +3,8 @@ package com.ozius.internship.project.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -60,4 +62,54 @@ public class Order extends BaseEntity{
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private float totalPrice;
 
+    public Order() {
+    }
+
+    public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, float totalPrice) {
+        this.orderStatus = OrderStatus.RECEIVED;
+        this.address = address;
+        this.buyerInfo = buyerInfo;
+        this.sellerInfo = sellerInfo;
+        this.orderItems = new HashSet<>();
+        this.buyerEmail = buyerInfo.getAccount().getEmail();
+        this.orderDate = LocalDateTime.now();
+        this.telephone = telephone;
+        this.totalPrice = totalPrice;
+    }
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public BuyerInfo getBuyerInfo() {
+        return buyerInfo;
+    }
+
+    public SellerInfo getSellerInfo() {
+        return sellerInfo;
+    }
+
+    public Set<OrderItem> getOrderItems() {
+        return Collections.unmodifiableSet(orderItems);
+    }
+
+    public String getBuyerEmail() {
+        return buyerEmail;
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public float getTotalPrice() {
+        return totalPrice;
+    }
 }

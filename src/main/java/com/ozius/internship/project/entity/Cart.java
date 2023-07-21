@@ -2,6 +2,8 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,15 +16,36 @@ public class Cart extends BaseEntity {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
-    private Set<CartItem> cartItems;
+    private Set<CartItem> cartItems = new HashSet<>();
 
-    public float calculateTotalPrice() { return 0; }
+    public Cart() {
+    }
 
-    public float calculateItemPrice() { return 0; }
+//    public Cart() {
+//        this.cartItems = new HashSet<>();
+//    }
 
-    public void modifyItem(CartItem cartItem, float quantity) {}
+    public Set<CartItem> getCartItems() {
+        return Collections.unmodifiableSet(cartItems);
+    }
 
-    public void addToCart(Product product, float quantity) {}
+    public float calculateItemPrice(CartItem cartItem) {
+        return cartItem.getQuantity() * cartItem.getProduct().getPrice();
+    }
 
-    public void removeFromCart(Product product) {}
+    public double calculateTotalPrice() {
+        return cartItems.stream()
+                .mapToDouble(cartItem -> this.calculateItemPrice(cartItem))
+                .sum();
+    }
+
+    public void modifyItem(CartItem cartItem, float quantity) {
+        cartItem.setQuantity(quantity);
+    }
+
+    public void addToCart(Product product, float quantity) {
+        CartItem cartItem = new CartItem(quantity, product);
+        this.cartItems.add(cartItem);
+    }
+
 }

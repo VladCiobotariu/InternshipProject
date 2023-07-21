@@ -14,10 +14,25 @@ public class Category extends BaseEntity {
         String IMAGE_NAME = "IMAGE_NAME";
     }
 
-    @Column(name = Columns.NAME, length = 100, nullable = false, unique = true)
+    @Column(name = Columns.NAME, nullable = false, unique = true)
     private String name;
 
-    @Column(name = Columns.IMAGE_NAME, length = 250, nullable = false)
+    @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
+    public Category() {
+    }
+
+    public Category(String name, String imageName) {
+        this.name = name;
+        this.imageName = imageName;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
 }

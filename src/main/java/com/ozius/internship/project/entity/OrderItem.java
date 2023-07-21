@@ -33,4 +33,14 @@ public class OrderItem extends BaseEntity{
     @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
 
+    public OrderItem() {
+    }
+
+    public OrderItem(Product product, float quantity) {
+        this.product = product;
+        this.quantity = quantity;
+        this.name = product.getName();
+        this.price = product.getPrice();
+        this.description = product.getDescription();
+    }
 }

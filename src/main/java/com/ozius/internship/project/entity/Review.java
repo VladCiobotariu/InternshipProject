@@ -32,4 +32,35 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.PRODUCT_ID)
     private Product product;
+
+    public Review() {
+    }
+
+    public Review(String description, float rating, BuyerInfo buyerInfo, SellerInfo sellerInfo, Product product) {
+        this.description = description;
+        this.rating = rating;
+        this.buyerInfo = buyerInfo;
+        this.sellerInfo = sellerInfo;
+        this.product = product;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public BuyerInfo getBuyerInfo() {
+        return buyerInfo;
+    }
+
+    public SellerInfo getSellerInfo() {
+        return sellerInfo;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
 }
