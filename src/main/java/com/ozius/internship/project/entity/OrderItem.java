@@ -43,4 +43,24 @@ public class OrderItem extends BaseEntity{
         this.price = product.getPrice();
         this.description = product.getDescription();
     }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public float getQuantity() {
+        return quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }

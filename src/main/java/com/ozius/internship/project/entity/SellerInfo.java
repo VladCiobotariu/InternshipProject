@@ -72,4 +72,12 @@ public class SellerInfo extends BaseEntity{
     public String getAlias() {
         return alias;
     }
+
+    public double calculateRating(){
+        return this.reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
+    }
+
+    public void addReview(BuyerInfo buyer, String description, float rating, Product product){
+        this.reviews.add(new Review(description, rating, buyer, this, product));
+    }
 }

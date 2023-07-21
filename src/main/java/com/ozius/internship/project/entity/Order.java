@@ -65,16 +65,22 @@ public class Order extends BaseEntity{
     public Order() {
     }
 
-    public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, float totalPrice) {
+    public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, Set<OrderItem> orderItems) {
         this.orderStatus = OrderStatus.RECEIVED;
+
         this.address = address;
+
         this.buyerInfo = buyerInfo;
         this.sellerInfo = sellerInfo;
-        this.orderItems = new HashSet<>();
+
+        this.orderItems = orderItems;
+
         this.buyerEmail = buyerInfo.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
+
         this.telephone = telephone;
-        this.totalPrice = totalPrice;
+
+        this.totalPrice = (float) orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
     }
 
     public OrderStatus getOrderStatus() {

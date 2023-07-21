@@ -65,4 +65,14 @@ public class BuyerInfo extends BaseEntity{
     public Set<BuyerAddress> getAddresses() {
         return Collections.unmodifiableSet(addresses);
     }
+
+
+    public void addFavorite(Product product){
+        this.favoriteProducts.add(product);
+    }
+
+    public void removeFavorite(Product product){
+        this.favoriteProducts.remove(product);
+    }
+
 }
