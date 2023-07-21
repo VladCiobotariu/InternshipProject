@@ -18,17 +18,13 @@ public class Product extends BaseEntity {
 
     }
 
-    // seller
-    // reviews: List<Review>
-    // category
-
-    @Column(name = Columns.NAME, length = 50, nullable = false)
+    @Column(name = Columns.NAME, nullable = false)
     private String name;
 
-    @Column(name = Columns.DESCRIPTION, length = 250, nullable = false)
+    @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
 
-    @Column(name = Columns.IMAGE_NAME, length = 250, nullable = false)
+    @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
     @Column(name = Columns.PRICE, nullable = false)
@@ -42,5 +38,39 @@ public class Product extends BaseEntity {
     @JoinColumn(name = Columns.SELLER_ID, nullable = false)
     private SellerInfo sellerInfo;
 
+    public Product() {
+    }
 
+    public Product(String name, String description, String imageName, float price, Category category, SellerInfo sellerInfo) {
+        this.name = name;
+        this.description = description;
+        this.imageName = imageName;
+        this.price = price;
+        this.category = category;
+        this.sellerInfo = sellerInfo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public SellerInfo getSellerInfo() {
+        return sellerInfo;
+    }
 }

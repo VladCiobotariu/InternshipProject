@@ -23,4 +23,14 @@ public class BuyerAddress extends BaseEntity{
     })
     private Address address;
 
+    public BuyerAddress() {
+    }
+
+    public BuyerAddress(Address address) {
+        this.address = address;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
 }

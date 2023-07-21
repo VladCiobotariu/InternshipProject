@@ -2,6 +2,9 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -39,6 +42,34 @@ public class SellerInfo extends BaseEntity{
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
 
+    public SellerInfo() {
+    }
 
+    public SellerInfo(Address legalAddress, UserAccount account, String alias) {
+        this.legalAddress = legalAddress;
+        this.account = account;
+        this.products = new HashSet<>();
+        this.reviews = new HashSet<>();
+        this.alias = alias;
+    }
 
+    public Address getLegalAddress() {
+        return legalAddress;
+    }
+
+    public UserAccount getAccount() {
+        return account;
+    }
+
+    public Set<Product> getProducts() {
+        return Collections.unmodifiableSet(products);
+    }
+
+    public Set<Review> getReviews() {
+        return reviews;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
 }
