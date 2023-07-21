@@ -2,6 +2,8 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -38,6 +40,29 @@ public class BuyerInfo extends BaseEntity{
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
+    public BuyerInfo() {
+    }
 
+    public BuyerInfo(UserAccount account) {
+        this.cart = new Cart();
+        this.account = account;
+        this.favoriteProducts = new HashSet<>();
+        this.addresses = new HashSet<>();
+    }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public UserAccount getAccount() {
+        return account;
+    }
+
+    public Set<Product> getFavoriteProducts() {
+        return Collections.unmodifiableSet(favoriteProducts);
+    }
+
+    public Set<BuyerAddress> getAddresses() {
+        return Collections.unmodifiableSet(addresses);
+    }
 }
