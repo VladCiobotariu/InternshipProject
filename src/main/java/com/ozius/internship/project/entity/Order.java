@@ -62,7 +62,7 @@ public class Order extends BaseEntity{
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private float totalPrice;
 
-    public Order() {
+    protected Order() {
     }
 
     public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, Set<OrderItem> orderItems) {

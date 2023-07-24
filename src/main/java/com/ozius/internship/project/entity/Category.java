@@ -20,7 +20,7 @@ public class Category extends BaseEntity {
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    public Category() {
+    protected Category() {
     }
 
     public Category(String name, String imageName) {

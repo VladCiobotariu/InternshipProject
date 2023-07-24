@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,7 +16,7 @@ public class Cart extends BaseEntity {
     }
 
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
+    @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
     public Cart() {
@@ -27,6 +28,10 @@ public class Cart extends BaseEntity {
 
     public Set<CartItem> getCartItems() {
         return Collections.unmodifiableSet(cartItems);
+    }
+
+    public void setCartItems(Set<CartItem> cartItems) {
+        this.cartItems = cartItems;
     }
 
     public float calculateItemPrice(CartItem cartItem) {
@@ -43,9 +48,11 @@ public class Cart extends BaseEntity {
         cartItem.setQuantity(quantity);
     }
 
-    public void addToCart(Product product, float quantity) {
+    public CartItem addToCart(Product product, float quantity) {
         CartItem cartItem = new CartItem(quantity, product);
         this.cartItems.add(cartItem);
+
+        return cartItem;
     }
 
 }

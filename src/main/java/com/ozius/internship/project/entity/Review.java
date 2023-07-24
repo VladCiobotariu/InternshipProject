@@ -33,7 +33,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = Columns.PRODUCT_ID)
     private Product product;
 
-    public Review() {
+    protected Review() {
     }
 
     public Review(String description, float rating, BuyerInfo buyerInfo, SellerInfo sellerInfo, Product product) {

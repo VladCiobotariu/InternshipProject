@@ -42,7 +42,7 @@ public class SellerInfo extends BaseEntity{
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
 
-    public SellerInfo() {
+    protected SellerInfo() {
     }
 
     public SellerInfo(Address legalAddress, UserAccount account, String alias) {

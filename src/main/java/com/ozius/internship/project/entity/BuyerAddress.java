@@ -23,7 +23,7 @@ public class BuyerAddress extends BaseEntity{
     })
     private Address address;
 
-    public BuyerAddress() {
+    protected BuyerAddress() {
     }
 
     public BuyerAddress(Address address) {

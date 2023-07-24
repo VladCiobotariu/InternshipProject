@@ -33,7 +33,7 @@ public class OrderItem extends BaseEntity{
     @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
 
-    public OrderItem() {
+    protected OrderItem() {
     }
 
     public OrderItem(Product product, float quantity) {

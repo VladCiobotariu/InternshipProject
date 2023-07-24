@@ -38,7 +38,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = Columns.SELLER_ID, nullable = false)
     private SellerInfo sellerInfo;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, String description, String imageName, float price, Category category, SellerInfo sellerInfo) {
