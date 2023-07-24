@@ -23,4 +23,16 @@ public class Address {
         this.addressLine2 = addressLine2;
         this.zipCode = zipCode;
     }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "country='" + country + '\'' +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", zipCode='" + zipCode + '\'' +
+                '}';
+    }
 }

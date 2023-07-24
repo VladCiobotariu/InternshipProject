@@ -55,6 +55,8 @@ class ProjectApplicationTests {
 	@Transactional
 	void setUp() {
 
+
+
 		sellerService.addSeller(
 				new SellerInfo(
 						new Address("Romania",
@@ -95,6 +97,15 @@ class ProjectApplicationTests {
 		Product product2 = new Product("grau", "pentru paine", "src/image20", 8.2f, cereale, sellerInfo);
 
 		sellerService.addProduct(product2);
+
+
+		BuyerInfo buyer = buyerRepository.findAll().stream().findFirst().get();
+
+
+		buyerService.addToCart(buyer, product1, 5f);
+		buyerService.addToCart(buyer, product2, 10f);
+
+		buyerService.addToCart(buyer, product1, 2f);
 
 	}
 
@@ -163,6 +174,15 @@ class ProjectApplicationTests {
 
 	@Test
 	void favorites(){
+
+	}
+
+	@Test
+	void testOrder(){
+
+		BuyerInfo buyer = buyerRepository.findAll().stream().findFirst().get();
+
+		buyerService.createOrdersByCart(buyer, buyer.getAddresses().stream().findFirst().get().getAddress(), buyer.getAccount().getTelephone());
 
 	}
 

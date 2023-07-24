@@ -1,8 +1,6 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.entity.BuyerInfo;
-import com.ozius.internship.project.entity.CartItem;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.repository.BuyerRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
@@ -10,7 +8,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BuyerService {
@@ -49,12 +48,33 @@ public class BuyerService {
     }
 
     @Transactional
-    public void createOrdersByCart(BuyerInfo buyer){
+    public void addAddress(){
+
+    }
+
+    @Transactional
+    public void createOrdersByCart(BuyerInfo buyer, Address address, String telephone){
 
         BuyerInfo buyerMerged = em.merge(buyer);
 
         Set<CartItem> cartItems = buyerMerged.getCart().getCartItems();
 
+        Map<SellerInfo, List<CartItem>> cartItemsBySeller = new HashMap<>();
 
+        for (CartItem item : cartItems) {
+            SellerInfo sellerInfo = item.getProduct().getSellerInfo();
+            cartItemsBySeller.computeIfAbsent(sellerInfo, k -> new ArrayList<>()).add(item);
+        }
+
+        for (Map.Entry<SellerInfo, List<CartItem>> entry : cartItemsBySeller.entrySet()) {
+            SellerInfo sellerInfo = entry.getKey();
+            List<CartItem> sellerCartItems = entry.getValue();
+
+            Order order = new Order(address, buyer, sellerInfo, telephone, sellerCartItems.stream()
+                    .map(cartItem -> new OrderItem(cartItem.getProduct(), cartItem.getQuantity()))
+                    .collect(Collectors.toSet()));
+
+            em.persist(order);
+        }
     }
 }
