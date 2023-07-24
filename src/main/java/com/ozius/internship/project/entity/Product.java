@@ -73,4 +73,16 @@ public class Product extends BaseEntity {
     public SellerInfo getSellerInfo() {
         return sellerInfo;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", imageName='" + imageName + '\'' +
+                ", price=" + price +
+                ", category=" + category +
+                ", sellerInfo=" + sellerInfo +
+                '}';
+    }
 }

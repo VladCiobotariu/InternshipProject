@@ -80,4 +80,11 @@ public class SellerInfo extends BaseEntity{
     public void addReview(BuyerInfo buyer, String description, float rating, Product product){
         this.reviews.add(new Review(description, rating, buyer, this, product));
     }
+
+    @Override
+    public String toString() {
+        return "SellerInfo{" +
+                "alias='" + alias + '\'' +
+                '}';
+    }
 }
