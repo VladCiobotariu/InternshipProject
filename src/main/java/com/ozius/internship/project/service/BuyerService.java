@@ -2,7 +2,6 @@ package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.repository.BuyerRepository;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;

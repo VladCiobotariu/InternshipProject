@@ -70,11 +70,13 @@ public class BuyerEntityTests {
 
         buyer.removeAddress(removeAddress);
 //        buyer.getAddresses().forEach(System.out::println);
+        em.flush();
 
         assertThat(buyer.getAddresses()).isEmpty();
 
         BuyerInfo removeBuyer = em.find(BuyerInfo.class, 1l);
         em.remove(removeBuyer);
+        em.flush();
         try {
             buyerRepository.findById(1l).get();
             fail("expected to fail");

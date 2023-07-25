@@ -80,7 +80,14 @@ public class Order extends BaseEntity{
 
         this.telephone = telephone;
 
-        this.totalPrice = (float) orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+        this.totalPrice = (float) orderItems
+                .stream()
+                .mapToDouble(orderItem -> this.calculateItemPrice(orderItem))
+                .sum();
+    }
+
+    private float calculateItemPrice(OrderItem orderItem) {
+        return orderItem.getQuantity() * orderItem.getPrice();
     }
 
     public OrderStatus getOrderStatus() {
@@ -117,5 +124,9 @@ public class Order extends BaseEntity{
 
     public float getTotalPrice() {
         return totalPrice;
+    }
+
+    public void setSellerInfo(SellerInfo sellerInfo) {
+        this.sellerInfo = sellerInfo;
     }
 }

@@ -63,4 +63,8 @@ public class OrderItem extends BaseEntity{
     public String getDescription() {
         return description;
     }
+
+    public void setProductNull() {
+        this.product = null;
+    }
 }

@@ -1,6 +1,5 @@
 package com.ozius.internship.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -47,6 +46,7 @@ public class Product extends BaseEntity {
         this.imageName = imageName;
         this.price = price;
         this.category = category;
+        sellerInfo.addProduct(this);
         this.sellerInfo = sellerInfo;
     }
 

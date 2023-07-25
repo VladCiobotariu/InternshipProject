@@ -36,7 +36,8 @@ public class SellerInfo extends BaseEntity{
     @OneToMany(mappedBy = "sellerInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Product> products;
 
-    @OneToMany(mappedBy = "sellerInfo")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = Review.Columns.SELLER_ID)
     private Set<Review> reviews;
 
     @Column(name = Columns.ALIAS, nullable = false)
@@ -78,7 +79,35 @@ public class SellerInfo extends BaseEntity{
     }
 
     public void addReview(BuyerInfo buyer, String description, float rating, Product product){
-        this.reviews.add(new Review(description, rating, buyer, this, product));
+        this.reviews.add(new Review(description, rating, buyer, product));
+    }
+
+    public void addProduct(Product product){
+        this.products.add(product);
+    }
+
+    public void updateEmail(String email){
+        this.account.setEmail(email);
+    }
+
+    public void updateFirstName(String firstName){
+        this.account.setFirstName(firstName);
+    }
+
+    public void updateLastName(String lastName){
+        this.account.setLastName(lastName);
+    }
+
+    public void updatePasswordHash(String passwordHash){
+        this.account.setPasswordHash(passwordHash);
+    }
+
+    public void updateImage(String image){
+        this.account.setImageName(image);
+    }
+
+    public void updateTelephone(String telephone){
+        this.account.setTelephone(telephone);
     }
 
     @Override
