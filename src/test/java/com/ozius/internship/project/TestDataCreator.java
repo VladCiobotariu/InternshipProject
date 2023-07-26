@@ -103,12 +103,12 @@ public class TestDataCreator {
         Product product1 = Products.product1;
         Product product2 = Products.product2;
 
-        OrderItem orderItem1 = createOrderItem(em, product1, 5f);
-        OrderItem orderItem2 = createOrderItem(em, product2, 7f);
+        OrderItems.orderItem1 = createOrderItem(em, product1, 5f);
+        OrderItems.orderItem2 = createOrderItem(em, product2, 7f);
 
         Set<OrderItem> items = new HashSet<>();
-        items.add(orderItem1);
-        items.add(orderItem2);
+        items.add(OrderItems.orderItem1);
+        items.add(OrderItems.orderItem2);
 
         return items;
     }
@@ -169,6 +169,11 @@ public class TestDataCreator {
     public static class Reviews{
         public static Review review1;
         public static Review review2;
+    }
+
+    public static class OrderItems{
+        public static OrderItem orderItem1;
+        public static OrderItem orderItem2;
     }
 
 }
