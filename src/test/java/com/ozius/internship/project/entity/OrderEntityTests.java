@@ -64,7 +64,7 @@ public class OrderEntityTests {
         assertThat(persistedOrder.getTotalPrice()).isEqualTo(63.5f);
         assertThat(persistedOrder.getOrderItems()).isEqualTo(items);
         assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.RECEIVED);
-//        assertThat(persistedOrder.getOrderItems()).containsExactlyInAnyOrder(orderItem1);
+        assertThat(persistedOrder.getOrderItems()).extracting(BaseEntity::getId).containsExactlyInAnyOrder(orderItem1.getId());
 //        assertThat(persistedOrder.getOrderItems()).containsExactlyInAnyOrder(orderItem2);
         assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem1.getId()).findFirst().orElseThrow().getName()).isEqualTo("orez");
         assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem2.getId()).findFirst().orElseThrow().getName()).isEqualTo("grau");
