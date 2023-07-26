@@ -35,4 +35,28 @@ public class Address {
                 ", zipCode='" + zipCode + '\'' +
                 '}';
     }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
 }

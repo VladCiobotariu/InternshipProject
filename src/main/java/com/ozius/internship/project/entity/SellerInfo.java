@@ -78,8 +78,12 @@ public class SellerInfo extends BaseEntity{
         return this.reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
     }
 
-    public void addReview(BuyerInfo buyer, String description, float rating, Product product){
-        this.reviews.add(new Review(description, rating, buyer, product));
+    public Review addReview(BuyerInfo buyer, String description, float rating, Product product){
+
+        Review reviewNew = new Review(description, rating, buyer, product);
+        this.reviews.add(reviewNew);
+
+        return reviewNew;
     }
 
     public void addProduct(Product product){
