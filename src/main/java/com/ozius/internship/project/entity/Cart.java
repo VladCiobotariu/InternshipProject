@@ -15,7 +15,7 @@ public class Cart extends BaseEntity {
     interface Columns {
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
@@ -51,7 +51,12 @@ public class Cart extends BaseEntity {
     public CartItem addToCart(Product product, float quantity) {
         CartItem cartItem = new CartItem(quantity, product);
         this.cartItems.add(cartItem);
+        return cartItem;
+    }
 
+    public CartItem removeFromCart(Product product) {
+        CartItem cartItem = this.cartItems.stream().filter(ci -> ci.getProduct().getId() == product.getId()).findFirst().orElse(null);
+        this.cartItems.remove(cartItem);
         return cartItem;
     }
 

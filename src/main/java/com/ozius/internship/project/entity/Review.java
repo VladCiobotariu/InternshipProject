@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Review extends BaseEntity {
     public static final String TABLE_NAME = "review";
 
+
     interface Columns {
         String DESCRIPTION = "DESCRIPTION";
         String RATING = "RATING";
@@ -23,11 +24,11 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.BUYER_ID)
-    private BuyerInfo buyerInfo;
+    private Buyer buyer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.SELLER_ID, nullable = false)
-    private SellerInfo sellerInfo;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = Columns.SELLER_ID, nullable = false)
+//    private SellerInfo sellerInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.PRODUCT_ID)
@@ -36,11 +37,10 @@ public class Review extends BaseEntity {
     protected Review() {
     }
 
-    public Review(String description, float rating, BuyerInfo buyerInfo, SellerInfo sellerInfo, Product product) {
+    public Review(String description, float rating, Buyer buyer, Product product) {
         this.description = description;
         this.rating = rating;
-        this.buyerInfo = buyerInfo;
-        this.sellerInfo = sellerInfo;
+        this.buyer = buyer;
         this.product = product;
     }
 
@@ -52,15 +52,30 @@ public class Review extends BaseEntity {
         return rating;
     }
 
-    public BuyerInfo getBuyerInfo() {
-        return buyerInfo;
-    }
-
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
+    public Buyer getBuyerInfo() {
+        return buyer;
     }
 
     public Product getProduct() {
         return product;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    @Override
+    public String toString() {
+        return "Review{" +
+                "description='" + description + '\'' +
+                ", rating=" + rating +
+                ", buyerInfo=" + buyer +
+                ", seller=" + product.getSellerInfo() +
+                ", product=" + product +
+                '}';
     }
 }

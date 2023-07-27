@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = BuyerInfo.TABLE_NAME)
-public class BuyerInfo extends BaseEntity{
+@Table(name = Buyer.TABLE_NAME)
+public class Buyer extends BaseEntity{
 
     public static final String TABLE_NAME = "BUYER_INFO";
     public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
@@ -36,14 +36,14 @@ public class BuyerInfo extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = Columns.PRODUCT_ID))
     private Set<Product> favoriteProducts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
-    protected BuyerInfo() {
+    protected Buyer() {
     }
 
-    public BuyerInfo(UserAccount account) {
+    public Buyer(UserAccount account) {
         this.cart = new Cart();
         this.account = account;
         this.favoriteProducts = new HashSet<>();

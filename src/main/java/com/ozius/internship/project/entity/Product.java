@@ -1,6 +1,5 @@
 package com.ozius.internship.project.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -36,18 +35,18 @@ public class Product extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.SELLER_ID, nullable = false)
-    private SellerInfo sellerInfo;
+    private Seller seller;
 
     protected Product() {
     }
 
-    public Product(String name, String description, String imageName, float price, Category category, SellerInfo sellerInfo) {
+    public Product(String name, String description, String imageName, float price, Category category, Seller seller) {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
         this.price = price;
         this.category = category;
-        this.sellerInfo = sellerInfo;
+        this.seller = seller;
     }
 
     public String getName() {
@@ -70,7 +69,23 @@ public class Product extends BaseEntity {
         return category;
     }
 
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
+    public Seller getSellerInfo() {
+        return seller;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", imageName='" + imageName + '\'' +
+                ", price=" + price +
+                ", category=" + category.getName() +
+                ", sellerInfo=" + seller.getAlias() +
+                '}';
     }
 }

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -40,13 +39,13 @@ public class Order extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = Columns.BUYER_ID)
-    private BuyerInfo buyerInfo;
+    private Buyer buyer;
 
     @ManyToOne
     @JoinColumn(name = Columns.SELLER_ID)
-    private SellerInfo sellerInfo;
+    private Seller seller;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = OrderItem.Columns.ORDER_ID, nullable = false)
     private Set<OrderItem> orderItems;
 
@@ -65,17 +64,17 @@ public class Order extends BaseEntity{
     protected Order() {
     }
 
-    public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, Set<OrderItem> orderItems) {
+    public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
         this.orderStatus = OrderStatus.RECEIVED;
 
         this.address = address;
 
-        this.buyerInfo = buyerInfo;
-        this.sellerInfo = sellerInfo;
+        this.buyer = buyer;
+        this.seller = seller;
 
         this.orderItems = orderItems;
 
-        this.buyerEmail = buyerInfo.getAccount().getEmail();
+        this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
         this.telephone = telephone;
@@ -91,12 +90,12 @@ public class Order extends BaseEntity{
         return address;
     }
 
-    public BuyerInfo getBuyerInfo() {
-        return buyerInfo;
+    public Buyer getBuyerInfo() {
+        return buyer;
     }
 
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
+    public Seller getSellerInfo() {
+        return seller;
     }
 
     public Set<OrderItem> getOrderItems() {
