@@ -47,7 +47,7 @@ public class Review extends BaseEntity {
         return rating;
     }
 
-    public Buyer getBuyerInfo() {
+    public Buyer getBuyer() {
         return buyer;
     }
 

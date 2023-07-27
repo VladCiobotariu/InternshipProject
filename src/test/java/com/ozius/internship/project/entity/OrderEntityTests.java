@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashSet;
 import java.util.List;
@@ -81,11 +82,13 @@ public class OrderEntityTests extends EntityBaseTest{
 
         //----Assert
         Order persistedOrder = new SimpleJpaRepository<>(Order.class, emb).findAll().get(0);
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getId()).isEqualTo(orderItem1.getId());
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getName()).isEqualTo("orez");
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getPrice() ).isEqualTo(12.7f);
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getDescription() ).isEqualTo("pentru fiert");
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getQuantity()).isEqualTo(5f);
+        OrderItem persistedOrderItem = persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().get();
+
+        assertThat(persistedOrderItem.getId()).isEqualTo(orderItem1.getId());
+        assertThat(persistedOrderItem.getName()).isEqualTo("orez");
+        assertThat(persistedOrderItem.getPrice() ).isEqualTo(12.7f);
+        assertThat(persistedOrderItem.getDescription() ).isEqualTo("pentru fiert");
+        assertThat(persistedOrderItem.getQuantity()).isEqualTo(5f);
     }
 
     @Test
@@ -103,8 +106,8 @@ public class OrderEntityTests extends EntityBaseTest{
 
         //----Assert
         Order persistedOrder = new SimpleJpaRepository<>(Order.class, emb).findAll().get(0);
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getPrice()).isEqualTo(12.7f);
-        assertThat(persistedOrder.getOrderItems().stream().findFirst().orElseThrow().getProduct().getPrice()).isEqualTo(50f);
+        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().get().getPrice()).isEqualTo(12.7f);
+        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().orElseThrow().getProduct().getPrice()).isEqualTo(50f);
     }
 
     @Test

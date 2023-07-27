@@ -2,7 +2,6 @@ package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -13,12 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
-import static com.ozius.internship.project.TestDataCreator.Orders.order;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product2;
-import static com.ozius.internship.project.TestDataCreator.Reviews.review1;
-import static com.ozius.internship.project.TestDataCreator.Reviews.review2;
-import static com.ozius.internship.project.TestDataCreator.Sellers.seller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
@@ -172,7 +166,7 @@ public class SellerEntityTests extends EntityBaseTest{
         //----Assert
         Review persistedReview = new SimpleJpaRepository<>(Review.class, emb).findAll().get(0);
         assertThat(persistedReview).isNotNull();
-        assertThat(persistedReview.getBuyerInfo().getId()).isEqualTo(buyer.getId());
+        assertThat(persistedReview.getBuyer()).isEqualTo(buyer);
         assertThat(persistedReview.getDescription()).isEqualTo("very good");
         assertThat(persistedReview.getRating()).isEqualTo(4f);
         assertThat(persistedReview.getProduct().getId()).isEqualTo(product1.getId());

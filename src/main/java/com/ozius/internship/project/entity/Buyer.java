@@ -36,7 +36,7 @@ public class Buyer extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = Columns.PRODUCT_ID))
     private Set<Product> favoriteProducts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
