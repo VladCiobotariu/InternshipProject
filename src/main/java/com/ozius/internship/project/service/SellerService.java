@@ -1,12 +1,11 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.SellerInfo;
+import com.ozius.internship.project.entity.Seller;
 import com.ozius.internship.project.repository.SellerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,7 +21,7 @@ public class SellerService {
     }
 
     @Transactional
-    public void addSeller(SellerInfo seller){
+    public void addSeller(Seller seller){
         em.persist(seller);
     }
 

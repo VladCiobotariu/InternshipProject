@@ -1,45 +1,38 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.repository.BuyerRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-@DataJpaTest
-public class BuyerEntityTests {
+public class BuyerEntityTests extends EntityBaseTest{
 
-    @PersistenceContext
-    private EntityManager em;
+    private JpaRepository<Buyer, Long> buyerRepository;
 
-    @Autowired
-    private BuyerRepository buyerRepository;
-
-    @BeforeEach
-    void setUp() {
-
+    @Override
+    public void createTestData(EntityManager em) {
+        this.buyerRepository = new SimpleJpaRepository<>(Buyer.class, emb);
     }
 
     @Test
     void test_add_buyer(){
         //----Act
-        BuyerInfo buyer = new BuyerInfo(new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635"));
-        em.persist(buyer);
-
-        em.flush();
-        em.clear();
+        doTransaction(em -> {
+            Buyer buyer = new Buyer(new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635"));
+            em.persist(buyer);
+        });
 
         //----Assert
-        BuyerInfo persistedBuyer = buyerRepository.findById(buyer.getId()).orElseThrow();
+        Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
         assertThat(persistedBuyer.getAccount().getLastName()).isEqualTo("Maria");
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminamaria@gmail.com");
@@ -51,24 +44,26 @@ public class BuyerEntityTests {
     @Test
     void test_add_address(){
         //----Arrange
-        TestDataCreator.createBuyerBaseData(em);
+        doTransaction(em -> {
+            TestDataCreator.createBuyerBaseData(em);
+        });
 
         //----Act
-        Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
-        buyer.addAddress(address);
-
-        em.flush();
-        em.clear();
+        doTransaction(em -> {
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
+            buyer.addAddress(address);
+        });
 
         //----Assert
-        BuyerInfo persistedBuyer = buyerRepository.findById(buyer.getId()).orElseThrow();
+        Buyer persistedBuyer = buyerRepository.findAll().get(0);
         Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().get().getAddress();
-        assertThat(persistedAddress.getCountry()).isEqualTo(address.getCountry());
-        assertThat(persistedAddress.getState()).isEqualTo(address.getState());
-        assertThat(persistedAddress.getCity()).isEqualTo(address.getCity());
-        assertThat(persistedAddress.getAddressLine1()).isEqualTo(address.getAddressLine1());
-        assertThat(persistedAddress.getAddressLine2()).isEqualTo(address.getAddressLine2());
-        assertThat(persistedAddress.getZipCode()).isEqualTo(address.getZipCode());
+        assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
+        assertThat(persistedAddress.getState()).isEqualTo("Timis");
+        assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
+        assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
+        assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
+        assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
 
     }
 
@@ -76,16 +71,18 @@ public class BuyerEntityTests {
     void test_buyer_updated(){
 
         //----Arrange
-        TestDataCreator.createBuyerBaseData(em);
+        doTransaction(em -> {
+            TestDataCreator.createBuyerBaseData(em);
+        });
 
         //----Act
-        buyer.updateEmail("cosminaa@gmail.com");
-
-        em.flush();
-        em.clear();
+        doTransaction(em -> {
+            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
+            buyer.updateEmail("cosminaa@gmail.com");
+        });
 
         //----Assert
-        BuyerInfo persistedBuyer = buyerRepository.findById(buyer.getId()).orElseThrow();
+        Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminaa@gmail.com");
 
     }
@@ -95,38 +92,52 @@ public class BuyerEntityTests {
     void test_buyer_remove(){
 
         //----Arrange
-        TestDataCreator.createBuyerBaseData(em);
+        doTransaction(em -> {
+            TestDataCreator.createBuyerBaseData(em);
+            TestDataCreator.createAddressBaseData(em);
+        });
 
         //----Act
-        em.remove(buyer);
-
-        em.flush();
-        em.clear();
+        doTransaction(em -> {
+            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
+            em.remove(buyer);
+        });
 
         //----Assert
-        BuyerInfo persistedBuyer = em.find(BuyerInfo.class, buyer.getId());
-        assertThat(persistedBuyer).isNull();
-
+        List<Buyer> persistedBuyer = buyerRepository.findAll();
+        assertThat(persistedBuyer).isEmpty();
+        List<BuyerAddress> buyerAddress = new SimpleJpaRepository<>(BuyerAddress.class, emb).findAll();
+        assertThat(buyerAddress).isEmpty();
     }
 
     @Test
     void test_buyer_address_remove(){
         //----Arrange
-        TestDataCreator.createBuyerBaseData(em);
-        TestDataCreator.createAddressBaseData(em);
-
-        BuyerAddress removeAddress = buyer.getAddresses().stream()
-                .findFirst()
-                .orElse(null);
+        doTransaction(em -> {
+            TestDataCreator.createBuyerBaseData(em);
+            TestDataCreator.createAddressBaseData(em);
+        });
 
         //----Act
-        buyer.removeAddress(removeAddress);
+        doTransaction(em -> {
+            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
 
-        em.flush();
-        em.clear();
+            BuyerAddress removeAddress = buyer.getAddresses().stream()
+                    .findFirst()
+                    .orElse(null);
 
+            buyer.removeAddress(removeAddress);
+
+            System.out.println("Buyer addreses:");
+            buyer.getAddresses().stream().forEach(System.out::println);
+
+            System.out.println("Repository addreses:");
+            new SimpleJpaRepository<>(BuyerAddress.class, em).findAll().forEach(System.out::println);
+        });
+
+        emb.clear();
         //----Assert
-        BuyerInfo persistedBuyer = buyerRepository.findById(buyer.getId()).orElseThrow();
+        Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAddresses()).isEmpty();
     }
 

@@ -35,19 +35,19 @@ public class Product extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.SELLER_ID, nullable = false)
-    private SellerInfo sellerInfo;
+    private Seller seller;
 
     public Product() {
     }
 
-    public Product(String name, String description, String imageName, float price, Category category, SellerInfo sellerInfo) {
+    public Product(String name, String description, String imageName, float price, Category category, Seller seller) {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
         this.price = price;
         this.category = category;
-        sellerInfo.addProduct(this);
-        this.sellerInfo = sellerInfo;
+        seller.addProduct(this);
+        this.seller = seller;
     }
 
     public String getName() {
@@ -70,8 +70,20 @@ public class Product extends BaseEntity {
         return category;
     }
 
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 
     @Override
@@ -82,7 +94,7 @@ public class Product extends BaseEntity {
                 ", imageName='" + imageName + '\'' +
                 ", price=" + price +
                 ", category=" + category +
-                ", sellerInfo=" + sellerInfo +
+                ", seller=" + seller +
                 '}';
     }
 }

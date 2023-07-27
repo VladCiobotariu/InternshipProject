@@ -23,22 +23,22 @@ public class BuyerService {
     }
 
     @Transactional
-    public void addBuyer(BuyerInfo buyer){
+    public void addBuyer(Buyer buyer){
         em.persist(buyer);
     }
 
     @Transactional
-    public void addToCart(BuyerInfo buyer, Product product, float quantity){
+    public void addToCart(Buyer buyer, Product product, float quantity){
 
-        BuyerInfo buyerMerged = em.merge(buyer);
+        Buyer buyerMerged = em.merge(buyer);
 
         buyerMerged.getCart().addToCart(product, quantity);
     }
 
     @Transactional
-    public CartItem findCartItemByName(BuyerInfo buyer, String name){
+    public CartItem findCartItemByName(Buyer buyer, String name){
 
-        BuyerInfo buyerMerged = em.merge(buyer);
+        Buyer buyerMerged = em.merge(buyer);
 
         return buyerMerged.getCart().getCartItems().stream()
                 .filter(cartItem -> cartItem.getProduct().getName().equals(name))
@@ -52,24 +52,24 @@ public class BuyerService {
     }
 
     @Transactional
-    public void createOrdersByCart(BuyerInfo buyer, Address address, String telephone){
+    public void createOrdersByCart(Buyer buyer, Address address, String telephone){
 
-        BuyerInfo buyerMerged = em.merge(buyer);
+        Buyer buyerMerged = em.merge(buyer);
 
         Set<CartItem> cartItems = buyerMerged.getCart().getCartItems();
 
-        Map<SellerInfo, List<CartItem>> cartItemsBySeller = new HashMap<>();
+        Map<Seller, List<CartItem>> cartItemsBySeller = new HashMap<>();
 
         for (CartItem item : cartItems) {
-            SellerInfo sellerInfo = item.getProduct().getSellerInfo();
-            cartItemsBySeller.computeIfAbsent(sellerInfo, k -> new ArrayList<>()).add(item);
+            Seller seller = item.getProduct().getSeller();
+            cartItemsBySeller.computeIfAbsent(seller, k -> new ArrayList<>()).add(item);
         }
 
-        for (Map.Entry<SellerInfo, List<CartItem>> entry : cartItemsBySeller.entrySet()) {
-            SellerInfo sellerInfo = entry.getKey();
+        for (Map.Entry<Seller, List<CartItem>> entry : cartItemsBySeller.entrySet()) {
+            Seller seller = entry.getKey();
             List<CartItem> sellerCartItems = entry.getValue();
 
-            Order order = new Order(address, buyer, sellerInfo, telephone, sellerCartItems.stream()
+            Order order = new Order(address, buyer, seller, telephone, sellerCartItems.stream()
                     .map(cartItem -> new OrderItem(cartItem.getProduct(), cartItem.getQuantity()))
                     .collect(Collectors.toSet()));
 

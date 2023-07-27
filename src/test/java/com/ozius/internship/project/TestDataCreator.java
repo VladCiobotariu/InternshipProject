@@ -2,7 +2,6 @@ package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
 import jakarta.persistence.EntityManager;
-import org.aspectj.weaver.ast.Or;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,8 +15,8 @@ public class TestDataCreator {
         createProductsBaseData(em);
     }
 
-    private static BuyerInfo createBuyer(EntityManager em, UserAccount account){
-        BuyerInfo buyer = new BuyerInfo(account);
+    private static Buyer createBuyer(EntityManager em, UserAccount account){
+        Buyer buyer = new Buyer(account);
         em.persist(buyer);
 
         return buyer;
@@ -35,8 +34,8 @@ public class TestDataCreator {
 
     }
 
-    private static SellerInfo createSeller(EntityManager em, Address address, UserAccount account,  String alias){
-        SellerInfo seller = new SellerInfo(address, account, alias);
+    private static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias){
+        Seller seller = new Seller(address, account, alias);
         em.persist(seller);
 
         return seller;
@@ -72,7 +71,7 @@ public class TestDataCreator {
 
     private static Product createProduct(EntityManager em, String name, String description, String image, float price, long categoryId, long sellerId){
         Category category = Categories.category;
-        SellerInfo seller = Sellers.seller;
+        Seller seller = Sellers.seller;
 
         Product product = new Product(name, description, image, price, category, seller);
         em.persist(product);
@@ -86,7 +85,7 @@ public class TestDataCreator {
     }
 
     private static void addAddressBuyer(EntityManager em, long buyerId, Address address){
-        BuyerInfo buyer = Buyers.buyer;
+        Buyer buyer = Buyers.buyer;
         buyer.addAddress(address);
     }
 
@@ -114,8 +113,8 @@ public class TestDataCreator {
     }
 
     private static Order createOrder(EntityManager em, Set<OrderItem> items, long buyerId, long sellerId){
-        BuyerInfo buyer = Buyers.buyer;
-        SellerInfo seller = Sellers.seller;
+        Buyer buyer = Buyers.buyer;
+        Seller seller = Sellers.seller;
 
         Order order = new Order(buyer.getAddresses().stream().findFirst().get().getAddress(), buyer, seller, buyer.getAccount().getTelephone(), items);
 
@@ -127,12 +126,13 @@ public class TestDataCreator {
     public static void createOrdersBaseData(EntityManager em){
 
         Orders.order = createOrder(em, createOrderItems(em), 1l, 1l);
+
     }
 
     private static Review createReview(EntityManager em, long buyerId, String description, float rating, long productId){
-        BuyerInfo buyer = Buyers.buyer;
+        Buyer buyer = Buyers.buyer;
         Product product = Products.product1;
-        SellerInfo seller = product.getSellerInfo();
+        Seller seller = product.getSeller();
 
         Review review = seller.addReview(buyer, description, rating, product);
         em.flush();
@@ -146,11 +146,11 @@ public class TestDataCreator {
     }
 
     public static class Buyers{
-        public static BuyerInfo buyer;
+        public static Buyer buyer;
     }
 
     public static class Sellers{
-        public static SellerInfo seller;
+        public static Seller seller;
     }
 
     public static class Orders{

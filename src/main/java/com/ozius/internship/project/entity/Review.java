@@ -23,7 +23,7 @@ public class Review extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.BUYER_ID)
-    private BuyerInfo buyerInfo;
+    private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.PRODUCT_ID)
@@ -32,10 +32,10 @@ public class Review extends BaseEntity {
     public Review() {
     }
 
-    public Review(String description, float rating, BuyerInfo buyerInfo, Product product) {
+    public Review(String description, float rating, Buyer buyer, Product product) {
         this.description = description;
         this.rating = rating;
-        this.buyerInfo = buyerInfo;
+        this.buyer = buyer;
         this.product = product;
     }
 
@@ -47,8 +47,8 @@ public class Review extends BaseEntity {
         return rating;
     }
 
-    public BuyerInfo getBuyerInfo() {
-        return buyerInfo;
+    public Buyer getBuyerInfo() {
+        return buyer;
     }
 
     public Product getProduct() {
@@ -59,8 +59,8 @@ public class Review extends BaseEntity {
         this.description = description;
     }
 
-    public void setBuyerInfo(BuyerInfo buyerInfo) {
-        this.buyerInfo = buyerInfo;
+    public void setBuyerInfo(Buyer buyer) {
+        this.buyer = buyer;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Review extends BaseEntity {
         return "Review{" +
                 "description='" + description + '\'' +
                 ", rating=" + rating +
-                ", buyerInfo=" + buyerInfo.getId() +
+                ", buyerInfo=" + buyer.getId() +
                 ", product=" + product.getId() +
                 '}';
     }
