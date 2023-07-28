@@ -23,9 +23,14 @@ public class EntityBaseTest {
     @PersistenceUnit
     protected EntityManagerFactory emf;
 
+    protected EntityFinder entityFinder;
+
     @BeforeEach
     void setUp() {
         emb = emf.createEntityManager();
+
+        entityFinder = new EntityFinder(emb);
+
         doTransaction(em -> {
             createTestData(em);
         });

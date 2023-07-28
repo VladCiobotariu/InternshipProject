@@ -1,28 +1,18 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
-;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductEntityTest extends EntityBaseTest {
 
-    private JpaRepository<Product, Long> productRepository;
-
     @Override
     public void createTestData(EntityManager em) {
-        this.productRepository = new SimpleJpaRepository<>(Product.class, emb);
         TestDataCreator.createCategoriesBaseData(em);
         TestDataCreator.createSellerBaseData(em);
-
-        new SimpleJpaRepository<>(Category.class, em).findAll().stream().forEach(cat -> System.out.println(cat));
-
     }
 
     @Test
@@ -36,13 +26,12 @@ public class ProductEntityTest extends EntityBaseTest {
         });
 
         //----Assert
-        Product persistedProduct = productRepository.findAll().get(0);
+        Product persistedProduct = entityFinder.getTheOne(Product.class);
         assertThat(persistedProduct).isNotNull();
         assertThat(persistedProduct.getName()).isEqualTo("vinete");
         assertThat(persistedProduct.getPrice()).isEqualTo(5);
-        assertThat(persistedProduct.getCategory().getId()).isEqualTo(TestDataCreator.Categories.category1.getId());
-        assertThat(persistedProduct.getSellerInfo().getId()).isEqualTo(TestDataCreator.Sellers.seller2.getId());
-        // same id but different objects!
+        assertThat(persistedProduct.getCategory()).isEqualTo(TestDataCreator.Categories.category1);
+        assertThat(persistedProduct.getSellerInfo()).isEqualTo(TestDataCreator.Sellers.seller2);
     }
 
     @Test
@@ -57,13 +46,14 @@ public class ProductEntityTest extends EntityBaseTest {
 
         //----Act
         doTransaction(em -> {
-            Product product = productRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Product product = entityFinder.getTheOne(Product.class);
             Product productToUpdate = em.merge(product);
-            productToUpdate.setDescription("vinete mari");
+            productToUpdate.updateDescription("vinete mari");
         });
-        emb.clear();
+
         //----Assert
-        Product persistedProduct = productRepository.findAll().get(0);
+        Product persistedProduct = entityFinder.getTheOne(Product.class);
         assertThat(persistedProduct).isNotNull();
         assertThat(persistedProduct.getDescription()).isEqualTo("vinete mari");
     }
@@ -80,16 +70,17 @@ public class ProductEntityTest extends EntityBaseTest {
 
         //----Act
         doTransaction(em -> {
-            Product product = productRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Product product = entityFinder.getTheOne(Product.class);
             Product productToRemove = em.merge(product);
             em.remove(productToRemove);
         });
 
         //----Assert
-        List<Product> products = productRepository.findAll();
+        List<Product> products = entityFinder.findAll(Product.class);
         Product assertedProduct = products.isEmpty() ? null : products.get(0);
 
-        assertThat(productRepository.findAll()).isEmpty();
+        assertThat(entityFinder.findAll(Product.class)).isEmpty();
         assertThat(assertedProduct).isNull();
 
     }

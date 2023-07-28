@@ -43,4 +43,8 @@ public class Category extends BaseEntity {
     public void setImageName(String imageName) {
         this.imageName = imageName;
     }
+
+    public void updateImage(String image) {
+        this.setImageName(image);
+    }
 }

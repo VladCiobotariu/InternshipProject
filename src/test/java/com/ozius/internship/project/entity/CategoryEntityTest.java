@@ -2,20 +2,14 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CategoryEntityTest extends EntityBaseTest {
 
-    private JpaRepository<Category, Long> categoryRepository;
-
     @Override
     public void createTestData(EntityManager em) {
-        this.categoryRepository = new SimpleJpaRepository<>(Category.class, emb);
     }
 
     @Test
@@ -27,7 +21,7 @@ public class CategoryEntityTest extends EntityBaseTest {
         });
 
         // ----Assert
-        Category persistedCategory = categoryRepository.findAll().get(0);
+        Category persistedCategory = entityFinder.getTheOne(Category.class);
         assertThat(persistedCategory.getName()).isEqualTo("cafea");
         assertThat(persistedCategory.getImageName()).isEqualTo("/cafea");
     }
@@ -39,10 +33,9 @@ public class CategoryEntityTest extends EntityBaseTest {
             Category category = new Category("cafea", "/cafea");
             em.persist(category);
         });
-        emb.clear();
 
         // ----Assert
-        Category category = categoryRepository.findAll().get(0);
+        Category category = entityFinder.getTheOne(Category.class);
         assertThat(category.getName()).isEqualTo("cafea");
         assertThat(category.getImageName()).isEqualTo("/cafea");
 
@@ -59,14 +52,14 @@ public class CategoryEntityTest extends EntityBaseTest {
         // ----Arrange
         // need to get the object again because category is now detached
         doTransaction(em -> {
-            Category category = categoryRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Category category = entityFinder.getTheOne(Category.class);
             Category categoryToModify = em.merge(category);
-            categoryToModify.setImageName("/legumeDeLaUpdate");
+            categoryToModify.updateImage("/legumeDeLaUpdate");
         });
-        emb.clear();
 
         // ----Assert
-        Category persistedCategory = categoryRepository.findAll().get(0);
+        Category persistedCategory = entityFinder.getTheOne(Category.class);
         assertThat(persistedCategory).isNotNull();
         assertThat(persistedCategory.getImageName()).isEqualTo("/legumeDeLaUpdate");
     }
@@ -81,17 +74,17 @@ public class CategoryEntityTest extends EntityBaseTest {
 
         // ----Act
         doTransaction(em -> {
-            Category category = categoryRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Category category = entityFinder.getTheOne(Category.class);
             Category categoryToRemove = em.merge(category);
             em.remove(categoryToRemove);
         });
-        emb.clear();
 
         // ----Assert
-        List<Category> categories = categoryRepository.findAll();
+        List<Category> categories = entityFinder.findAll(Category.class);
         Category assertedCategory = categories.isEmpty() ? null : categories.get(0);
 
         assertThat(assertedCategory).isNull();
-        assertThat(categoryRepository.findAll()).isEmpty();
+        assertThat(entityFinder.findAll(Category.class)).isEmpty();
     }
 }

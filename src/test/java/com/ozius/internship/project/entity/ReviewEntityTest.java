@@ -3,16 +3,11 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.TestDataCreator;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReviewEntityTest extends EntityBaseTest{
-    private JpaRepository<Seller, Long> sellerRepository;
     @Override
     public void createTestData(EntityManager em) {
-        this.sellerRepository = new SimpleJpaRepository<>(Seller.class, emb);
         TestDataCreator.createBaseDataForReview(em);
     }
 
@@ -34,7 +29,7 @@ public class ReviewEntityTest extends EntityBaseTest{
         });
 
         //----Assert
-        Seller persistedSeller = sellerRepository.findAll().get(0);
+        Seller persistedSeller = entityFinder.findAll(Seller.class).get(0);
 
         assertThat(persistedSeller.getReviews()).hasSize(2);
         assertThat(persistedSeller.calculateRating()).isEqualTo(4.5);
@@ -55,16 +50,17 @@ public class ReviewEntityTest extends EntityBaseTest{
 
         //----Act
         doTransaction(em -> {
-            Seller seller = sellerRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Seller seller = entityFinder.findAll(Seller.class).get(0);
             Seller managedSeller = em.merge(seller);
             Review reviewToUpdate = managedSeller.getReviews().iterator().next();
 
-            reviewToUpdate.setDescription("review updated");
-            reviewToUpdate.setRating(4F);
+            reviewToUpdate.updateDescription("review updated");
+            reviewToUpdate.updateRating(4F);
         });
 
         //----Assert
-        Seller seller = sellerRepository.findAll().get(0);
+        Seller seller = entityFinder.findAll(Seller.class).get(0);
         assertThat(seller.calculateRating()).isEqualTo(4F);
 
         Review review = seller.getReviews().iterator().next();
@@ -87,14 +83,15 @@ public class ReviewEntityTest extends EntityBaseTest{
 
         //----Act
         doTransaction(em -> {
-            Seller seller = sellerRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Seller seller = entityFinder.findAll(Seller.class).get(0);
             Seller sellerForRemove = em.merge(seller);
             Review reviewToRemove = sellerForRemove.getReviews().iterator().next();
             seller.removeReview(reviewToRemove);
         });
 
         //----Assert
-        Seller persistedSeller = sellerRepository.findAll().get(0);
+        Seller persistedSeller = entityFinder.findAll(Seller.class).get(0);
         assertThat(persistedSeller.getReviews()).isEmpty();
         assertThat(persistedSeller.calculateRating()).isEqualTo(0);
     }

@@ -26,10 +26,6 @@ public class Review extends BaseEntity {
     @JoinColumn(name = Columns.BUYER_ID)
     private Buyer buyer;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = Columns.SELLER_ID, nullable = false)
-//    private SellerInfo sellerInfo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.PRODUCT_ID)
     private Product product;
@@ -66,6 +62,14 @@ public class Review extends BaseEntity {
 
     public void setRating(float rating) {
         this.rating = rating;
+    }
+
+    public void updateDescription(String description) {
+        this.setDescription(description);
+    }
+
+    public void updateRating(float rating) {
+        this.setRating(rating);
     }
 
     @Override

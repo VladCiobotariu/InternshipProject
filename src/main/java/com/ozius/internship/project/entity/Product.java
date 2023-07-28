@@ -34,7 +34,8 @@ public class Product extends BaseEntity {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.SELLER_ID, nullable = false)
+    @JoinColumn(name = Columns.SELLER_ID, nullable = false,
+            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ") ON DELETE SET CASCADE"))
     private Seller seller;
 
     protected Product() {
@@ -75,6 +76,10 @@ public class Product extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void updateDescription(String description) {
+        this.setDescription(description);
     }
 
     @Override

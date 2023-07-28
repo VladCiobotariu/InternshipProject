@@ -9,6 +9,8 @@ import java.util.Objects;
 
 @MappedSuperclass
 public class BaseEntity {
+    public static final String ID = "id";
+
     @Id
     @GeneratedValue
     private long id;

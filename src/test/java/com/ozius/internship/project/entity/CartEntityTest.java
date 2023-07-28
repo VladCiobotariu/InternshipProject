@@ -3,8 +3,6 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.TestDataCreator;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.Iterator;
 import java.util.List;
@@ -13,13 +11,9 @@ import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CartEntityTest extends EntityBaseTest {
-    private JpaRepository<Cart, Long> cartRepository;
-    private JpaRepository<CartItem, Long> cartItemRepository;
 
     @Override
     public void createTestData(EntityManager em) {
-        this.cartItemRepository = new SimpleJpaRepository<>(CartItem.class, emb);
-        this.cartRepository = new SimpleJpaRepository<>(Cart.class, emb);
         TestDataCreator.createBaseDataForProduct(em);
     }
 
@@ -30,10 +24,9 @@ public class CartEntityTest extends EntityBaseTest {
             Cart cart = new Cart();
             em.persist(cart);
         });
-        emb.clear();
 
         // ----Assert
-        Cart persistedCart = cartRepository.findAll().get(0);
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
 
         assertThat(persistedCart).isNotNull();
         assertThat(persistedCart.getCartItems()).isEmpty();
@@ -50,17 +43,18 @@ public class CartEntityTest extends EntityBaseTest {
 
         // ----Act
         doTransaction(em -> {
-            Cart cart = cartRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
             Cart cartToRemove = em.merge(cart);
             em.remove(cartToRemove);
         });
 
         // ----Assert
-        List<Cart> carts = cartRepository.findAll();
+        List<Cart> carts = entityFinder.findAll(Cart.class);
         Cart assertedCart = carts.isEmpty() ? null : carts.get(0);
         assertThat(assertedCart).isNull();
-        assertThat(cartRepository.findAll()).isEmpty();
-        assertThat(cartItemRepository.findAll()).isEmpty();
+        assertThat(entityFinder.findAll(Cart.class)).isEmpty();
+        assertThat(entityFinder.findAll(CartItem.class)).isEmpty();
     }
 
     @Test
@@ -73,15 +67,15 @@ public class CartEntityTest extends EntityBaseTest {
 
         // ----Act
         doTransaction(em -> {
-            Cart cart = cartRepository.findAll().get(0);
-            Cart managedCart = em.merge(cart);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class); // cartRepository uses emb (cart is managed entity but for emb)
+            Cart managedCart = em.merge(cart); // managedCart for em
             managedCart.addToCart(em.merge(TestDataCreator.Products.product1), 2);
             managedCart.addToCart(em.merge(TestDataCreator.Products.product2), 3);
         });
-        emb.clear();
 
         // ----Assert
-        Cart persistedCart = cartRepository.findAll().get(0);
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
         assertThat(persistedCart.calculateTotalPrice()).isEqualTo(14);
         assertThat(persistedCart.getCartItems()).hasSize(2);
 
@@ -89,7 +83,7 @@ public class CartEntityTest extends EntityBaseTest {
         CartItem cartItem1 = iter.next();
         CartItem cartItem2 = iter.next();
         assertThat(persistedCart.getCartItems())
-                .extracting(item -> item.getId()).containsExactlyInAnyOrder(cartItem1.getId(), cartItem2.getId());
+                .extracting(BaseEntity::getId).containsExactlyInAnyOrder(cartItem1.getId(), cartItem2.getId());
 
     }
 
@@ -98,22 +92,24 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
-            em.persist(cart);
             Product pr = em.merge(TestDataCreator.Products.product1);
-            cart.addToCart(pr, 2); // rosii de pret 2.5, cantitate 2
+            cart.addToCart(pr, 2);
+            em.persist(cart);
+
         });
 
         // ----Act
         // need to get the object again because cart is now detached
         doTransaction(em -> {
-            Cart cart = cartRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
             Cart cartToModify = em.merge(cart);
             CartItem cartItem = cartToModify.getCartItems().iterator().next();
-            cartToModify.modifyItem(cartItem, 20); // rosii de pret 2.5, cantitate 20
+            cartToModify.modifyItem(cartItem, 20);
         });
 
         // ----Assert
-        Cart persistedCart = cartRepository.findAll().get(0);
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
         assertThat(persistedCart.calculateTotalPrice()).isEqualTo(50);
 
         CartItem persistedCartItem = persistedCart.getCartItems().iterator().next();
@@ -134,17 +130,19 @@ public class CartEntityTest extends EntityBaseTest {
 
         // ----
         doTransaction(em -> {
-            Cart cart = cartRepository.findAll().get(0);
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
             Cart cartToRemoveFrom = em.merge(cart);
             CartItem cartItem = cartToRemoveFrom.getCartItems().stream().findFirst().orElse(null);
             cartToRemoveFrom.removeFromCart(cartItem.getProduct());
         });
 
         // ----Assert
-        Cart persistedCart = cartRepository.findAll().get(0);
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
         Set<CartItem> persistedCartItem = persistedCart.getCartItems();
 
         assertThat(persistedCartItem).isEmpty();
         assertThat(persistedCart.getCartItems()).hasSize(0);
     }
+
 }
