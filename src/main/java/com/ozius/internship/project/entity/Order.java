@@ -42,7 +42,7 @@ public class Order extends BaseEntity{
     private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.SELLER_ID)
+    @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Seller seller;
 
     @OneToMany(cascade = CascadeType.ALL)

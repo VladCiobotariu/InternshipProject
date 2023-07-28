@@ -21,9 +21,13 @@ public class EntityBaseTest {
 
     protected EntityManager emb;
 
+    protected EntityFinder entityFinder;
+
     @BeforeEach
     void setUp() {
         emb = emf.createEntityManager();
+
+        entityFinder = new EntityFinder(emb);
 
         doTransaction(em -> {
             createTestData(em);

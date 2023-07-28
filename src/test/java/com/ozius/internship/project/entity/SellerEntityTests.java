@@ -58,7 +58,7 @@ public class SellerEntityTests extends EntityBaseTest{
         });
 
         //----Assert
-        Seller persistedSeller = sellerRepository.findAll().get(0);
+        Seller persistedSeller = entityFinder.getTheOne(Seller.class);
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
@@ -111,22 +111,9 @@ public class SellerEntityTests extends EntityBaseTest{
         //----Act
         doTransaction(em -> {
 
-            //----SetNull
             Seller seller = em.merge(TestDataCreator.Sellers.seller);
-            Order order = em.merge(TestDataCreator.Orders.order);
-
-            List<Order> orderList = new SimpleJpaRepository<>(Order.class, em).findAll();
-            Map<Seller, List<Order>> ordersBySeller = new HashMap<>();
-            for(Order o : orderList){
-                Seller sellerFound = o.getSeller();
-                ordersBySeller.computeIfAbsent(sellerFound, k -> new ArrayList<>()).add(o);
-            }
-            for(Order o : ordersBySeller.get(seller)) {
-                o.getOrderItems().forEach(OrderItem::setProductNull);
-            }
-            order.setSeller(null);
-
             em.remove(seller);
+
         });
 
         //----Assert
@@ -196,4 +183,19 @@ public class SellerEntityTests extends EntityBaseTest{
         assertThat(persistedReview1.getDescription()).isEqualTo("very very bad bad review");
     }
 
+    @Test
+    void show_products(){
+
+        //----Arrange
+        doTransaction(em -> {
+            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createCategoriesBaseData(em);
+            TestDataCreator.createProductsBaseData(em);
+        });
+
+        Seller seller = sellerRepository.findAll().get(0);
+        List<Product> products = entityFinder.getProductsBySeller(seller);
+
+        assertThat(products.size()).isEqualTo(2);
+    }
 }

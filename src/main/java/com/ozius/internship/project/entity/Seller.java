@@ -32,8 +32,6 @@ public class Seller extends BaseEntity{
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Product> products;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = Review.Columns.SELLER_ID)
@@ -48,7 +46,6 @@ public class Seller extends BaseEntity{
     public Seller(Address legalAddress, UserAccount account, String alias) {
         this.legalAddress = legalAddress;
         this.account = account;
-        this.products = new HashSet<>();
         this.reviews = new HashSet<>();
         this.alias = alias;
     }
@@ -59,10 +56,6 @@ public class Seller extends BaseEntity{
 
     public UserAccount getAccount() {
         return account;
-    }
-
-    public Set<Product> getProducts() {
-        return Collections.unmodifiableSet(products);
     }
 
     public Set<Review> getReviews() {
@@ -83,10 +76,6 @@ public class Seller extends BaseEntity{
         this.reviews.add(reviewNew);
 
         return reviewNew;
-    }
-
-    void addProduct(Product product){
-        this.products.add(product);
     }
 
     public void updateEmail(String email){
