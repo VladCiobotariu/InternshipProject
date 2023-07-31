@@ -55,12 +55,20 @@ public class Review extends BaseEntity {
         return product;
     }
 
-    public void updateDescription(String description){
+    public void setDescription(String description) {
         this.description = description;
     }
 
-    public void setBuyerInfo(Buyer buyer) {
-        this.buyer = buyer;
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public void updateDescription(String description) {
+        this.setDescription(description);
+    }
+
+    public void updateRating(float rating) {
+        this.setRating(rating);
     }
 
     @Override
@@ -68,8 +76,9 @@ public class Review extends BaseEntity {
         return "Review{" +
                 "description='" + description + '\'' +
                 ", rating=" + rating +
-                ", buyerInfo=" + buyer.getId() +
-                ", product=" + product.getId() +
+                ", buyerInfo=" + buyer +
+                ", seller=" + product.getSeller() +
+                ", product=" + product +
                 '}';
     }
 }

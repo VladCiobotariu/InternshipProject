@@ -78,6 +78,11 @@ public class Seller extends BaseEntity{
         return reviewNew;
     }
 
+    public Review removeReview(Review review) {
+        this.reviews.remove(review);
+        return review;
+    }
+
     public void updateEmail(String email){
         this.account.setEmail(email);
     }
@@ -108,4 +113,5 @@ public class Seller extends BaseEntity{
                 "alias='" + alias + '\'' +
                 '}';
     }
+
 }

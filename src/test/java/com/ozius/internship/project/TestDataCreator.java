@@ -24,13 +24,13 @@ public class TestDataCreator {
 
     public static void createBuyerBaseData(EntityManager em){
         Buyers.buyer = createBuyer(em,
-                        new UserAccount(
-                            "Cosmina",
-                            "Maria",
-                            "cosminamaria@gmail.com",
-                            "ozius1223423345",
-                            "/src/image2",
-                            "0735897635"));
+                new UserAccount(
+                        "Cosmina",
+                        "Maria",
+                        "cosminamaria@gmail.com",
+                        "ozius1223423345",
+                        "/src/image2",
+                        "0735897635"));
 
     }
 
@@ -43,19 +43,19 @@ public class TestDataCreator {
 
     public static void  createSellerBaseData(EntityManager em){
         Sellers.seller = createSeller(em,
-                                new Address("Romania",
-                                        "Timis",
-                                        "Timisoara",
-                                        "Strada Circumvalatiunii nr 4",
-                                        "Bloc 3 Scara B Ap 12",
-                                        "3003413"),
-                                new UserAccount("Vlad",
-                                        "Ciobotariu",
-                                        "vladciobotariu@gmail.com",
-                                        "ozius12345",
-                                        "/src/image1",
-                                        "0734896512"),
-                                "Mega Fresh SRL");
+                new Address("Romania",
+                        "Timis",
+                        "Timisoara",
+                        "Strada Circumvalatiunii nr 4",
+                        "Bloc 3 Scara B Ap 12",
+                        "3003413"),
+                new UserAccount("Vlad",
+                        "Ciobotariu",
+                        "vladciobotariu@gmail.com",
+                        "ozius12345",
+                        "/src/image1",
+                        "0734896512"),
+                "Mega Fresh SRL");
     }
 
     private static Category createCategory(EntityManager em, String name, String image) {

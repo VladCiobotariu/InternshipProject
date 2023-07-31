@@ -77,8 +77,8 @@ public class Product extends BaseEntity {
         this.description = description;
     }
 
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
+    public void updateDescription(String description) {
+        this.setDescription(description);
     }
 
     public void setPrice(float price) {
@@ -92,8 +92,8 @@ public class Product extends BaseEntity {
                 ", description='" + description + '\'' +
                 ", imageName='" + imageName + '\'' +
                 ", price=" + price +
-                ", category=" + category +
-                ", seller=" + seller +
+                ", category=" + category.getName() +
+                ", sellerInfo=" + seller +
                 '}';
     }
 }

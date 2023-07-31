@@ -14,8 +14,8 @@ public class Cart extends BaseEntity {
     interface Columns {
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
 //    public Cart() {
@@ -50,20 +50,28 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    public void addToCart(Product product, float quantity) {
+    public CartItem addToCart(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
         if (existingCartItem != null) {
 
             existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            return existingCartItem;
 
         } else {
 
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
+            return cartItem;
 
         }
+    }
+
+    public CartItem removeFromCart(Product product) {
+        CartItem cartItem = this.cartItems.stream().filter(ci -> ci.getProduct().getId() == product.getId()).findFirst().orElse(null);
+        this.cartItems.remove(cartItem);
+        return cartItem;
     }
 
 }

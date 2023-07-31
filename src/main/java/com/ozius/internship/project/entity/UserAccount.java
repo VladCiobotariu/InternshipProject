@@ -37,7 +37,7 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.TELEPHONE, length = 10, nullable = false)
     private String telephone;
 
-    public UserAccount() {
+    protected UserAccount() {
     }
 
     public UserAccount(String firstName, String lastName, String email, String passwordHash, String imageName, String telephone) {

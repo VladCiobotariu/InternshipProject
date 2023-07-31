@@ -10,6 +10,7 @@ public class CartItem extends BaseEntity {
     interface Columns {
         String PRODUCT_ID = "PRODUCT_ID";
         String QUANTITY = "QUANTITY";
+        String CART_ID = "CART_ID";
     }
     @Column(name = Columns.QUANTITY, nullable = false)
     private float quantity;

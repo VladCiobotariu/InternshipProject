@@ -3,6 +3,7 @@ package com.ozius.internship.project.entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
+import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.List;
 
@@ -30,6 +31,14 @@ public class EntityFinder {
         } else {
             return entities.get(0);
         }
+    }
+
+    public <E> List<E> getAll(Class<E> entityClass) {
+        return em.createQuery("select e from " + entityClass.getSimpleName() + " e ", entityClass).getResultList();
+    }
+
+    public <E> E getById(Class<E> entityClass, Long id) {
+        return new SimpleJpaRepository<>(entityClass, em).findById(id).orElseThrow();
     }
 
     public List<Product> getProductsBySeller(Seller seller){

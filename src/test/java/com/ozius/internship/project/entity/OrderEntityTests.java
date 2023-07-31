@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.HashSet;
 import java.util.List;
