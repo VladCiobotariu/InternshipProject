@@ -1,7 +1,6 @@
 package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -19,19 +18,15 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
-    public Cart() {
-    }
-
 //    public Cart() {
-//        this.cartItems = new HashSet<>();
 //    }
+
+    public Cart() {
+        this.cartItems = new HashSet<>();
+    }
 
     public Set<CartItem> getCartItems() {
         return Collections.unmodifiableSet(cartItems);
-    }
-
-    public void setCartItems(Set<CartItem> cartItems) {
-        this.cartItems = cartItems;
     }
 
     public float calculateItemPrice(CartItem cartItem) {

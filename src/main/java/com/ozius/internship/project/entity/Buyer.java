@@ -75,4 +75,37 @@ public class Buyer extends BaseEntity{
         this.favoriteProducts.remove(product);
     }
 
+    public void addAddress(Address address){
+        BuyerAddress newBuyerAddress = new BuyerAddress(address);
+        this.addresses.add(newBuyerAddress);
+    }
+
+    public void removeAddress(BuyerAddress address){
+        this.addresses.remove(address);
+    }
+
+    public void updateEmail(String email){
+        this.account.setEmail(email);
+    }
+
+    public void updateFirstName(String firstName){
+        this.account.setFirstName(firstName);
+    }
+
+    public void updateLastName(String lastName){
+        this.account.setLastName(lastName);
+    }
+
+    public void updatePasswordHash(String passwordHash){
+        this.account.setPasswordHash(passwordHash);
+    }
+
+    public void updateImage(String image){
+        this.account.setImageName(image);
+    }
+
+    public void updateTelephone(String telephone){
+        this.account.setTelephone(telephone);
+    }
+
 }
