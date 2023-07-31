@@ -1,6 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.TestDataCreatorErika;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,23 +8,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ReviewEntityTest extends EntityBaseTest{
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreator.createBaseDataForReview(em);
+        TestDataCreatorErika.createBaseDataForReview(em);
     }
 
     @Test
     public void reviews_are_added() {
         //----Act
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreator.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyers1);
-            Buyer buyer2 = em.merge(TestDataCreator.Buyers.buyers2);
-            Product product = em.merge(TestDataCreator.Products.product1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
+            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
+            Buyer buyer2 = em.merge(TestDataCreatorErika.Buyers.buyers2);
+            Product product = em.merge(TestDataCreatorErika.Products.product1);
 
             Review review1 = new Review("review 1", 5F, buyer1, product);
-            seller.addReview(review1.getBuyerInfo(), review1.getDescription(), review1.getRating(), review1.getProduct());
+            seller.addReview(review1.getBuyer(), review1.getDescription(), review1.getRating(), review1.getProduct());
 
             Review review2 = new Review("review 2", 4F, buyer2, product);
-            seller.addReview(review2.getBuyerInfo(), review2.getDescription(), review2.getRating(), review2.getProduct());
+            seller.addReview(review2.getBuyer(), review2.getDescription(), review2.getRating(), review2.getProduct());
 
         });
 
@@ -40,12 +40,12 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void review_is_updated() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreator.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyers1);
-            Product product = em.merge(TestDataCreator.Products.product1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
+            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
+            Product product = em.merge(TestDataCreatorErika.Products.product1);
 
             Review review = new Review("review", 5F, buyer1, product);
-            seller.addReview(review.getBuyerInfo(), review.getDescription(), review.getRating(), review.getProduct());
+            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
         });
 
         //----Act
@@ -73,12 +73,12 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void review_is_deleted() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreator.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyers1);
-            Product product = em.merge(TestDataCreator.Products.product1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
+            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
+            Product product = em.merge(TestDataCreatorErika.Products.product1);
 
             Review review = new Review("review", 5F, buyer1, product);
-            seller.addReview(review.getBuyerInfo(), review.getDescription(), review.getRating(), review.getProduct());
+            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
         });
 
         //----Act

@@ -43,10 +43,29 @@ public class Cart extends BaseEntity {
         cartItem.setQuantity(quantity);
     }
 
+    private CartItem getCartItemByProduct(Product product) {
+        return cartItems.stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+    }
+
     public CartItem addToCart(Product product, float quantity) {
-        CartItem cartItem = new CartItem(quantity, product);
-        this.cartItems.add(cartItem);
-        return cartItem;
+
+        CartItem existingCartItem = getCartItemByProduct(product);
+
+        if (existingCartItem != null) {
+
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            return existingCartItem;
+
+        } else {
+
+            CartItem cartItem = new CartItem(quantity, product);
+            this.cartItems.add(cartItem);
+            return cartItem;
+
+        }
     }
 
     public CartItem removeFromCart(Product product) {

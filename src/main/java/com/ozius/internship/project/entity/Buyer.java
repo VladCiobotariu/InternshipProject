@@ -40,7 +40,7 @@ public class Buyer extends BaseEntity{
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
-    protected Buyer() {
+    public Buyer() {
     }
 
     public Buyer(UserAccount account) {

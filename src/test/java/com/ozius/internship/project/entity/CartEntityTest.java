@@ -1,6 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.TestDataCreatorErika;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +14,7 @@ public class CartEntityTest extends EntityBaseTest {
 
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreator.createBaseDataForProduct(em);
+        TestDataCreatorErika.createBaseDataForProduct(em);
     }
 
     @Test
@@ -70,8 +70,8 @@ public class CartEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class); // cartRepository uses emb (cart is managed entity but for emb)
             Cart managedCart = em.merge(cart); // managedCart for em
-            managedCart.addToCart(em.merge(TestDataCreator.Products.product1), 2);
-            managedCart.addToCart(em.merge(TestDataCreator.Products.product2), 3);
+            managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product1), 2);
+            managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product2), 3);
         });
 
         // ----Assert
@@ -92,7 +92,7 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
-            Product pr = em.merge(TestDataCreator.Products.product1);
+            Product pr = em.merge(TestDataCreatorErika.Products.product1);
             cart.addToCart(pr, 2);
             em.persist(cart);
 
@@ -113,7 +113,7 @@ public class CartEntityTest extends EntityBaseTest {
         assertThat(persistedCart.calculateTotalPrice()).isEqualTo(50);
 
         CartItem persistedCartItem = persistedCart.getCartItems().iterator().next();
-        assertThat(persistedCartItem.getProduct().getId()).isEqualTo(TestDataCreator.Products.product1.getId());
+        assertThat(persistedCartItem.getProduct().getId()).isEqualTo(TestDataCreatorErika.Products.product1.getId());
         assertThat(persistedCartItem.getQuantity()).isEqualTo(20);
 
     }
@@ -124,7 +124,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             Cart cart = new Cart();
             em.persist(cart);
-            Product pr = em.merge(TestDataCreator.Products.product1);
+            Product pr = em.merge(TestDataCreatorErika.Products.product1);
             cart.addToCart(pr, 2); // rosii de pret 2.5, cantitate 2
         });
 

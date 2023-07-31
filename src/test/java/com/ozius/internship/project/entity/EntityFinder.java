@@ -8,18 +8,20 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import java.util.List;
 
 public class EntityFinder {
+
     private final EntityManager em;
+
 
     public EntityFinder(EntityManager em) {
         this.em = em;
     }
 
-    public <T extends BaseEntity> List<T> findAll(Class<T> entityClass) {
-        return em.createQuery("select t from " + entityClass.getSimpleName() +  " t", entityClass).getResultList();
+    public <T extends BaseEntity> List<T> findAll(Class<T> entityClass){
+        return em.createQuery("select b from " + entityClass.getSimpleName() + " b", entityClass).getResultList();
     }
 
-    public <E> E getTheOne(Class<E> entityClass) {
-        List<E> entities = em.createQuery("select e from " + entityClass.getSimpleName() + " e ", entityClass)
+    public <W> W getTheOne(Class<W> entityClass){
+        List<W> entities = em.createQuery("select e from " + entityClass.getSimpleName() + " e", entityClass)
                 .getResultList();
 
         if (entities.size() == 0) {
@@ -37,5 +39,14 @@ public class EntityFinder {
 
     public <E> E getById(Class<E> entityClass, Long id) {
         return new SimpleJpaRepository<>(entityClass, em).findById(id).orElseThrow();
+    }
+
+    public List<Product> getProductsBySeller(Seller seller){
+        return em.createQuery(
+                "select p from Product p" +
+                " join p.seller s " +
+                " where s = :sellerParam", Product.class)
+                .setParameter("sellerParam", seller)
+                .getResultList();
     }
 }

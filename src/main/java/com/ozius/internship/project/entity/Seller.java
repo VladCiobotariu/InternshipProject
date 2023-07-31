@@ -32,14 +32,15 @@ public class Seller extends BaseEntity{
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = Review.Columns.SELLER_ID)
     private Set<Review> reviews;
 
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
 
-    protected Seller() {
+    public Seller() {
     }
 
     public Seller(Address legalAddress, UserAccount account, String alias) {
@@ -70,13 +71,47 @@ public class Seller extends BaseEntity{
     }
 
     public Review addReview(Buyer buyer, String description, float rating, Product product){
-        Review review = new Review(description, rating, buyer, product);
-        this.reviews.add(review);
-        return review;
+
+        Review reviewNew = new Review(description, rating, buyer, product);
+        this.reviews.add(reviewNew);
+
+        return reviewNew;
     }
+
     public Review removeReview(Review review) {
         this.reviews.remove(review);
         return review;
+    }
+
+    public void updateEmail(String email){
+        this.account.setEmail(email);
+    }
+
+    public void updateFirstName(String firstName){
+        this.account.setFirstName(firstName);
+    }
+
+    public void updateLastName(String lastName){
+        this.account.setLastName(lastName);
+    }
+
+    public void updatePasswordHash(String passwordHash){
+        this.account.setPasswordHash(passwordHash);
+    }
+
+    public void updateImage(String image){
+        this.account.setImageName(image);
+    }
+
+    public void updateTelephone(String telephone){
+        this.account.setTelephone(telephone);
+    }
+
+    @Override
+    public String toString() {
+        return "Seller{" +
+                "alias='" + alias + '\'' +
+                '}';
     }
 
 }

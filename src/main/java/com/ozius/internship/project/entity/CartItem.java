@@ -19,7 +19,7 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = Columns.PRODUCT_ID, nullable = false)
     private Product product;
 
-    protected CartItem() {
+    public CartItem() {
     }
 
     public CartItem(float quantity, Product product) {

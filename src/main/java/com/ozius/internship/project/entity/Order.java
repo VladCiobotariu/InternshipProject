@@ -41,11 +41,11 @@ public class Order extends BaseEntity{
     @JoinColumn(name = Columns.BUYER_ID)
     private Buyer buyer;
 
-    @ManyToOne
-    @JoinColumn(name = Columns.SELLER_ID)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Seller seller;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = OrderItem.Columns.ORDER_ID, nullable = false)
     private Set<OrderItem> orderItems;
 
@@ -61,7 +61,7 @@ public class Order extends BaseEntity{
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private float totalPrice;
 
-    protected Order() {
+    public Order() {
     }
 
     public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
@@ -79,7 +79,14 @@ public class Order extends BaseEntity{
 
         this.telephone = telephone;
 
-        this.totalPrice = (float) orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+        this.totalPrice = (float) orderItems
+                .stream()
+                .mapToDouble(orderItem -> this.calculateItemPrice(orderItem))
+                .sum();
+    }
+
+    private float calculateItemPrice(OrderItem orderItem) {
+        return orderItem.getQuantity() * orderItem.getPrice();
     }
 
     public OrderStatus getOrderStatus() {
@@ -94,7 +101,7 @@ public class Order extends BaseEntity{
         return buyer;
     }
 
-    public Seller getSellerInfo() {
+    public Seller getSeller() {
         return seller;
     }
 
@@ -116,5 +123,9 @@ public class Order extends BaseEntity{
 
     public float getTotalPrice() {
         return totalPrice;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }

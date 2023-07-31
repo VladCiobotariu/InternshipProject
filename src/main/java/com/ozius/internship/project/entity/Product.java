@@ -34,11 +34,10 @@ public class Product extends BaseEntity {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.SELLER_ID, nullable = false,
-            foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ") ON DELETE SET CASCADE"))
+    @JoinColumn(name = Columns.SELLER_ID, nullable = false, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Seller seller;
 
-    protected Product() {
+    public Product() {
     }
 
     public Product(String name, String description, String imageName, float price, Category category, Seller seller) {
@@ -70,7 +69,7 @@ public class Product extends BaseEntity {
         return category;
     }
 
-    public Seller getSellerInfo() {
+    public Seller getSeller() {
         return seller;
     }
 
@@ -82,6 +81,10 @@ public class Product extends BaseEntity {
         this.setDescription(description);
     }
 
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -90,7 +93,7 @@ public class Product extends BaseEntity {
                 ", imageName='" + imageName + '\'' +
                 ", price=" + price +
                 ", category=" + category.getName() +
-                ", sellerInfo=" + seller.getAlias() +
+                ", sellerInfo=" + seller +
                 '}';
     }
 }

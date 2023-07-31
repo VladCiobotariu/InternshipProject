@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 public class Review extends BaseEntity {
     public static final String TABLE_NAME = "review";
 
-
     interface Columns {
         String DESCRIPTION = "DESCRIPTION";
         String RATING = "RATING";
@@ -30,7 +29,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = Columns.PRODUCT_ID)
     private Product product;
 
-    protected Review() {
+    public Review() {
     }
 
     public Review(String description, float rating, Buyer buyer, Product product) {
@@ -48,7 +47,7 @@ public class Review extends BaseEntity {
         return rating;
     }
 
-    public Buyer getBuyerInfo() {
+    public Buyer getBuyer() {
         return buyer;
     }
 
@@ -78,7 +77,7 @@ public class Review extends BaseEntity {
                 "description='" + description + '\'' +
                 ", rating=" + rating +
                 ", buyerInfo=" + buyer +
-                ", seller=" + product.getSellerInfo() +
+                ", seller=" + product.getSeller() +
                 ", product=" + product +
                 '}';
     }

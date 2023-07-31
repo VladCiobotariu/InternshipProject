@@ -1,6 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.TestDataCreatorErika;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -11,16 +11,16 @@ public class ProductEntityTest extends EntityBaseTest {
 
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreator.createCategoriesBaseData(em);
-        TestDataCreator.createSellerBaseData(em);
+        TestDataCreatorErika.createCategoriesBaseData(em);
+        TestDataCreatorErika.createSellerBaseData(em);
     }
 
     @Test
     public void product_is_created() {
          //----Act
         doTransaction(em -> {
-            Category cat = em.merge(TestDataCreator.Categories.category1);
-            Seller seller = em.merge(TestDataCreator.Sellers.seller2);
+            Category cat = em.merge(TestDataCreatorErika.Categories.category1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller2);
             Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
             em.persist(product);
         });
@@ -30,16 +30,16 @@ public class ProductEntityTest extends EntityBaseTest {
         assertThat(persistedProduct).isNotNull();
         assertThat(persistedProduct.getName()).isEqualTo("vinete");
         assertThat(persistedProduct.getPrice()).isEqualTo(5);
-        assertThat(persistedProduct.getCategory()).isEqualTo(TestDataCreator.Categories.category1);
-        assertThat(persistedProduct.getSellerInfo()).isEqualTo(TestDataCreator.Sellers.seller2);
+        assertThat(persistedProduct.getCategory()).isEqualTo(TestDataCreatorErika.Categories.category1);
+        assertThat(persistedProduct.getSeller()).isEqualTo(TestDataCreatorErika.Sellers.seller2);
     }
 
     @Test
     public void product_is_updated() {
         //----Arrange
         doTransaction(em -> {
-            Category cat = em.merge(TestDataCreator.Categories.category1);
-            Seller seller = em.merge(TestDataCreator.Sellers.seller2);
+            Category cat = em.merge(TestDataCreatorErika.Categories.category1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller2);
             Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
             em.persist(product);
         });
@@ -62,8 +62,8 @@ public class ProductEntityTest extends EntityBaseTest {
     public void product_is_deleted() {
         //----Arrange
         doTransaction(em -> {
-            Category cat = em.merge(TestDataCreator.Categories.category1);
-            Seller seller = em.merge(TestDataCreator.Sellers.seller2);
+            Category cat = em.merge(TestDataCreatorErika.Categories.category1);
+            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller2);
             Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
             em.persist(product);
         });

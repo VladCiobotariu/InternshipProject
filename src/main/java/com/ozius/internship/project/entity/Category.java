@@ -20,7 +20,7 @@ public class Category extends BaseEntity {
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    protected Category() {
+    public Category() {
     }
 
     public Category(String name, String imageName) {
@@ -34,6 +34,13 @@ public class Category extends BaseEntity {
 
     public String getImageName() {
         return imageName;
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "name='" + name + '\'' +
+                '}';
     }
 
     public void setName(String name) {
