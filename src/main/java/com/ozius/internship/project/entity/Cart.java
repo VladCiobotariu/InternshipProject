@@ -18,12 +18,12 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
-    public Cart() {
-    }
-
 //    public Cart() {
-//        this.cartItems = new HashSet<>();
 //    }
+
+    public Cart() {
+        this.cartItems = new HashSet<>();
+    }
 
     public Set<CartItem> getCartItems() {
         return Collections.unmodifiableSet(cartItems);
@@ -43,9 +43,27 @@ public class Cart extends BaseEntity {
         cartItem.setQuantity(quantity);
     }
 
+    private CartItem getCartItemByProduct(Product product) {
+        return cartItems.stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+    }
+
     public void addToCart(Product product, float quantity) {
-        CartItem cartItem = new CartItem(quantity, product);
-        this.cartItems.add(cartItem);
+
+        CartItem existingCartItem = getCartItemByProduct(product);
+
+        if (existingCartItem != null) {
+
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+
+        } else {
+
+            CartItem cartItem = new CartItem(quantity, product);
+            this.cartItems.add(cartItem);
+
+        }
     }
 
 }

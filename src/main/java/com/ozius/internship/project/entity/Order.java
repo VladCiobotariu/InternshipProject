@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -40,11 +39,11 @@ public class Order extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = Columns.BUYER_ID)
-    private BuyerInfo buyerInfo;
+    private Buyer buyer;
 
-    @ManyToOne
-    @JoinColumn(name = Columns.SELLER_ID)
-    private SellerInfo sellerInfo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
+    private Seller seller;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = OrderItem.Columns.ORDER_ID, nullable = false)
@@ -65,22 +64,29 @@ public class Order extends BaseEntity{
     public Order() {
     }
 
-    public Order(Address address, BuyerInfo buyerInfo, SellerInfo sellerInfo, String telephone, Set<OrderItem> orderItems) {
+    public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
         this.orderStatus = OrderStatus.RECEIVED;
 
         this.address = address;
 
-        this.buyerInfo = buyerInfo;
-        this.sellerInfo = sellerInfo;
+        this.buyer = buyer;
+        this.seller = seller;
 
         this.orderItems = orderItems;
 
-        this.buyerEmail = buyerInfo.getAccount().getEmail();
+        this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
         this.telephone = telephone;
 
-        this.totalPrice = (float) orderItems.stream().mapToDouble(OrderItem::getPrice).sum();
+        this.totalPrice = (float) orderItems
+                .stream()
+                .mapToDouble(orderItem -> this.calculateItemPrice(orderItem))
+                .sum();
+    }
+
+    private float calculateItemPrice(OrderItem orderItem) {
+        return orderItem.getQuantity() * orderItem.getPrice();
     }
 
     public OrderStatus getOrderStatus() {
@@ -91,12 +97,12 @@ public class Order extends BaseEntity{
         return address;
     }
 
-    public BuyerInfo getBuyerInfo() {
-        return buyerInfo;
+    public Buyer getBuyerInfo() {
+        return buyer;
     }
 
-    public SellerInfo getSellerInfo() {
-        return sellerInfo;
+    public Seller getSeller() {
+        return seller;
     }
 
     public Set<OrderItem> getOrderItems() {
@@ -117,5 +123,9 @@ public class Order extends BaseEntity{
 
     public float getTotalPrice() {
         return totalPrice;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
     }
 }

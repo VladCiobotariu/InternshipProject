@@ -33,4 +33,11 @@ public class BuyerAddress extends BaseEntity{
     public Address getAddress() {
         return address;
     }
+
+    @Override
+    public String toString() {
+        return "BuyerAddress{" +
+                "address=" + address +
+                '}';
+    }
 }

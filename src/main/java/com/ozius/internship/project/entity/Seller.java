@@ -2,14 +2,13 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = SellerInfo.TABLE_NAME)
-public class SellerInfo extends BaseEntity{
+@Table(name = Seller.TABLE_NAME)
+public class Seller extends BaseEntity{
 
     public static final String TABLE_NAME = "SELLER_INFO";
 
@@ -33,22 +32,20 @@ public class SellerInfo extends BaseEntity{
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @OneToMany(mappedBy = "sellerInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Product> products;
 
-    @OneToMany(mappedBy = "sellerInfo")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = Review.Columns.SELLER_ID)
     private Set<Review> reviews;
 
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
 
-    public SellerInfo() {
+    public Seller() {
     }
 
-    public SellerInfo(Address legalAddress, UserAccount account, String alias) {
+    public Seller(Address legalAddress, UserAccount account, String alias) {
         this.legalAddress = legalAddress;
         this.account = account;
-        this.products = new HashSet<>();
         this.reviews = new HashSet<>();
         this.alias = alias;
     }
@@ -59,10 +56,6 @@ public class SellerInfo extends BaseEntity{
 
     public UserAccount getAccount() {
         return account;
-    }
-
-    public Set<Product> getProducts() {
-        return Collections.unmodifiableSet(products);
     }
 
     public Set<Review> getReviews() {
@@ -77,7 +70,42 @@ public class SellerInfo extends BaseEntity{
         return this.reviews.stream().mapToDouble(Review::getRating).average().orElse(0.0);
     }
 
-    public void addReview(BuyerInfo buyer, String description, float rating, Product product){
-        this.reviews.add(new Review(description, rating, buyer, this, product));
+    public Review addReview(Buyer buyer, String description, float rating, Product product){
+
+        Review reviewNew = new Review(description, rating, buyer, product);
+        this.reviews.add(reviewNew);
+
+        return reviewNew;
+    }
+
+    public void updateEmail(String email){
+        this.account.setEmail(email);
+    }
+
+    public void updateFirstName(String firstName){
+        this.account.setFirstName(firstName);
+    }
+
+    public void updateLastName(String lastName){
+        this.account.setLastName(lastName);
+    }
+
+    public void updatePasswordHash(String passwordHash){
+        this.account.setPasswordHash(passwordHash);
+    }
+
+    public void updateImage(String image){
+        this.account.setImageName(image);
+    }
+
+    public void updateTelephone(String telephone){
+        this.account.setTelephone(telephone);
+    }
+
+    @Override
+    public String toString() {
+        return "Seller{" +
+                "alias='" + alias + '\'' +
+                '}';
     }
 }

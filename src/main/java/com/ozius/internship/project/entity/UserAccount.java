@@ -72,4 +72,28 @@ public class UserAccount extends BaseEntity{
     public String getTelephone() {
         return telephone;
     }
+
+    void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
+    void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
 }
