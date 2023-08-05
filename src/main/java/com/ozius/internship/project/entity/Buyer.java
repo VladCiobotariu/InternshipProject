@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = BuyerInfo.TABLE_NAME)
-public class BuyerInfo extends BaseEntity{
+@Table(name = Buyer.TABLE_NAME)
+public class Buyer extends BaseEntity{
 
     public static final String TABLE_NAME = "BUYER_INFO";
     public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
@@ -36,14 +36,14 @@ public class BuyerInfo extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = Columns.PRODUCT_ID))
     private Set<Product> favoriteProducts;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
-    public BuyerInfo() {
+    public Buyer() {
     }
 
-    public BuyerInfo(UserAccount account) {
+    public Buyer(UserAccount account) {
         this.cart = new Cart();
         this.account = account;
         this.favoriteProducts = new HashSet<>();
@@ -73,6 +73,39 @@ public class BuyerInfo extends BaseEntity{
 
     public void removeFavorite(Product product){
         this.favoriteProducts.remove(product);
+    }
+
+    public void addAddress(Address address){
+        BuyerAddress newBuyerAddress = new BuyerAddress(address);
+        this.addresses.add(newBuyerAddress);
+    }
+
+    public void removeAddress(BuyerAddress address){
+        this.addresses.remove(address);
+    }
+
+    public void updateEmail(String email){
+        this.account.setEmail(email);
+    }
+
+    public void updateFirstName(String firstName){
+        this.account.setFirstName(firstName);
+    }
+
+    public void updateLastName(String lastName){
+        this.account.setLastName(lastName);
+    }
+
+    public void updatePasswordHash(String passwordHash){
+        this.account.setPasswordHash(passwordHash);
+    }
+
+    public void updateImage(String image){
+        this.account.setImageName(image);
+    }
+
+    public void updateTelephone(String telephone){
+        this.account.setTelephone(telephone);
     }
 
 }

@@ -23,7 +23,7 @@ public class BuyerAddress extends BaseEntity{
     })
     private Address address;
 
-    public BuyerAddress() {
+    protected BuyerAddress() {
     }
 
     public BuyerAddress(Address address) {
@@ -32,5 +32,12 @@ public class BuyerAddress extends BaseEntity{
 
     public Address getAddress() {
         return address;
+    }
+
+    @Override
+    public String toString() {
+        return "BuyerAddress{" +
+                "address=" + address +
+                '}';
     }
 }

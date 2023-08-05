@@ -35,4 +35,23 @@ public class Category extends BaseEntity {
     public String getImageName() {
         return imageName;
     }
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    public void updateImage(String image) {
+        this.setImageName(image);
+    }
 }

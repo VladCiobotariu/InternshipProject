@@ -37,7 +37,7 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.TELEPHONE, length = 10, nullable = false)
     private String telephone;
 
-    public UserAccount() {
+    protected UserAccount() {
     }
 
     public UserAccount(String firstName, String lastName, String email, String passwordHash, String imageName, String telephone) {
@@ -71,5 +71,29 @@ public class UserAccount extends BaseEntity{
 
     public String getTelephone() {
         return telephone;
+    }
+
+    void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    void setEmail(String email) {
+        this.email = email;
+    }
+
+    void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    void setImageName(String imageName) {
+        this.imageName = imageName;
+    }
+
+    void setTelephone(String telephone) {
+        this.telephone = telephone;
     }
 }

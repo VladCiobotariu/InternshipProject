@@ -18,7 +18,7 @@ public class OrderItem extends BaseEntity{
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.PRODUCT_ID)
+    @JoinColumn(name = Columns.PRODUCT_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Product.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Product product;
 
     @Column(name = Columns.QUANTITY, nullable = false)
@@ -33,7 +33,7 @@ public class OrderItem extends BaseEntity{
     @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
 
-    public OrderItem() {
+    protected OrderItem() {
     }
 
     public OrderItem(Product product, float quantity) {
@@ -62,5 +62,9 @@ public class OrderItem extends BaseEntity{
 
     public String getDescription() {
         return description;
+    }
+
+    public void setProductNull() {
+        this.product = null;
     }
 }

@@ -14,16 +14,16 @@ public class Cart extends BaseEntity {
     interface Columns {
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = CartItem.Columns.PRODUCT_ID)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems = new HashSet<>();
 
-    public Cart() {
-    }
-
 //    public Cart() {
-//        this.cartItems = new HashSet<>();
 //    }
+
+    public Cart() {
+        this.cartItems = new HashSet<>();
+    }
 
     public Set<CartItem> getCartItems() {
         return Collections.unmodifiableSet(cartItems);
@@ -43,9 +43,35 @@ public class Cart extends BaseEntity {
         cartItem.setQuantity(quantity);
     }
 
-    public void addToCart(Product product, float quantity) {
-        CartItem cartItem = new CartItem(quantity, product);
-        this.cartItems.add(cartItem);
+    private CartItem getCartItemByProduct(Product product) {
+        return cartItems.stream()
+                .filter(cartItem -> cartItem.getProduct().equals(product))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public CartItem addToCart(Product product, float quantity) {
+
+        CartItem existingCartItem = getCartItemByProduct(product);
+
+        if (existingCartItem != null) {
+
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            return existingCartItem;
+
+        } else {
+
+            CartItem cartItem = new CartItem(quantity, product);
+            this.cartItems.add(cartItem);
+            return cartItem;
+
+        }
+    }
+
+    public CartItem removeFromCart(Product product) {
+        CartItem cartItem = this.cartItems.stream().filter(ci -> ci.getProduct().getId() == product.getId()).findFirst().orElse(null);
+        this.cartItems.remove(cartItem);
+        return cartItem;
     }
 
 }
