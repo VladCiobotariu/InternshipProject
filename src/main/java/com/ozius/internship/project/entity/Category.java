@@ -20,7 +20,7 @@ public class Category extends BaseEntity {
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    public Category() {
+    public Category() { //TODO use protected for jpa constructors
     }
 
     public Category(String name, String imageName) {
@@ -43,6 +43,8 @@ public class Category extends BaseEntity {
                 '}';
     }
 
+    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
+    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
     public void setName(String name) {
         this.name = name;
     }
@@ -54,4 +56,6 @@ public class Category extends BaseEntity {
     public void updateImage(String image) {
         this.setImageName(image);
     }
+
+    //todo toString() missing usually useful for debug purpose.
 }

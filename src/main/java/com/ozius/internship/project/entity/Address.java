@@ -24,6 +24,7 @@ public class Address {
         this.zipCode = zipCode;
     }
 
+    //TODO move at the end. Convention / readability
     @Override
     public String toString() {
         return "Address{" +

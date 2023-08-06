@@ -24,9 +24,11 @@ public class OrderItem extends BaseEntity{
     @Column(name = Columns.QUANTITY, nullable = false)
     private float quantity;
 
+    //TODO please use a better self-explanatory name
     @Column(name = Columns.NAME, nullable = false)
     private String name;
 
+    //TODO please use a better self-explanatory name. Not clear if it's price of the order item or product price.
     @Column(name = Columns.PRICE, nullable = false)
     private float price;
 
@@ -36,7 +38,7 @@ public class OrderItem extends BaseEntity{
     protected OrderItem() {
     }
 
-    public OrderItem(Product product, float quantity) {
+    public OrderItem(Product product, float quantity) { //TODO use package constructor. Order item to be managed via Order(Aggregate Root)
         this.product = product;
         this.quantity = quantity;
         this.name = product.getName();
@@ -67,4 +69,6 @@ public class OrderItem extends BaseEntity{
     public void setProductNull() {
         this.product = null;
     }
+
+    //todo toString() missing usually useful for debug purpose.
 }

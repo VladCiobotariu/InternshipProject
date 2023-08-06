@@ -21,6 +21,7 @@ public class CartEntityTest extends EntityBaseTest {
     public void cart_is_created() {
         // ----Act
         doTransaction(em -> {
+            //TODO - should not possible to have card entity without a buyer attached.
             Cart cart = new Cart();
             em.persist(cart);
         });
@@ -51,9 +52,13 @@ public class CartEntityTest extends EntityBaseTest {
 
         // ----Assert
         List<Cart> carts = entityFinder.findAll(Cart.class);
+
+        // TODO how would you optimise/cleanup the following statements?
         Cart assertedCart = carts.isEmpty() ? null : carts.get(0);
         assertThat(assertedCart).isNull();
         assertThat(entityFinder.findAll(Cart.class)).isEmpty();
+
+        //TODO valid assert but no card items have been added in arrange.
         assertThat(entityFinder.findAll(CartItem.class)).isEmpty();
     }
 
@@ -69,7 +74,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class); // cartRepository uses emb (cart is managed entity but for emb)
-            Cart managedCart = em.merge(cart); // managedCart for em
+            Cart managedCart = em.merge(cart); // managedCart for em //TODO is this needed? hint: Please pay attention to EntityManager used by EntityFinder
             managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product1), 2);
             managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product2), 3);
         });
@@ -82,9 +87,11 @@ public class CartEntityTest extends EntityBaseTest {
         Iterator<CartItem> iter = persistedCart.getCartItems().iterator();
         CartItem cartItem1 = iter.next();
         CartItem cartItem2 = iter.next();
+        //TODO this assert will never fail.
         assertThat(persistedCart.getCartItems())
                 .extracting(BaseEntity::getId).containsExactlyInAnyOrder(cartItem1.getId(), cartItem2.getId());
 
+        //TODO CartItem.quantity and CartItem.product are not asserted. (hint: do we need to assert them in this test, how to simplify things?)
     }
 
     @Test
@@ -92,6 +99,9 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
+            //TODO for readability it's probably better to create a new product here using #createProduct(...)
+            // In general, the test data that is directly influencing the asserts should be explicitly created
+            // The problem here could be that someone else might modify the product price and it might this test to break.
             Product pr = em.merge(TestDataCreatorErika.Products.product1);
             cart.addToCart(pr, 2);
             em.persist(cart);
@@ -103,7 +113,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Cart cartToModify = em.merge(cart);
+            Cart cartToModify = em.merge(cart); //TODO is this needed?
             CartItem cartItem = cartToModify.getCartItems().iterator().next();
             cartToModify.modifyItem(cartItem, 20);
         });
@@ -113,6 +123,7 @@ public class CartEntityTest extends EntityBaseTest {
         assertThat(persistedCart.calculateTotalPrice()).isEqualTo(50);
 
         CartItem persistedCartItem = persistedCart.getCartItems().iterator().next();
+        // TODO no need for .getId() due to equals and hashcode impl in BaseEntity
         assertThat(persistedCartItem.getProduct().getId()).isEqualTo(TestDataCreatorErika.Products.product1.getId());
         assertThat(persistedCartItem.getQuantity()).isEqualTo(20);
 
@@ -132,7 +143,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Cart cartToRemoveFrom = em.merge(cart);
+            Cart cartToRemoveFrom = em.merge(cart); //TODO is this needed?
             CartItem cartItem = cartToRemoveFrom.getCartItems().stream().findFirst().orElse(null);
             cartToRemoveFrom.removeFromCart(cartItem.getProduct());
         });
@@ -141,6 +152,7 @@ public class CartEntityTest extends EntityBaseTest {
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
         Set<CartItem> persistedCartItem = persistedCart.getCartItems();
 
+        // TODO both assert the same thing, only one is enough. isEmpty() is preferred to assert that collection is empty.
         assertThat(persistedCartItem).isEmpty();
         assertThat(persistedCart.getCartItems()).hasSize(0);
     }

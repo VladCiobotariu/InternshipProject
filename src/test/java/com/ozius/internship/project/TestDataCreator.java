@@ -70,6 +70,7 @@ public class TestDataCreator {
     }
 
     private static Product createProduct(EntityManager em, String name, String description, String image, float price, long categoryId, long sellerId){
+        //TODO product factory method should allow creation of products with configurable category and seller.
         Category category = Categories.category;
         Seller seller = Sellers.seller;
 
@@ -80,6 +81,7 @@ public class TestDataCreator {
     }
 
     public static void createProductsBaseData(EntityManager em){
+        //TODO please avoid using hardcoded entity IDS. Either use static business keys or entity references.
         Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, 1l, 1l);
         Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, 1l, 1l);
     }

@@ -14,8 +14,8 @@ public class BuyerAddress extends BaseEntity{
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),
-            @AttributeOverride( name = "state", column = @Column(name = "STATE")),
+            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")), //TODO use column name constants for COUNTRY, state etc..
+            @AttributeOverride( name = "state", column = @Column(name = "STATE")),//todo define NN constraints
             @AttributeOverride( name = "city", column = @Column(name = "CITY")),
             @AttributeOverride( name = "addressLine1", column = @Column(name = "ADDRESS_LINE_1")),
             @AttributeOverride( name = "addressLine2", column = @Column(name = "ADDRESS_LINE_2")),
