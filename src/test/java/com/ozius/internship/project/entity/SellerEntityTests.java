@@ -6,15 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 
 public class SellerEntityTests extends EntityBaseTest{
