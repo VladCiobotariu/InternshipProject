@@ -3,6 +3,7 @@ package com.ozius.internship.project;
 import com.ozius.internship.project.entity.*;
 import jakarta.persistence.EntityManager;
 
+//TODO there should be only one test data creator shared by all devs. Please merge to main test data creator.
 public class TestDataCreatorErika {
 
     public static void createBaseDataForProduct(EntityManager em) {

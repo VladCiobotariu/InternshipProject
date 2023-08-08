@@ -11,13 +11,15 @@ import java.util.Set;
 public class Cart extends BaseEntity {
     public static final String TABLE_NAME = "cart";
 
-    interface Columns {
+    interface Columns { //TODO remove if no columns
     }
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = CartItem.Columns.CART_ID)
-    private Set<CartItem> cartItems = new HashSet<>();
+    private Set<CartItem> cartItems = new HashSet<>(); // TODO only initialize entity fields in constructor. Better readability
 
+
+    //TODO cleanup
 //    public Cart() {
 //    }
 
@@ -39,6 +41,7 @@ public class Cart extends BaseEntity {
                 .sum();
     }
 
+    //TODO use Product in interface method, same as removeFromCart and addToCard. Find a better self-explanatory name
     public void modifyItem(CartItem cartItem, float quantity) {
         cartItem.setQuantity(quantity);
     }
@@ -50,6 +53,7 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
+    // todo it's probably not required to return the CartItem
     public CartItem addToCart(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);
@@ -67,11 +71,14 @@ public class Cart extends BaseEntity {
 
         }
     }
-
+    // todo it's probably not required to return the CartItem
     public CartItem removeFromCart(Product product) {
+        //TODO there is already a method which could be used for search see getCartItemByProduct
         CartItem cartItem = this.cartItems.stream().filter(ci -> ci.getProduct().getId() == product.getId()).findFirst().orElse(null);
         this.cartItems.remove(cartItem);
         return cartItem;
     }
+
+    //todo toString() missing usually useful for debug purpose.
 
 }

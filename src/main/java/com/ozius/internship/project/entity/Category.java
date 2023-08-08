@@ -2,8 +2,6 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
-
 @Entity
 @Table(name = Category.TABLE_NAME)
 public class Category extends BaseEntity {
@@ -20,7 +18,7 @@ public class Category extends BaseEntity {
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    public Category() {
+    protected Category() {
     }
 
     public Category(String name, String imageName) {
@@ -36,22 +34,16 @@ public class Category extends BaseEntity {
         return imageName;
     }
 
+    public void updateCategory(Category category) {
+        this.name = category.getName();
+        this.imageName = category.getImageName();
+    }
+
     @Override
     public String toString() {
         return "Category{" +
                 "name='" + name + '\'' +
+                ", imageName='" + imageName + '\'' +
                 '}';
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
-
-    public void updateImage(String image) {
-        this.setImageName(image);
     }
 }

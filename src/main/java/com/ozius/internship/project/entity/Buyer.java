@@ -10,7 +10,7 @@ import java.util.Set;
 @Table(name = Buyer.TABLE_NAME)
 public class Buyer extends BaseEntity{
 
-    public static final String TABLE_NAME = "BUYER_INFO";
+    public static final String TABLE_NAME = "BUYER_INFO"; //TODO rename table, remove _INFO
     public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
 
     interface Columns{
@@ -21,6 +21,10 @@ public class Buyer extends BaseEntity{
 
     }
 
+    //TODO - the current model couples the card to the buyer, do we have any reasons to do that(business logic reasons)
+    // Also it's currently possible for a card to exist in the database even it's not assigned to any buyer (orphan card)
+    // how would you fix that?
+    // while doing the refactoring, please also ensure that a buyer can only one card(the current implementation ensures that but it has the other disadvantages listed above).
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.CART_ID, nullable = false)
     private Cart cart;
@@ -29,7 +33,7 @@ public class Buyer extends BaseEntity{
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @ManyToMany/*Cascade all for join table*/
+    @ManyToMany(cascade = CascadeType.ALL) /*Cascade all for join table*/
     @JoinTable(
             name = JOIN_TABLE_NAME,
             joinColumns = @JoinColumn(name = Columns.BUYER_ID),
@@ -40,7 +44,7 @@ public class Buyer extends BaseEntity{
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
-    public Buyer() {
+    public Buyer() { //TODO please use protected for JPA constructors.
     }
 
     public Buyer(UserAccount account) {
@@ -66,11 +70,12 @@ public class Buyer extends BaseEntity{
         return Collections.unmodifiableSet(addresses);
     }
 
-
+    //TODO add tests.
     public void addFavorite(Product product){
         this.favoriteProducts.add(product);
     }
 
+    //TODO add tests.
     public void removeFavorite(Product product){
         this.favoriteProducts.remove(product);
     }
@@ -84,6 +89,8 @@ public class Buyer extends BaseEntity{
         this.addresses.remove(address);
     }
 
+    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
+    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
     public void updateEmail(String email){
         this.account.setEmail(email);
     }
@@ -108,4 +115,5 @@ public class Buyer extends BaseEntity{
         this.account.setTelephone(telephone);
     }
 
+    //todo toString() missing usually useful for debug purpose.
 }

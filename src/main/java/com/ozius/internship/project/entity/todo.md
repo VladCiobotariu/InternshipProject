@@ -1,0 +1,1 @@
+* think about bounded contexts and create one package for each bounded context add the related entity. I.e package: Order entities: Order, OrderItem.

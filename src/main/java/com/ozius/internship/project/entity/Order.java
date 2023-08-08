@@ -28,8 +28,8 @@ public class Order extends BaseEntity{
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),
-            @AttributeOverride( name = "state", column = @Column(name = "STATE")),
+            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),//TODO use column name constants
+            @AttributeOverride( name = "state", column = @Column(name = "STATE")),   //todo define NN constraints
             @AttributeOverride( name = "city", column = @Column(name = "CITY")),
             @AttributeOverride( name = "addressLine1", column = @Column(name = "ADDRESS_LINE_1")),
             @AttributeOverride( name = "addressLine2", column = @Column(name = "ADDRESS_LINE_2")),
@@ -38,10 +38,10 @@ public class Order extends BaseEntity{
     private Address address;
 
     @ManyToOne
-    @JoinColumn(name = Columns.BUYER_ID)
+    @JoinColumn(name = Columns.BUYER_ID) //TODO it won't be possible to remove buyer due to FK violation. Buyer info relevant to order should be preserved.
     private Buyer buyer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //TODO Seller info relevant to order should be preserved.
     @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Seller seller;
 
@@ -61,7 +61,7 @@ public class Order extends BaseEntity{
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private float totalPrice;
 
-    public Order() {
+    public Order() { //TODO use protected for jpa constructor
     }
 
     public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
@@ -72,6 +72,8 @@ public class Order extends BaseEntity{
         this.buyer = buyer;
         this.seller = seller;
 
+        //TODO it's recommended to instantiate with empty set and add products via public(entity interface) method addProduct
+        // Business wise, it is true that we'll have all items at the time of order creation but nevertheless this approach will allow for better encapsulation of bounded context and a simpler constructor.
         this.orderItems = orderItems;
 
         this.buyerEmail = buyer.getAccount().getEmail();
@@ -125,7 +127,10 @@ public class Order extends BaseEntity{
         return totalPrice;
     }
 
+    //TODO setter should not be used, violates encapsulation.
     public void setSeller(Seller seller) {
         this.seller = seller;
     }
+
+    //todo toString() missing usually useful for debug purpose.
 }

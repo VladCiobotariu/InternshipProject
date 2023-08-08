@@ -40,6 +40,7 @@ public class Seller extends BaseEntity{
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
 
+
     public Seller() {
     }
 
@@ -83,6 +84,8 @@ public class Seller extends BaseEntity{
         return review;
     }
 
+    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
+    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
     public void updateEmail(String email){
         this.account.setEmail(email);
     }

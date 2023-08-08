@@ -27,6 +27,7 @@ public class CategoryEntityTest extends EntityBaseTest {
     }
 
     @Test
+    //TODO this is a duplicate of category_is_created() test,  probably a mistake due to migration from previous version. Please cleanup.
     public void category_is_created_v2() {
         // ----Act
         doTransaction(em -> {
@@ -54,13 +55,13 @@ public class CategoryEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Category category = entityFinder.getTheOne(Category.class);
-            Category categoryToModify = em.merge(category);
+            Category categoryToModify = em.merge(category); //TODO is this needed?
             categoryToModify.updateImage("/legumeDeLaUpdate");
         });
 
         // ----Assert
         Category persistedCategory = entityFinder.getTheOne(Category.class);
-        assertThat(persistedCategory).isNotNull();
+        assertThat(persistedCategory).isNotNull();  // TODO no delete/cascade delete operations are possible in this test, Not null assert not required.
         assertThat(persistedCategory.getImageName()).isEqualTo("/legumeDeLaUpdate");
     }
 
@@ -82,9 +83,12 @@ public class CategoryEntityTest extends EntityBaseTest {
 
         // ----Assert
         List<Category> categories = entityFinder.findAll(Category.class);
-        Category assertedCategory = categories.isEmpty() ? null : categories.get(0);
 
+        //TODO instead of these 2 asserts is better to assert categories is empty.
+        Category assertedCategory = categories.isEmpty() ? null : categories.get(0);
         assertThat(assertedCategory).isNull();
+
+        //TODO this assert will never fail, in case categories are empty, assertedCategory will be null and above assert will throw an exception.
         assertThat(entityFinder.findAll(Category.class)).isEmpty();
     }
 }
