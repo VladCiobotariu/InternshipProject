@@ -117,7 +117,7 @@ public class CartEntityTest extends EntityBaseTest {
             Cart cart = entityFinder.getTheOne(Cart.class);
             Cart cartToModify = em.merge(cart); //TODO is this needed?
             CartItem cartItem = cartToModify.getCartItems().iterator().next();
-            cartToModify.modifyItem(cartItem, 20);
+            cartToModify.updateCartItem(cartItem, 20);
         });
 
         // ----Assert

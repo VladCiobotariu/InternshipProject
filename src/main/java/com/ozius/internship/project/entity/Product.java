@@ -38,7 +38,7 @@ public class Product extends BaseEntity {
     @JoinColumn(name = Columns.SELLER_ID, nullable = false, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Seller seller;
 
-    public Product() {
+    protected Product() {
     }
 
     public Product(String name, String description, String imageName, float price, Category category, Seller seller) {
