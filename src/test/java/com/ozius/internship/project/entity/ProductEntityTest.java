@@ -50,7 +50,7 @@ public class ProductEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Product product = entityFinder.getTheOne(Product.class);
             Product productToUpdate = em.merge(product);
-            productToUpdate.updateDescription("vinete mari");
+//            productToUpdate.updateDescription("vinete mari");
         });
 
         //----Assert

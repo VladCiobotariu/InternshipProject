@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = Buyer.TABLE_NAME)
 public class Buyer extends BaseEntity{
 
-    public static final String TABLE_NAME = "BUYER_INFO"; //TODO rename table, remove _INFO
+    public static final String TABLE_NAME = "BUYER";
     public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
 
     interface Columns{
@@ -45,7 +45,7 @@ public class Buyer extends BaseEntity{
     @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
     private Set<BuyerAddress> addresses;
 
-    public Buyer() { //TODO please use protected for JPA constructors.
+    protected Buyer() {
     }
 
     public Buyer(UserAccount account) {
@@ -90,31 +90,24 @@ public class Buyer extends BaseEntity{
         this.addresses.remove(address);
     }
 
-    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
-    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
+    public void updateBuyer(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
+        this.account.setEmail(email);
+        this.account.setFirstName(firstName);
+        this.account.setLastName(lastName);
+        this.account.setPasswordHash(passwordHash);
+        this.account.setImageName(image);
+        this.account.setTelephone(telephone);
+    }
+
+    //TODO remove after updating SellerEntityTest
     public void updateEmail(String email){
         this.account.setEmail(email);
     }
 
-    public void updateFirstName(String firstName){
-        this.account.setFirstName(firstName);
+    @Override//TODO
+    public String toString() {
+        return "Buyer{" +
+                "account=" + account +
+                '}';
     }
-
-    public void updateLastName(String lastName){
-        this.account.setLastName(lastName);
-    }
-
-    public void updatePasswordHash(String passwordHash){
-        this.account.setPasswordHash(passwordHash);
-    }
-
-    public void updateImage(String image){
-        this.account.setImageName(image);
-    }
-
-    public void updateTelephone(String telephone){
-        this.account.setTelephone(telephone);
-    }
-
-    //todo toString() missing usually useful for debug purpose.
 }

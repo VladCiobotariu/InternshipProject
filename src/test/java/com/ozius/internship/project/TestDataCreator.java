@@ -52,7 +52,7 @@ public class TestDataCreator {
                         "Timisoara",
                         "Strada Circumvalatiunii nr 4",
                         "Bloc 3 Scara B Ap 12",
-                        "3003413"),
+                        "303413"),
                 new UserAccount("Vlad",
                         "Ciobotariu",
                         "vladciobotariu@gmail.com",

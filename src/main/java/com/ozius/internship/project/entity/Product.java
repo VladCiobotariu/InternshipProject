@@ -74,6 +74,10 @@ public class Product extends BaseEntity {
         return seller;
     }
 
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     public void updateProduct(String name, String description, String imageName, float price, Category category, Seller seller) {
         this.name = name;
         this.description = description;
