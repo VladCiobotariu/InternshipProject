@@ -75,27 +75,27 @@ public class UserAccount extends BaseEntity{
 
     //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
     // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
-    void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    void setPasswordHash(String passwordHash) {
+    public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
 
-    void setImageName(String imageName) {
+    public void setImageName(String imageName) {
         this.imageName = imageName;
     }
 
-    void setTelephone(String telephone) {
+    public void setTelephone(String telephone) {
         this.telephone = telephone;
     }
 }

@@ -1,6 +1,10 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.cart.CartItem;
+import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.order.OrderItem;
+import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.repository.BuyerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -1,6 +1,6 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.entity.CartItem;
+import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
