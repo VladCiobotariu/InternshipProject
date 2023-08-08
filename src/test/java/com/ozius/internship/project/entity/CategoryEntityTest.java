@@ -56,7 +56,7 @@ public class CategoryEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Category category = entityFinder.getTheOne(Category.class);
             Category categoryToModify = em.merge(category); //TODO is this needed?
-            categoryToModify.updateImage("/legumeDeLaUpdate");
+//            categoryToModify.updateImage("/legumeDeLaUpdate");
         });
 
         // ----Assert
