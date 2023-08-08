@@ -1,6 +1,10 @@
 package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.order.OrderItem;
+import com.ozius.internship.project.entity.seller.Review;
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 
 import java.util.HashSet;
@@ -24,13 +28,13 @@ public class TestDataCreator {
 
     public static void createBuyerBaseData(EntityManager em){
         Buyers.buyer = createBuyer(em,
-                        new UserAccount(
-                            "Cosmina",
-                            "Maria",
-                            "cosminamaria@gmail.com",
-                            "ozius1223423345",
-                            "/src/image2",
-                            "0735897635"));
+                new UserAccount(
+                        "Cosmina",
+                        "Maria",
+                        "cosminamaria@gmail.com",
+                        "ozius1223423345",
+                        "/src/image2",
+                        "0735897635"));
 
     }
 
@@ -43,19 +47,19 @@ public class TestDataCreator {
 
     public static void  createSellerBaseData(EntityManager em){
         Sellers.seller = createSeller(em,
-                                new Address("Romania",
-                                        "Timis",
-                                        "Timisoara",
-                                        "Strada Circumvalatiunii nr 4",
-                                        "Bloc 3 Scara B Ap 12",
-                                        "3003413"),
-                                new UserAccount("Vlad",
-                                        "Ciobotariu",
-                                        "vladciobotariu@gmail.com",
-                                        "ozius12345",
-                                        "/src/image1",
-                                        "0734896512"),
-                                "Mega Fresh SRL");
+                new Address("Romania",
+                        "Timis",
+                        "Timisoara",
+                        "Strada Circumvalatiunii nr 4",
+                        "Bloc 3 Scara B Ap 12",
+                        "3003413"),
+                new UserAccount("Vlad",
+                        "Ciobotariu",
+                        "vladciobotariu@gmail.com",
+                        "ozius12345",
+                        "/src/image1",
+                        "0734896512"),
+                "Mega Fresh SRL");
     }
 
     private static Category createCategory(EntityManager em, String name, String image) {
@@ -70,6 +74,7 @@ public class TestDataCreator {
     }
 
     private static Product createProduct(EntityManager em, String name, String description, String image, float price, long categoryId, long sellerId){
+        //TODO product factory method should allow creation of products with configurable category and seller.
         Category category = Categories.category;
         Seller seller = Sellers.seller;
 
@@ -80,6 +85,7 @@ public class TestDataCreator {
     }
 
     public static void createProductsBaseData(EntityManager em){
+        //TODO please avoid using hardcoded entity IDS. Either use static business keys or entity references.
         Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, 1l, 1l);
         Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, 1l, 1l);
     }

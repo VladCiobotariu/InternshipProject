@@ -2,9 +2,7 @@ package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
 import jakarta.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
@@ -45,6 +43,15 @@ public class BuyerEntityTests extends EntityBaseTest{
     void test_add_address(){
         //----Arrange
         doTransaction(em -> {
+            /*
+             *   TODO It's better to create the entity that's being tested explicitly in test, without relying on predefined test data
+             *    Advatanges:
+             *   - Improves readability. It's hard for me to know if buyer already has any addresses
+             *   - Avoids side effects - if any other devs goes to test data creator and adds an address to Buyers.buyer this test will break.
+             *
+             *   hint: You can do   Buyer buyer = doTransaction(em -> {...} to make it easier to reference it later.
+             */
+
             TestDataCreator.createBuyerBaseData(em);
         });
 
@@ -84,7 +91,6 @@ public class BuyerEntityTests extends EntityBaseTest{
         //----Assert
         Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminaa@gmail.com");
-
     }
 
 
@@ -128,6 +134,8 @@ public class BuyerEntityTests extends EntityBaseTest{
 
             buyer.removeAddress(removeAddress);
 
+
+            //TODO tests should only do asserts ideally. Unless it's really required, tests should not write logs.
             System.out.println("Buyer addreses:");
             buyer.getAddresses().stream().forEach(System.out::println);
 
@@ -135,10 +143,9 @@ public class BuyerEntityTests extends EntityBaseTest{
             new SimpleJpaRepository<>(BuyerAddress.class, em).findAll().forEach(System.out::println);
         });
 
-        emb.clear();
+        emb.clear(); //TODO is this needed?
         //----Assert
         Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAddresses()).isEmpty();
     }
-
 }

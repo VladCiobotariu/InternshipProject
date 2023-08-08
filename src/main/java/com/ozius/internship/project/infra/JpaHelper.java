@@ -34,4 +34,10 @@ public class JpaHelper {
         }
     }
 
+    public <T> T doManaged(JpaCallback<T> callback) {
+        try (EntityManager em = emf.createEntityManager()) {
+            return callback.execute(em);
+        }
+    }
+
 }

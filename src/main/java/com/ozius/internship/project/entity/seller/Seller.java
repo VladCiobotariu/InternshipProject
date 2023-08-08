@@ -1,14 +1,14 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.seller;
 
+import com.ozius.internship.project.entity.*;
 import jakarta.persistence.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = Seller.TABLE_NAME)
-public class Seller extends BaseEntity{
+public class Seller extends BaseEntity {
 
     public static final String TABLE_NAME = "SELLER_INFO";
 
@@ -39,6 +39,7 @@ public class Seller extends BaseEntity{
 
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
+
 
     public Seller() {
     }
@@ -78,6 +79,13 @@ public class Seller extends BaseEntity{
         return reviewNew;
     }
 
+    public Review removeReview(Review review) {
+        this.reviews.remove(review);
+        return review;
+    }
+
+    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
+    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
     public void updateEmail(String email){
         this.account.setEmail(email);
     }
@@ -108,4 +116,5 @@ public class Seller extends BaseEntity{
                 "alias='" + alias + '\'' +
                 '}';
     }
+
 }

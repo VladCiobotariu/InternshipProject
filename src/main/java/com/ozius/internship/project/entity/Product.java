@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 @Entity
@@ -73,16 +74,13 @@ public class Product extends BaseEntity {
         return seller;
     }
 
-    public void setDescription(String description) {
+    public void updateProduct(String name, String description, String imageName, float price, Category category, Seller seller) {
+        this.name = name;
         this.description = description;
-    }
-
-    public void setImageName(String imageName) {
         this.imageName = imageName;
-    }
-
-    public void setPrice(float price) {
         this.price = price;
+        this.category = category;
+        this.seller = seller;
     }
 
     @Override
@@ -92,8 +90,8 @@ public class Product extends BaseEntity {
                 ", description='" + description + '\'' +
                 ", imageName='" + imageName + '\'' +
                 ", price=" + price +
-                ", category=" + category +
-                ", seller=" + seller +
+                ", category=" + category.getName() +
+                ", sellerInfo=" + seller.getAlias() +
                 '}';
     }
 }
