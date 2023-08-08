@@ -13,8 +13,8 @@ public class OrderItem extends BaseEntity {
     interface Columns{
         String PRODUCT_ID = "PRODUCT_ID";
         String QUANTITY = "QUANTITY";
-        String NAME = "NAME";
-        String PRICE = "PRICE";
+        String ITEM_NAME = "ITEM_NAME";
+        String ITEM_PRICE = "ITEM_PRICE";
         String DESCRIPTION = "DESCRIPTION";
         String ORDER_ID = "ORDER_ID";
     }
@@ -26,13 +26,11 @@ public class OrderItem extends BaseEntity {
     @Column(name = Columns.QUANTITY, nullable = false)
     private float quantity;
 
-    //TODO please use a better self-explanatory name
-    @Column(name = Columns.NAME, nullable = false)
-    private String name;
+    @Column(name = Columns.ITEM_NAME, nullable = false)
+    private String itemName;
 
-    //TODO please use a better self-explanatory name. Not clear if it's price of the order item or product price.
-    @Column(name = Columns.PRICE, nullable = false)
-    private float price;
+    @Column(name = Columns.ITEM_PRICE, nullable = false)
+    private float itemPrice;
 
     @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
@@ -43,8 +41,8 @@ public class OrderItem extends BaseEntity {
     public OrderItem(Product product, float quantity) { //TODO use package constructor. Order item to be managed via Order(Aggregate Root)
         this.product = product;
         this.quantity = quantity;
-        this.name = product.getName();
-        this.price = product.getPrice();
+        this.itemName = product.getName();
+        this.itemPrice = product.getPrice();
         this.description = product.getDescription();
     }
 
@@ -56,12 +54,12 @@ public class OrderItem extends BaseEntity {
         return quantity;
     }
 
-    public String getName() {
-        return name;
+    public String getItemName() {
+        return itemName;
     }
 
-    public float getPrice() {
-        return price;
+    public float getItemPrice() {
+        return itemPrice;
     }
 
     public String getDescription() {
@@ -72,5 +70,14 @@ public class OrderItem extends BaseEntity {
         this.product = null;
     }
 
-    //todo toString() missing usually useful for debug purpose.
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+                "product=" + product.getName() +
+                ", quantity=" + quantity +
+                ", name='" + itemName + '\'' +
+                ", price=" + itemPrice +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

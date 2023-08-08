@@ -73,8 +73,7 @@ public class UserAccount extends BaseEntity{
         return telephone;
     }
 
-    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
-    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
+    //TODO ask
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -97,5 +96,16 @@ public class UserAccount extends BaseEntity{
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", imageName='" + imageName + '\'' +
+                ", telephone='" + telephone + '\'' +
+                '}';
     }
 }

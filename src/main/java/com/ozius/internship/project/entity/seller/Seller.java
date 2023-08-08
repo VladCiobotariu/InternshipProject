@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.order.Order;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -10,21 +11,27 @@ import java.util.Set;
 @Table(name = Seller.TABLE_NAME)
 public class Seller extends BaseEntity {
 
-    public static final String TABLE_NAME = "SELLER_INFO";
+    public static final String TABLE_NAME = "SELLER";
 
     interface Columns{
         String ACCOUNT_ID = "ACCOUNT_ID";
         String ALIAS = "ALIAS";
+        String COUNTRY = "COUNTRY";
+        String STATE = "STATE";
+        String CITY = "CITY";
+        String ADDRESS_LINE_1 = "ADDRESS_LINE_1";
+        String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
+        String ZIP_CODE = "ZIP_CODE";
     }
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),
-            @AttributeOverride( name = "state", column = @Column(name = "STATE")),
-            @AttributeOverride( name = "city", column = @Column(name = "CITY")),
-            @AttributeOverride( name = "addressLine1", column = @Column(name = "ADDRESS_LINE_1")),
-            @AttributeOverride( name = "addressLine2", column = @Column(name = "ADDRESS_LINE_2")),
-            @AttributeOverride( name = "zipCode", column = @Column(name = "ZIP_CODE"))
+            @AttributeOverride( name = "country", column = @Column(name = Columns.COUNTRY, nullable = false)),
+            @AttributeOverride( name = "state", column = @Column(name = Columns.STATE, nullable = false)),
+            @AttributeOverride( name = "city", column = @Column(name = Columns.CITY, nullable = false)),
+            @AttributeOverride( name = "addressLine1", column = @Column(name = Columns.ADDRESS_LINE_1, nullable = false)),
+            @AttributeOverride( name = "addressLine2", column = @Column(name = Columns.ADDRESS_LINE_2)),
+            @AttributeOverride( name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
     })
     private Address legalAddress;
 
@@ -79,35 +86,22 @@ public class Seller extends BaseEntity {
         return reviewNew;
     }
 
-    public Review removeReview(Review review) {
+    public void removeReview(Review review) {
         this.reviews.remove(review);
-        return review;
     }
 
-    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
-    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
-    public void updateEmail(String email){
+    public void updateSeller(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
         this.account.setEmail(email);
+        this.account.setFirstName(firstName);
+        this.account.setLastName(lastName);
+        this.account.setPasswordHash(passwordHash);
+        this.account.setImageName(image);
+        this.account.setTelephone(telephone);
     }
 
+    //TODO remove after updating SellerEntityTest
     public void updateFirstName(String firstName){
         this.account.setFirstName(firstName);
-    }
-
-    public void updateLastName(String lastName){
-        this.account.setLastName(lastName);
-    }
-
-    public void updatePasswordHash(String passwordHash){
-        this.account.setPasswordHash(passwordHash);
-    }
-
-    public void updateImage(String image){
-        this.account.setImageName(image);
-    }
-
-    public void updateTelephone(String telephone){
-        this.account.setTelephone(telephone);
     }
 
     @Override
