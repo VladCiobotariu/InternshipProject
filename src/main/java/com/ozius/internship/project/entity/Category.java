@@ -34,9 +34,9 @@ public class Category extends BaseEntity {
         return imageName;
     }
 
-    public void updateCategory(Category category) {
-        this.name = category.getName();
-        this.imageName = category.getImageName();
+    public void updateCategory(String name, String imageName) {
+        this.name = name;
+        this.imageName = imageName;
     }
 
     @Override
