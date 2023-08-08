@@ -1,5 +1,7 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.cart;
 
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Product;
 import jakarta.persistence.*;
 
 import java.util.Collections;

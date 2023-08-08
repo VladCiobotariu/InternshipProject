@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 @Entity
@@ -73,18 +74,13 @@ public class Product extends BaseEntity {
         return seller;
     }
 
-    //TODO Given that we will most probably use PUT for updates, a single update method is preferred.
-    // it can either can all fields as parameter or a single value object. This is to be decided later which approach we'll use.
-    public void setDescription(String description) {
+    public void updateProduct(String name, String description, String imageName, float price, Category category, Seller seller) {
+        this.name = name;
         this.description = description;
-    }
-
-    public void updateDescription(String description) {
-        this.setDescription(description);
-    }
-
-    public void setPrice(float price) {
+        this.imageName = imageName;
         this.price = price;
+        this.category = category;
+        this.seller = seller;
     }
 
     @Override
@@ -95,7 +91,7 @@ public class Product extends BaseEntity {
                 ", imageName='" + imageName + '\'' +
                 ", price=" + price +
                 ", category=" + category.getName() +
-                ", sellerInfo=" + seller +
+                ", sellerInfo=" + seller.getAlias() +
                 '}';
     }
 }

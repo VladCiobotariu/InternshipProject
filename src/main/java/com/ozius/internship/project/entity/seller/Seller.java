@@ -1,14 +1,14 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.seller;
 
+import com.ozius.internship.project.entity.*;
 import jakarta.persistence.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = Seller.TABLE_NAME)
-public class Seller extends BaseEntity{
+public class Seller extends BaseEntity {
 
     public static final String TABLE_NAME = "SELLER_INFO";
 

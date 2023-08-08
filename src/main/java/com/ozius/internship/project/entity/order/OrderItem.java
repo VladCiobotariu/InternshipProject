@@ -1,10 +1,12 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.order;
 
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Product;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = OrderItem.TABLE_NAME)
-public class OrderItem extends BaseEntity{
+public class OrderItem extends BaseEntity {
 
     public static final String TABLE_NAME = "ORDER_ITEM";
 

@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.Seller;
+import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.repository.SellerRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

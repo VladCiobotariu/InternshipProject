@@ -1,6 +1,10 @@
 package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.order.OrderItem;
+import com.ozius.internship.project.entity.seller.Review;
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 
 import java.util.HashSet;

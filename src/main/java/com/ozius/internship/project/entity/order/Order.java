@@ -1,5 +1,10 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.order;
 
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Buyer;
+import com.ozius.internship.project.entity.OrderStatus;
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -8,7 +13,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = Order.TABLE_NAME)
-public class Order extends BaseEntity{
+public class Order extends BaseEntity {
 
     public static final String TABLE_NAME = "[ORDER]";
 

@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreatorErika;
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import java.util.List;
