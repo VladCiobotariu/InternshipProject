@@ -25,6 +25,12 @@ public class Order extends BaseEntity {
         String ORDER_STATUS = "ORDER_STATUS";
         String ORDER_DATE = "ORDER_DATE";
         String TOTAL_PRICE = "TOTAL_PRICE";
+        String COUNTRY = "COUNTRY";
+        String STATE = "STATE";
+        String CITY = "CITY";
+        String ADDRESS_LINE_1 = "ADDRESS_LINE_1";
+        String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
+        String ZIP_CODE = "ZIP_CODE";
     }
 
     @Enumerated(EnumType.STRING)
@@ -33,17 +39,17 @@ public class Order extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = "COUNTRY")),//TODO use column name constants
-            @AttributeOverride( name = "state", column = @Column(name = "STATE")),   //todo define NN constraints
-            @AttributeOverride( name = "city", column = @Column(name = "CITY")),
-            @AttributeOverride( name = "addressLine1", column = @Column(name = "ADDRESS_LINE_1")),
-            @AttributeOverride( name = "addressLine2", column = @Column(name = "ADDRESS_LINE_2")),
-            @AttributeOverride( name = "zipCode", column = @Column(name = "ZIP_CODE"))
+            @AttributeOverride( name = "country", column = @Column(name = Columns.COUNTRY, nullable = false)),
+            @AttributeOverride( name = "state", column = @Column(name = Columns.STATE, nullable = false)),
+            @AttributeOverride( name = "city", column = @Column(name = Columns.CITY, nullable = false)),
+            @AttributeOverride( name = "addressLine1", column = @Column(name = Columns.ADDRESS_LINE_1, nullable = false)),
+            @AttributeOverride( name = "addressLine2", column = @Column(name = Columns.ADDRESS_LINE_2)),
+            @AttributeOverride( name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
     })
     private Address address;
 
     @ManyToOne
-    @JoinColumn(name = Columns.BUYER_ID) //TODO it won't be possible to remove buyer due to FK violation. Buyer info relevant to order should be preserved.
+    @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY) //TODO Seller info relevant to order should be preserved.
@@ -66,7 +72,7 @@ public class Order extends BaseEntity {
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private float totalPrice;
 
-    public Order() { //TODO use protected for jpa constructor
+    protected Order() {
     }
 
     public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
@@ -93,7 +99,7 @@ public class Order extends BaseEntity {
     }
 
     private float calculateItemPrice(OrderItem orderItem) {
-        return orderItem.getQuantity() * orderItem.getPrice();
+        return orderItem.getQuantity() * orderItem.getItemPrice();
     }
 
     public OrderStatus getOrderStatus() {
@@ -132,10 +138,15 @@ public class Order extends BaseEntity {
         return totalPrice;
     }
 
-    //TODO setter should not be used, violates encapsulation.
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderStatus=" + orderStatus +
+                ", address=" + address +
+                ", buyerEmail='" + buyerEmail + '\'' +
+                ", orderDate=" + orderDate +
+                ", telephone='" + telephone + '\'' +
+                ", totalPrice=" + totalPrice +
+                '}';
     }
-
-    //todo toString() missing usually useful for debug purpose.
 }

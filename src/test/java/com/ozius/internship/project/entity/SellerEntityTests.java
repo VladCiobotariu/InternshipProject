@@ -39,7 +39,7 @@ public class SellerEntityTests extends EntityBaseTest{
                     "Timisoara",
                     "Strada Circumvalatiunii nr 4",
                     "Bloc 3 Scara B Ap 12",
-                    "3003413");
+                    "303413");
 
             Seller seller = new Seller(
                     address,
@@ -70,7 +70,7 @@ public class SellerEntityTests extends EntityBaseTest{
         assertThat(persistedSeller.getLegalAddress().getCity()).isEqualTo("Timisoara");
         assertThat(persistedSeller.getLegalAddress().getAddressLine1()).isEqualTo("Strada Circumvalatiunii nr 4");
         assertThat(persistedSeller.getLegalAddress().getAddressLine2()).isEqualTo("Bloc 3 Scara B Ap 12");
-        assertThat(persistedSeller.getLegalAddress().getZipCode()).isEqualTo("3003413");
+        assertThat(persistedSeller.getLegalAddress().getZipCode()).isEqualTo("303413");
     }
 
     @Test

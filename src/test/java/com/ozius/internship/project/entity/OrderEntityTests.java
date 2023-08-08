@@ -70,8 +70,8 @@ public class OrderEntityTests extends EntityBaseTest{
         assertThat(persistedOrder.getOrderItems().size()).isEqualTo(2);
         assertThat(persistedOrder.getOrderItems()).extracting(BaseEntity::getId).containsAnyOf(orderItem1.getId());
         assertThat(persistedOrder.getOrderItems()).extracting(BaseEntity::getId).containsAnyOf(orderItem2.getId());
-        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem1.getId()).findFirst().orElseThrow().getName()).isEqualTo("orez");
-        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem2.getId()).findFirst().orElseThrow().getName()).isEqualTo("grau");
+        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem1.getId()).findFirst().orElseThrow().getItemName()).isEqualTo("orez");
+        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getId() == orderItem2.getId()).findFirst().orElseThrow().getItemName()).isEqualTo("grau");
     }
 
     @Test
@@ -89,8 +89,8 @@ public class OrderEntityTests extends EntityBaseTest{
         OrderItem persistedOrderItem = persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().get();
 
         assertThat(persistedOrderItem.getId()).isEqualTo(orderItem1.getId());
-        assertThat(persistedOrderItem.getName()).isEqualTo("orez");
-        assertThat(persistedOrderItem.getPrice() ).isEqualTo(12.7f);
+        assertThat(persistedOrderItem.getItemName()).isEqualTo("orez");
+        assertThat(persistedOrderItem.getItemPrice() ).isEqualTo(12.7f);
         assertThat(persistedOrderItem.getDescription() ).isEqualTo("pentru fiert");
         assertThat(persistedOrderItem.getQuantity()).isEqualTo(5f);
     }
@@ -111,7 +111,7 @@ public class OrderEntityTests extends EntityBaseTest{
         //----Assert
         Order persistedOrder = new SimpleJpaRepository<>(Order.class, emb).findAll().get(0);
         //TODO assert are too hard to follow, should be simpler.
-        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().get().getPrice()).isEqualTo(12.7f);
+        assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().get().getItemPrice()).isEqualTo(12.7f);
         assertThat(persistedOrder.getOrderItems().stream().filter(orderItem -> orderItem.getProduct().getId() == product1.getId()).findFirst().orElseThrow().getProduct().getPrice()).isEqualTo(50f);
     }
 
