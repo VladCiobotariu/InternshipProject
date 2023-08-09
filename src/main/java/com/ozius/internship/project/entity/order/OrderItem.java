@@ -38,7 +38,7 @@ public class OrderItem extends BaseEntity {
     protected OrderItem() {
     }
 
-    public OrderItem(Product product, float quantity) { //TODO use package constructor. Order item to be managed via Order(Aggregate Root)
+    OrderItem(Product product, float quantity) {
         this.product = product;
         this.quantity = quantity;
         this.itemName = product.getName();

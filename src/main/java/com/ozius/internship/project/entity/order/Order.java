@@ -1,14 +1,13 @@
 package com.ozius.internship.project.entity.order;
 
-import com.ozius.internship.project.entity.Address;
-import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Buyer;
-import com.ozius.internship.project.entity.OrderStatus;
+import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.exeption.OrderAlreadyProcessedException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -31,10 +30,11 @@ public class Order extends BaseEntity {
         String ADDRESS_LINE_1 = "ADDRESS_LINE_1";
         String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
         String ZIP_CODE = "ZIP_CODE";
+        String SELLER_EMAIL = "SELLER_EMAIL";
     }
 
     @Enumerated(EnumType.STRING)
-    @Column(name = Columns.ORDER_STATUS, length = 15, nullable = false)
+    @Column(name = Columns.ORDER_STATUS, nullable = false)
     private OrderStatus orderStatus;
 
     @Embedded
@@ -52,12 +52,15 @@ public class Order extends BaseEntity {
     @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Buyer buyer;
 
-    @ManyToOne(fetch = FetchType.LAZY) //TODO Seller info relevant to order should be preserved.
+    @ManyToOne(fetch = FetchType.LAZY) //TODO Seller info more than email?
     @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Seller seller;
 
+    @Column(name = Columns.SELLER_EMAIL, nullable = false)
+    private String sellerEmail;
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = OrderItem.Columns.ORDER_ID, nullable = false)
+    @JoinColumn(name = OrderItem.Columns.ORDER_ID)
     private Set<OrderItem> orderItems;
 
     @Column(name = Columns.BUYER_EMAIL, nullable = false)
@@ -75,27 +78,45 @@ public class Order extends BaseEntity {
     protected Order() {
     }
 
-    public Order(Address address, Buyer buyer, Seller seller, String telephone, Set<OrderItem> orderItems) {
-        this.orderStatus = OrderStatus.RECEIVED;
+    public Order(Address address, Buyer buyer, Seller seller, String telephone) {
+        this.orderStatus = OrderStatus.DRAFT;
 
         this.address = address;
 
         this.buyer = buyer;
         this.seller = seller;
 
-        //TODO it's recommended to instantiate with empty set and add products via public(entity interface) method addProduct
-        // Business wise, it is true that we'll have all items at the time of order creation but nevertheless this approach will allow for better encapsulation of bounded context and a simpler constructor.
-        this.orderItems = orderItems;
+        this.orderItems = new HashSet<>();
 
+        this.sellerEmail = seller.getAccount().getEmail();
         this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
         this.telephone = telephone;
 
-        this.totalPrice = (float) orderItems
+        this.totalPrice = 0f;
+    }
+
+    public OrderItem addProduct(Product product, float quantity){
+        if(this.orderStatus==OrderStatus.PROCESSED ||
+                this.orderStatus==OrderStatus.SHIPPED ||
+                this.orderStatus==OrderStatus.DELIVERED){
+            throw new OrderAlreadyProcessedException("can't add item, order already processed");
+        }
+
+        OrderItem newItem = new OrderItem(product, quantity);
+        this.orderItems.add(newItem);
+
+        if(this.orderStatus==OrderStatus.DRAFT){
+            this.orderStatus=OrderStatus.READY_TO_BE_PROCESSED;
+        }
+
+        this.totalPrice = (float) this.orderItems
                 .stream()
                 .mapToDouble(orderItem -> this.calculateItemPrice(orderItem))
                 .sum();
+
+        return newItem;
     }
 
     private float calculateItemPrice(OrderItem orderItem) {
@@ -136,6 +157,10 @@ public class Order extends BaseEntity {
 
     public float getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getSellerEmail() {
+        return sellerEmail;
     }
 
     @Override
