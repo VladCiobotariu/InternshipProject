@@ -50,4 +50,15 @@ public class EntityFinder {
                 .setParameter("sellerParam", seller)
                 .getResultList();
     }
+
+    public Product getProductByName(String name) {
+        try {
+            return em.createQuery(
+                            "select p from Product p where p.name = :nameParam", Product.class)
+                    .setParameter("nameParam", name)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
 }

@@ -17,7 +17,6 @@ public class Cart extends BaseEntity {
 
     interface Columns {
         String BUYER_ID = "BUYER_ID";
-        String CART_PRICE = "CART_PRICE";
     }
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -28,16 +27,12 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems;
 
-    @Column(name = Columns.CART_PRICE, nullable = false)
-    private double cartPrice;
-
-    protected Cart() {
-
+    public Cart() {
+        this.cartItems = new HashSet<>();
     }
 
     public Cart(Buyer buyer) {
         this.buyer = buyer;
-        this.cartPrice = calculateTotalPrice();
         this.cartItems = new HashSet<>();
     }
 
@@ -47,10 +42,6 @@ public class Cart extends BaseEntity {
 
     public Buyer getBuyer() {
         return buyer;
-    }
-
-    public double getCartPrice() {
-        return cartPrice;
     }
 
     public float calculateItemPrice(CartItem cartItem) {
@@ -70,16 +61,18 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    public void addToCart(Product product, float quantity) {
+    // return CartItem because of TestDataCreator
+    public CartItem addToCart(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
         if (existingCartItem != null) {
             existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-
+            return existingCartItem;
         } else {
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
+            return cartItem;
         }
     }
 
@@ -88,23 +81,26 @@ public class Cart extends BaseEntity {
 
         if(cartItem != null) {
             this.cartItems.remove(cartItem);
+            System.out.println("CartItem removed: " + cartItem);
         }
     }
 
     public void updateCartItem(Product product, float quantity) {
         CartItem cartItem = getCartItemByProduct(product);
 
-        if(cartItem != null) {
+        if (cartItem != null) {
             cartItem.setQuantity(quantity);
         }
+    }
+
+    public void assignBuyerToCart(Buyer buyer) {
+        this.buyer = buyer;
     }
 
     @Override
     public String toString() {
         return "Cart{" +
-                "buyer=" + buyer.getAccount().getFirstName() +
                 ", cartItems=" + cartItems +
-                ", cartPrice=" + cartPrice +
                 '}';
     }
 }

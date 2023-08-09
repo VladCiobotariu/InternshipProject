@@ -10,20 +10,28 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers1;
+import static com.ozius.internship.project.TestDataCreatorErika.Categories.category1;
+import static com.ozius.internship.project.TestDataCreatorErika.Categories.category2;
+import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller1;
+import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller2;
+import static com.ozius.internship.project.TestDataCreatorErika.createBaseDataForProduct;
+import static com.ozius.internship.project.TestDataCreatorErika.Products.product1;
+import static com.ozius.internship.project.TestDataCreatorErika.Products.product2;
+import static com.ozius.internship.project.TestDataCreatorErika.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CartEntityTest extends EntityBaseTest {
 
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreatorErika.createBaseDataForProduct(em);
+        createBaseDataForProduct(em);
     }
 
     @Test
     public void cart_is_created() {
         // ----Act
         doTransaction(em -> {
-            //TODO - should not possible to have card entity without a buyer attached.
             Cart cart = new Cart();
             em.persist(cart);
         });
@@ -37,10 +45,64 @@ public class CartEntityTest extends EntityBaseTest {
     }
 
     @Test
+    public void cartItem_is_added() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            em.persist(cart);
+        });
+
+        // ----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            cart.addToCart(em.merge(product1), 2);
+            cart.addToCart(em.merge(product2), 3);
+        });
+
+        // ----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(14);
+        assertThat(persistedCart.getCartItems()).hasSize(2);
+    }
+
+    @Test
+    public void cart_item_added_correctly() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            em.persist(cart);
+        });
+
+        // ----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            Product p1 = createProduct("rosii", "descriereRosii", "/rosii", 2.5F, category1, seller1, em);
+            Product p2 = createProduct("banana", "descriereBanana", "/banana", 3F, category2, seller2, em);
+            cart.addToCart(p1, 2);
+            cart.addToCart(p2, 3);
+        });
+
+        // ----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+        Iterator<CartItem> iter = persistedCart.getCartItems().iterator();
+        CartItem cartItem1 = iter.next();
+        CartItem cartItem2 = iter.next();
+
+        assertThat(cartItem1.getProduct().getName()).isEqualTo("rosii");
+        assertThat(cartItem1.getQuantity()).isEqualTo(2);
+
+        assertThat(cartItem2.getProduct().getName()).isEqualTo("banana");
+        assertThat(cartItem2.getQuantity()).isEqualTo(3);
+    }
+
+    @Test
     public void cart_is_deleted() {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
+            cart.addToCart(product1, 1);
             em.persist(cart);
         });
 
@@ -53,47 +115,8 @@ public class CartEntityTest extends EntityBaseTest {
         });
 
         // ----Assert
-        List<Cart> carts = entityFinder.findAll(Cart.class);
-
-        // TODO how would you optimise/cleanup the following statements?
-        Cart assertedCart = carts.isEmpty() ? null : carts.get(0);
-        assertThat(assertedCart).isNull();
         assertThat(entityFinder.findAll(Cart.class)).isEmpty();
-
-        //TODO valid assert but no card items have been added in arrange.
         assertThat(entityFinder.findAll(CartItem.class)).isEmpty();
-    }
-
-    @Test
-    public void cartItem_is_added() {
-        // ----Arrange
-        doTransaction(em -> {
-            Cart cart = new Cart();
-            em.persist(cart);
-        });
-
-        // ----Act
-        doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class); // cartRepository uses emb (cart is managed entity but for emb)
-            Cart managedCart = em.merge(cart); // managedCart for em //TODO is this needed? hint: Please pay attention to EntityManager used by EntityFinder
-            managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product1), 2);
-            managedCart.addToCart(em.merge(TestDataCreatorErika.Products.product2), 3);
-        });
-
-        // ----Assert
-        Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(14);
-        assertThat(persistedCart.getCartItems()).hasSize(2);
-
-        Iterator<CartItem> iter = persistedCart.getCartItems().iterator();
-        CartItem cartItem1 = iter.next();
-        CartItem cartItem2 = iter.next();
-        //TODO this assert will never fail.
-        assertThat(persistedCart.getCartItems())
-                .extracting(BaseEntity::getId).containsExactlyInAnyOrder(cartItem1.getId(), cartItem2.getId());
-
-        //TODO CartItem.quantity and CartItem.product are not asserted. (hint: do we need to assert them in this test, how to simplify things?)
     }
 
     @Test
@@ -101,13 +124,9 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
-            //TODO for readability it's probably better to create a new product here using #createProduct(...)
-            // In general, the test data that is directly influencing the asserts should be explicitly created
-            // The problem here could be that someone else might modify the product price and it might this test to break.
-            Product pr = em.merge(TestDataCreatorErika.Products.product1);
-            cart.addToCart(pr, 2);
+            Product product = createProduct("popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1, em);
+            cart.addToCart(product, 2);
             em.persist(cart);
-
         });
 
         // ----Act
@@ -115,18 +134,18 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Cart cartToModify = em.merge(cart); //TODO is this needed?
-            CartItem cartItem = cartToModify.getCartItems().iterator().next();
-            cartToModify.updateCartItem(cartItem, 20);
+            Product product = entityFinder.getProductByName("popcorn");
+            cart.updateCartItem(product, 20);
         });
 
         // ----Assert
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(50);
+        Product product = entityFinder.getProductByName("popcorn");
+
+        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(100);
 
         CartItem persistedCartItem = persistedCart.getCartItems().iterator().next();
-        // TODO no need for .getId() due to equals and hashcode impl in BaseEntity
-        assertThat(persistedCartItem.getProduct().getId()).isEqualTo(TestDataCreatorErika.Products.product1.getId());
+        assertThat(persistedCartItem.getProduct()).isEqualTo(product);
         assertThat(persistedCartItem.getQuantity()).isEqualTo(20);
 
     }
@@ -136,27 +155,43 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
+            cart.addToCart(product1, 1);
             em.persist(cart);
-            Product pr = em.merge(TestDataCreatorErika.Products.product1);
-            cart.addToCart(pr, 2); // rosii de pret 2.5, cantitate 2
         });
 
-        // ----
+        // ----Act
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Cart cartToRemoveFrom = em.merge(cart); //TODO is this needed?
-            CartItem cartItem = cartToRemoveFrom.getCartItems().stream().findFirst().orElse(null);
-            cartToRemoveFrom.removeFromCart(cartItem.getProduct());
+            Product product = entityFinder.getProductByName(product1.getName());
+            cart.removeFromCart(product);
         });
 
         // ----Assert
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        Set<CartItem> persistedCartItem = persistedCart.getCartItems();
+        Set<CartItem> persistedCartItems = persistedCart.getCartItems();
 
-        // TODO both assert the same thing, only one is enough. isEmpty() is preferred to assert that collection is empty.
-        assertThat(persistedCartItem).isEmpty();
-        assertThat(persistedCart.getCartItems()).hasSize(0);
+        assertThat(persistedCartItems).isEmpty();
+    }
+
+    @Test
+    public void buyer_added_to_cart() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            em.persist(cart);
+        });
+
+        // ----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            cart.assignBuyerToCart(buyers1);
+        });
+
+        // ----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+        assertThat(persistedCart.getBuyer()).isEqualTo(buyers1);
     }
 
 }
