@@ -74,7 +74,6 @@ public class TestDataCreatorErika {
         Cart cart = Carts.cart;
         CartItem cartItem = cart.addToCart(product, quantity);
         return cartItem;
-
     }
 
     public static void createCartItemsBaseData(EntityManager em) {

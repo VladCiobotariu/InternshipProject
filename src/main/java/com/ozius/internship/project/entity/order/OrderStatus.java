@@ -1,4 +1,4 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.order;
 
 public enum OrderStatus {
 
