@@ -3,6 +3,7 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.order.OrderItem;
+import com.ozius.internship.project.entity.order.OrderStatus;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
