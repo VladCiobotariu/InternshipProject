@@ -2,7 +2,6 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +63,6 @@ public class CategoryEntityTest extends EntityBaseTest {
         });
 
         // ----Assert
-        List<Category> categories = entityFinder.findAll(Category.class);
-        assertThat(categories.isEmpty());
+        assertThat(entityFinder.findAll(Category.class).isEmpty());
     }
 }
