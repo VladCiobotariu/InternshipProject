@@ -13,6 +13,7 @@ import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -20,19 +21,16 @@ public class SellerEntityTests extends EntityBaseTest{
 
     private JpaRepository<Seller, Long> sellerRepository;
 
-    private JpaRepository<Order, Long> orderRepository;
-
     @Override
     public void createTestData(EntityManager em) {
         this.sellerRepository = new SimpleJpaRepository<>(Seller.class, emb);
-        this.orderRepository = new SimpleJpaRepository<>(Order.class, emb);
     }
 
     @Test
     void test_add_seller(){
 
         //----Act
-        doTransaction(em -> {
+        Seller addedSeller = doTransaction(em -> {
             Address address = new Address(
                     "Romania",
                     "Timis",
@@ -54,10 +52,14 @@ public class SellerEntityTests extends EntityBaseTest{
                     "Mega Fresh SRL"
             );
             em.persist(seller);
+
+            return seller;
         });
 
+        //TODO is it ok to verify every field with hard coded strings?
         //----Assert
         Seller persistedSeller = entityFinder.getTheOne(Seller.class);
+
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
@@ -71,62 +73,80 @@ public class SellerEntityTests extends EntityBaseTest{
         assertThat(persistedSeller.getLegalAddress().getAddressLine1()).isEqualTo("Strada Circumvalatiunii nr 4");
         assertThat(persistedSeller.getLegalAddress().getAddressLine2()).isEqualTo("Bloc 3 Scara B Ap 12");
         assertThat(persistedSeller.getLegalAddress().getZipCode()).isEqualTo("303413");
+
+        assertThat(persistedSeller).isEqualTo(addedSeller);
+        assertThat(persistedSeller.getReviews()).isEmpty();
+        assertThat(persistedSeller.calculateRating()).isEqualTo(0);
     }
 
     @Test
     void test_update_seller(){
 
         //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+        Seller seller = doTransaction(em -> {
+
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
+            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+
+            return TestDataCreator.createSeller(em, address, userAccount, "honey srl");
         });
 
         //----Act
-        doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreator.Sellers.seller);
-            seller.updateFirstName("Vlad Cristian");
+        Seller updatedSeller = doTransaction(em -> {
+            Seller mergedSeller = em.merge(seller);
+            UserAccount account = mergedSeller.getAccount();
+            mergedSeller.updateSeller(
+                    account.getEmail(),
+                    "Vlad Cristian",
+                    account.getLastName(),
+                    account.getPasswordHash(),
+                    account.getImageName(),
+                    account.getTelephone());
+
+            return mergedSeller;
         });
 
         //----Assert
-        Seller persistedSeller = sellerRepository.findAll().get(0);
+        Seller persistedSeller = entityFinder.getTheOne(Seller.class);
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad Cristian");
+        assertThat(persistedSeller).isEqualTo(updatedSeller);
+        assertThat(persistedSeller).isNotSameAs(seller);
     }
 
     @Test
     void test_remove_seller(){
 
         //----Arrange
-        doTransaction(em -> {
+        Order order = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em);
-            TestDataCreator.createCategoriesBaseData(em);
-            TestDataCreator.createProductsBaseData(em);
             TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createAddressBaseData(em);
-            TestDataCreator.createOrdersBaseData(em);
-            TestDataCreator.createReviewBaseData(em);
+            TestDataCreator.createAddressBaseData(em); //needed for order to be created
+
+            return TestDataCreator.createOrder(em, buyer, seller);
         });
 
 
         //----Act
-        doTransaction(em -> {
+        Seller removedSeller = doTransaction(em -> {
 
             Seller seller = em.merge(TestDataCreator.Sellers.seller);
             em.remove(seller);
 
+            return seller;
         });
 
         //----Assert
-        List<Seller> persistedSeller = sellerRepository.findAll();
-        List<Product> persistedProducts = new SimpleJpaRepository<>(Product.class, emb).findAll();
-        Order persistedOrder = new SimpleJpaRepository<>(Order.class, emb).findAll().get(0);
-        List<Review> persistedReviews = new SimpleJpaRepository<>(Review.class, emb).findAll();
-        assertThat(persistedSeller).isEmpty();
+        List<Product> persistedProducts = entityFinder.getProductsBySeller(removedSeller);
+        Order persistedOrder = entityFinder.getTheOne(Order.class);
+
+        assertThat(sellerRepository.findAll().contains(removedSeller)).isFalse();
         assertThat(persistedProducts).isEmpty();
 
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getSeller()).isNull();
+        assertThat(persistedOrder).isEqualTo(order);
 
-        assertThat(persistedReviews).isEmpty();
+        //TODO check reviews deleted? it has cascade.all and also is it necessary to check products deleted? it also has cascade.all
     }
 
     @Test
@@ -141,45 +161,53 @@ public class SellerEntityTests extends EntityBaseTest{
         });
 
         //----Act
+        Review addedReview = doTransaction(em -> {
+            Buyer mergedBuyer = em.merge(buyer);
+            Product mergedProduct = em.merge(product1);
+            Seller mergedSeller = em.merge(seller);
 
-        doTransaction(em -> {
-            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
-            Product product1 = em.merge(TestDataCreator.Products.product1);
-            Seller seller = em.merge(TestDataCreator.Sellers.seller);
-            Review review = seller.addReview(buyer, "very good", 4f, product1);
+            return mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct);
         });
 
         //----Assert
-        Review persistedReview = new SimpleJpaRepository<>(Review.class, emb).findAll().get(0);
+        Review persistedReview = entityFinder.getTheOne(Review.class);
+
         assertThat(persistedReview).isNotNull();
+        assertThat(persistedReview).isEqualTo(addedReview);
         assertThat(persistedReview.getBuyer()).isEqualTo(buyer);
         assertThat(persistedReview.getDescription()).isEqualTo("very good");
         assertThat(persistedReview.getRating()).isEqualTo(4f);
-        assertThat(persistedReview.getProduct().getId()).isEqualTo(product1.getId());
+        assertThat(persistedReview.getProduct()).isEqualTo(product1);
     }
 
     @Test
     void test_review_update(){
 
         //----Arrange
-        doTransaction(em -> {
+        Review review = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em);
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
             TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createReviewBaseData(em);
+
+            return TestDataCreator.createReview(em, buyer, "good review", 4.5f, product1);
         });
 
 
         //----Act
-        doTransaction(em -> {
-            Review review1 = em.merge(TestDataCreator.Reviews.review1);
-            review1.updateDescription("very very bad bad review");
+        Review updatedReview = doTransaction(em -> {
+            Review mergedReview = em.merge(review);
+            mergedReview.updateReview("very very bad bad review", mergedReview.getRating(), mergedReview.getBuyer(), mergedReview.getProduct());
+
+            return mergedReview;
         });
 
         //----Assert
-        Review persistedReview1 = new SimpleJpaRepository<>(Review.class, emb).findAll().get(0);
-        assertThat(persistedReview1.getDescription()).isEqualTo("very very bad bad review");
+        Review persistedReview = entityFinder.getTheOne(Review.class);
+
+        assertThat(persistedReview.getDescription()).isEqualTo("very very bad bad review");
+        assertThat(persistedReview).isEqualTo(updatedReview);
+        assertThat(persistedReview).isNotSameAs(review);
     }
 
     @Test
@@ -192,7 +220,7 @@ public class SellerEntityTests extends EntityBaseTest{
             TestDataCreator.createProductsBaseData(em);
         });
 
-        Seller seller = sellerRepository.findAll().get(0);
+        Seller seller = entityFinder.getTheOne(Seller.class);
         List<Product> products = entityFinder.getProductsBySeller(seller);
 
         assertThat(products.size()).isEqualTo(2);

@@ -29,6 +29,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             em.persist(buyer);
         });
 
+        //TODO hows better, compare hard coded values or objects
         //----Assert
         Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");

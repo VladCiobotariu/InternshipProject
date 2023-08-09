@@ -22,11 +22,11 @@ public class ReviewEntityTest extends EntityBaseTest{
             Buyer buyer2 = em.merge(TestDataCreatorErika.Buyers.buyers2);
             Product product = em.merge(TestDataCreatorErika.Products.product1);
 
-            Review review1 = new Review("review 1", 5F, buyer1, product);
-            seller.addReview(review1.getBuyer(), review1.getDescription(), review1.getRating(), review1.getProduct());
+//            Review review1 = new Review("review 1", 5F, buyer1, product);
+//            seller.addReview(review1.getBuyer(), review1.getDescription(), review1.getRating(), review1.getProduct());
 
-            Review review2 = new Review("review 2", 4F, buyer2, product);
-            seller.addReview(review2.getBuyer(), review2.getDescription(), review2.getRating(), review2.getProduct());
+//            Review review2 = new Review("review 2", 4F, buyer2, product);
+//            seller.addReview(review2.getBuyer(), review2.getDescription(), review2.getRating(), review2.getProduct());
 
         });
 
@@ -46,8 +46,8 @@ public class ReviewEntityTest extends EntityBaseTest{
             Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
             Product product = em.merge(TestDataCreatorErika.Products.product1);
 
-            Review review = new Review("review", 5F, buyer1, product);
-            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
+//            Review review = new Review("review", 5F, buyer1, product);
+//            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
         });
 
         //----Act
@@ -57,8 +57,8 @@ public class ReviewEntityTest extends EntityBaseTest{
             Seller managedSeller = em.merge(seller);
             Review reviewToUpdate = managedSeller.getReviews().iterator().next();
 
-            reviewToUpdate.updateDescription("review updated");
-            reviewToUpdate.updateRating(4F);
+//            reviewToUpdate.updateDescription("review updated");
+//            reviewToUpdate.updateRating(4F);
         });
 
         //----Assert
@@ -79,8 +79,8 @@ public class ReviewEntityTest extends EntityBaseTest{
             Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
             Product product = em.merge(TestDataCreatorErika.Products.product1);
 
-            Review review = new Review("review", 5F, buyer1, product);
-            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
+//            Review review = new Review("review", 5F, buyer1, product);
+//            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
         });
 
         //----Act

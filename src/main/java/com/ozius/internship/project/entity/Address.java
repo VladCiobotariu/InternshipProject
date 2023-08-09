@@ -2,6 +2,8 @@ package com.ozius.internship.project.entity;
 
 import jakarta.persistence.Embeddable;
 
+import java.util.Objects;
+
 @Embeddable
 public class Address {
 
@@ -46,6 +48,19 @@ public class Address {
 
     public String getZipCode() {
         return zipCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return Objects.equals(country, address.country) && Objects.equals(state, address.state) && Objects.equals(city, address.city) && Objects.equals(addressLine1, address.addressLine1) && Objects.equals(addressLine2, address.addressLine2) && Objects.equals(zipCode, address.zipCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(country, state, city, addressLine1, addressLine2, zipCode);
     }
 
     @Override

@@ -113,7 +113,7 @@ public class Order extends BaseEntity {
 
         this.totalPrice = (float) this.orderItems
                 .stream()
-                .mapToDouble(orderItem -> this.calculateItemPrice(orderItem))
+                .mapToDouble(this::calculateItemPrice)
                 .sum();
 
         return newItem;
@@ -131,7 +131,7 @@ public class Order extends BaseEntity {
         return address;
     }
 
-    public Buyer getBuyerInfo() {
+    public Buyer getBuyer() {
         return buyer;
     }
 
@@ -161,6 +161,10 @@ public class Order extends BaseEntity {
 
     public String getSellerEmail() {
         return sellerEmail;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus){
+        this.orderStatus = orderStatus;
     }
 
     @Override

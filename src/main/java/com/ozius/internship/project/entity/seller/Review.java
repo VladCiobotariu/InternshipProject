@@ -58,6 +58,7 @@ public class Review extends BaseEntity {
         return product;
     }
 
+    //TODO I think we dont want to update a buyer or a product for a review, only description, or maybe the rating but this is debate-able
     public void updateReview(String description, float rating, Buyer buyer, Product product) {
         this.description = description;
         this.rating = rating;

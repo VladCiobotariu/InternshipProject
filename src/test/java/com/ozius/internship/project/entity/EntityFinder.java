@@ -25,7 +25,7 @@ public class EntityFinder {
         List<W> entities = em.createQuery("select e from " + entityClass.getSimpleName() + " e", entityClass)
                 .getResultList();
 
-        if (entities.size() == 0) {
+        if (entities.isEmpty()) {
             throw new NoResultException("Cannot find any records for given entity class " + entityClass.getSimpleName());
         } else if (entities.size() > 1) {
             throw new NonUniqueResultException("Expected one but found more than one record for entity class " + entityClass.getSimpleName());
