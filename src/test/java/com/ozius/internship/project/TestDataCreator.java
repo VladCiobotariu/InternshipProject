@@ -6,8 +6,11 @@ import com.ozius.internship.project.entity.order.OrderItem;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
+import org.aspectj.weaver.ast.Or;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class TestDataCreator {
@@ -73,10 +76,7 @@ public class TestDataCreator {
         Categories.category = createCategory(em, "Cereale", "image09");
     }
 
-    private static Product createProduct(EntityManager em, String name, String description, String image, float price, long categoryId, long sellerId){
-        //TODO product factory method should allow creation of products with configurable category and seller.
-        Category category = Categories.category;
-        Seller seller = Sellers.seller;
+    public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
 
         Product product = new Product(name, description, image, price, category, seller);
         em.persist(product);
@@ -85,44 +85,26 @@ public class TestDataCreator {
     }
 
     public static void createProductsBaseData(EntityManager em){
-        //TODO please avoid using hardcoded entity IDS. Either use static business keys or entity references.
-        Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, 1l, 1l);
-        Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, 1l, 1l);
+
+        Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category, Sellers.seller);
+        Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category, Sellers.seller);
     }
 
-    private static void addAddressBuyer(EntityManager em, long buyerId, Address address){
-        Buyer buyer = Buyers.buyer;
+    private static void addAddressBuyer(EntityManager em, Buyer buyer, Address address){
         buyer.addAddress(address);
     }
 
     public static void createAddressBaseData(EntityManager em){
-        addAddressBuyer(em, 1l, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
+        addAddressBuyer(em, Buyers.buyer, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
     }
 
-    private static OrderItem createOrderItem(EntityManager em, Product product, float quantity){
-        OrderItem orderItem = new OrderItem(product, quantity);
-        return orderItem;
+    private static void createOrderItem(EntityManager em, Order order, Product product, float quantity){
+        order.addProduct(product, quantity);
     }
 
-    private static Set<OrderItem> createOrderItems(EntityManager em){
-        Product product1 = Products.product1;
-        Product product2 = Products.product2;
+    private static Order createOrder(EntityManager em, Buyer buyer, Seller seller){
 
-        OrderItems.orderItem1 = createOrderItem(em, product1, 5f);
-        OrderItems.orderItem2 = createOrderItem(em, product2, 7f);
-
-        Set<OrderItem> items = new HashSet<>();
-        items.add(OrderItems.orderItem1);
-        items.add(OrderItems.orderItem2);
-
-        return items;
-    }
-
-    private static Order createOrder(EntityManager em, Set<OrderItem> items, long buyerId, long sellerId){
-        Buyer buyer = Buyers.buyer;
-        Seller seller = Sellers.seller;
-
-        Order order = new Order(buyer.getAddresses().stream().findFirst().get().getAddress(), buyer, seller, buyer.getAccount().getTelephone(), items);
+        Order order = new Order(buyer.getAddresses().stream().findFirst().get().getAddress(), buyer, seller, buyer.getAccount().getTelephone());
 
         em.persist(order);
 
@@ -131,13 +113,15 @@ public class TestDataCreator {
 
     public static void createOrdersBaseData(EntityManager em){
 
-        Orders.order = createOrder(em, createOrderItems(em), 1l, 1l);
+        Orders.order = createOrder(em, Buyers.buyer, Sellers.seller);
+
+        createOrderItem(em, Orders.order, Products.product1, 5f);
+        createOrderItem(em, Orders.order, Products.product2, 2f);
 
     }
 
-    private static Review createReview(EntityManager em, long buyerId, String description, float rating, long productId){
-        Buyer buyer = Buyers.buyer;
-        Product product = Products.product1;
+    private static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
+
         Seller seller = product.getSeller();
 
         Review review = seller.addReview(buyer, description, rating, product);
@@ -147,8 +131,8 @@ public class TestDataCreator {
     }
 
     public static void createReviewBaseData(EntityManager em){
-        Reviews.review1 = createReview(em, 1l, "very good review89", 4f, 1l);
-        Reviews.review2 = createReview(em, 1l, "bad review", 1.5f, 2l);
+        Reviews.review1 = createReview(em, Buyers.buyer, "very good review89", 4f, Products.product1);
+        Reviews.review2 = createReview(em, Buyers.buyer, "bad review", 1.5f, Products.product2);
     }
 
     public static class Buyers{
@@ -175,11 +159,6 @@ public class TestDataCreator {
     public static class Reviews{
         public static Review review1;
         public static Review review2;
-    }
-
-    public static class OrderItems{
-        public static OrderItem orderItem1;
-        public static OrderItem orderItem2;
     }
 
 }

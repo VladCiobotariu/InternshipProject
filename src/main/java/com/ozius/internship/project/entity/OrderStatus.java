@@ -2,7 +2,9 @@ package com.ozius.internship.project.entity;
 
 public enum OrderStatus {
 
-    RECEIVED,
+    DRAFT,
+    READY_TO_BE_PROCESSED,
+    PROCESSED,
     SHIPPED,
     DELIVERED
 
