@@ -1,7 +1,9 @@
 package com.ozius.internship.project.entity.cart;
 
 import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Buyer;
 import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 import java.util.Collections;
@@ -13,24 +15,33 @@ import java.util.Set;
 public class Cart extends BaseEntity {
     public static final String TABLE_NAME = "cart";
 
-    interface Columns { //TODO remove if no columns
+    interface Columns {
+        String BUYER_ID = "BUYER_ID";
     }
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = Cart.Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
+    private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = CartItem.Columns.CART_ID)
-    private Set<CartItem> cartItems = new HashSet<>(); // TODO only initialize entity fields in constructor. Better readability
-
-
-    //TODO cleanup
-//    public Cart() {
-//    }
+    private Set<CartItem> cartItems;
 
     public Cart() {
         this.cartItems = new HashSet<>();
     }
 
+    public Cart(Buyer buyer) {
+        this.buyer = buyer;
+        this.cartItems = new HashSet<>();
+    }
+
     public Set<CartItem> getCartItems() {
         return Collections.unmodifiableSet(cartItems);
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
     }
 
     public float calculateItemPrice(CartItem cartItem) {
@@ -43,11 +54,6 @@ public class Cart extends BaseEntity {
                 .sum();
     }
 
-    //TODO use Product in interface method, same as removeFromCart and addToCard. Find a better self-explanatory name
-    public void modifyItem(CartItem cartItem, float quantity) {
-        cartItem.setQuantity(quantity);
-    }
-
     private CartItem getCartItemByProduct(Product product) {
         return cartItems.stream()
                 .filter(cartItem -> cartItem.getProduct().equals(product))
@@ -55,32 +61,46 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    // todo it's probably not required to return the CartItem
+    // return CartItem because of TestDataCreator
     public CartItem addToCart(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
         if (existingCartItem != null) {
-
             existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
             return existingCartItem;
-
         } else {
-
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
             return cartItem;
-
         }
     }
-    // todo it's probably not required to return the CartItem
-    public CartItem removeFromCart(Product product) {
-        //TODO there is already a method which could be used for search see getCartItemByProduct
-        CartItem cartItem = this.cartItems.stream().filter(ci -> ci.getProduct().getId() == product.getId()).findFirst().orElse(null);
-        this.cartItems.remove(cartItem);
-        return cartItem;
+
+    public void removeFromCart(Product product) {
+        CartItem cartItem = getCartItemByProduct(product);
+
+        if(cartItem != null) {
+            this.cartItems.remove(cartItem);
+            System.out.println("CartItem removed: " + cartItem);
+        }
     }
 
-    //todo toString() missing usually useful for debug purpose.
+    public void updateCartItem(Product product, float quantity) {
+        CartItem cartItem = getCartItemByProduct(product);
 
+        if (cartItem != null) {
+            cartItem.setQuantity(quantity);
+        }
+    }
+
+    public void assignBuyerToCart(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                ", cartItems=" + cartItems +
+                '}';
+    }
 }

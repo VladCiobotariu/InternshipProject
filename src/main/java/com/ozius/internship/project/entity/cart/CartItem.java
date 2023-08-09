@@ -14,7 +14,7 @@ public class CartItem extends BaseEntity {
         String QUANTITY = "QUANTITY";
         String CART_ID = "CART_ID";
     }
-    //TODO - I propose to keep things simple and use int for the quantity.
+
     @Column(name = Columns.QUANTITY, nullable = false)
     private float quantity;
 
@@ -22,10 +22,10 @@ public class CartItem extends BaseEntity {
     @JoinColumn(name = Columns.PRODUCT_ID, nullable = false)
     private Product product;
 
-    public CartItem() { //TODO use protected for jpa constructors
+    protected CartItem() {
     }
 
-    public CartItem(float quantity, Product product) { // TODO use package constructor. CartItem to be managed via Cart (Aggregate Root).
+    CartItem(float quantity, Product product) {
         this.quantity = quantity;
         this.product = product;
     }
@@ -42,5 +42,11 @@ public class CartItem extends BaseEntity {
         this.quantity = quantity;
     }
 
-    //todo toString() missing usually useful for debug purpose.
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "quantity=" + quantity +
+                ", product=" + product.getName() +
+                '}';
+    }
 }
