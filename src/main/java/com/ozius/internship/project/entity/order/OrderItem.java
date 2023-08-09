@@ -66,9 +66,6 @@ public class OrderItem extends BaseEntity {
         return description;
     }
 
-    public void setProductNull() {
-        this.product = null;
-    }
 
     @Override
     public String toString() {

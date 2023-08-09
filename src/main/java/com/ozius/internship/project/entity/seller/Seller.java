@@ -1,7 +1,6 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
-import com.ozius.internship.project.entity.order.Order;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -39,14 +38,12 @@ public class Seller extends BaseEntity {
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = Review.Columns.SELLER_ID)
     private Set<Review> reviews;
 
     @Column(name = Columns.ALIAS, nullable = false)
     private String alias;
-
 
     public Seller() {
     }
@@ -97,11 +94,6 @@ public class Seller extends BaseEntity {
         this.account.setPasswordHash(passwordHash);
         this.account.setImageName(image);
         this.account.setTelephone(telephone);
-    }
-
-    //TODO remove after updating SellerEntityTest
-    public void updateFirstName(String firstName){
-        this.account.setFirstName(firstName);
     }
 
     @Override

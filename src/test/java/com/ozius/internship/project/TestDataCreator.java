@@ -41,7 +41,7 @@ public class TestDataCreator {
 
     }
 
-    private static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias){
+    public static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias){
         Seller seller = new Seller(address, account, alias);
         em.persist(seller);
 
@@ -98,11 +98,15 @@ public class TestDataCreator {
         addAddressBuyer(em, Buyers.buyer, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
     }
 
+    public static void createAddresses(){
+        Addresses.address1 = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+    }
+
     private static void createOrderItem(EntityManager em, Order order, Product product, float quantity){
         order.addProduct(product, quantity);
     }
 
-    private static Order createOrder(EntityManager em, Buyer buyer, Seller seller){
+    public static Order createOrder(EntityManager em, Buyer buyer, Seller seller){
 
         Order order = new Order(buyer.getAddresses().stream().findFirst().get().getAddress(), buyer, seller, buyer.getAccount().getTelephone());
 
@@ -120,7 +124,7 @@ public class TestDataCreator {
 
     }
 
-    private static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
+    public static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
 
         Seller seller = product.getSeller();
 
@@ -159,6 +163,10 @@ public class TestDataCreator {
     public static class Reviews{
         public static Review review1;
         public static Review review2;
+    }
+
+    public static class Addresses{
+        public static Address address1;
     }
 
 }
