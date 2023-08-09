@@ -25,11 +25,11 @@ public class Review extends BaseEntity {
     private float rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE NULL"))
+    @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Review.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.PRODUCT_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE NULL"))
+    @JoinColumn(name = Columns.PRODUCT_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Review.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Product product;
 
     protected Review() {
