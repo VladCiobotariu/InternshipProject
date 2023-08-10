@@ -76,7 +76,7 @@ public class TestDataCreator {
 
     }
 
-    private static Category createCategory(EntityManager em, String name, String image) {
+    public static Category createCategory(EntityManager em, String name, String image) {
         Category category = new Category(name, image);
         em.persist(category);
         return category;
@@ -98,56 +98,34 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        Products.product3 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category1, Sellers.seller1);
+        Products.product3 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category2, Sellers.seller2);
         Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category1, Sellers.seller1);
-        Products.product1 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, Categories.category2, Sellers.seller2);
+        Products.product1 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, Categories.category2, Sellers.seller1);
 
     }
 
-    public static void addAddressBuyer(Buyer buyer, Address address){
-        buyer.addAddress(address);
-    }
-
-    public static void createAddressBaseData(){
-        addAddressBuyer(Buyers.buyer1, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
-    }
 
     public static void createAddresses(){
         Addresses.address1 = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
     }
 
-    private static void createOrderItem(Order order, Product product, float quantity){
-        order.addProduct(product, quantity);
-    }
-
-    public static Order createOrder(EntityManager em, Buyer buyer, Seller seller){
+    public static void createOrder(EntityManager em, Address address, Buyer buyer, Seller seller){
 
         Order order = new Order(
-                buyer.getAddresses().stream().findFirst().orElseThrow().getAddress(),
+                address,
                 buyer,
                 seller,
                 buyer.getAccount().getTelephone());
 
         em.persist(order);
-
-        return order;
     }
 
 
-    public static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
+    public static Review createReview(Buyer buyer, String description, float rating, Product product){
 
         Seller seller = product.getSeller();
 
-        Review review = seller.addReview(buyer, description, rating, product);
-        em.flush();
-
-        return review;
-    }
-
-    public static void createReviewBaseData(EntityManager em){
-        Reviews.review3 = createReview(em, Buyers.buyer1, "very good review89", 4f, Products.product1);
-        Reviews.review2 = createReview(em, Buyers.buyer1, "bad review", 1.5f, Products.product2);
-        Reviews.review1 = createReview(em, Buyers.buyer2, "NICE review", 5f, Products.product3);
+        return seller.addReview(buyer, description, rating, product);
     }
 
     public static class Buyers{
@@ -158,10 +136,6 @@ public class TestDataCreator {
     public static class Sellers{
         public static Seller seller1;
         public static Seller seller2;
-    }
-
-    public static class Orders{
-        public static Order order;
     }
 
     public static class Products{
@@ -175,11 +149,6 @@ public class TestDataCreator {
         public static Category category2;
     }
 
-    public static class Reviews{
-        public static Review review1;
-        public static Review review2;
-        public static Review review3;
-    }
 
     public static class Addresses{
         public static Address address1;

@@ -56,7 +56,6 @@ public class SellerEntityTests extends EntityBaseTest{
             return seller;
         });
 
-        //TODO is it ok to verify every field with hard coded strings?
         //----Assert
         Seller persistedSeller = entityFinder.getTheOne(Seller.class);
 
@@ -128,15 +127,15 @@ public class SellerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Seller sellerToAdd = doTransaction(em -> {
-            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
+            Address addressSeller = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
             UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
 
-            Seller seller = TestDataCreator.createSeller(em, address, userAccount, "bio");
+            Seller seller = TestDataCreator.createSeller(em, addressSeller, userAccount, "bio");
 
             TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createAddressBaseData(); //needed for order to be created
+            Address addressBuyer = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
-            TestDataCreator.createOrder(em, buyer1, seller);
+            TestDataCreator.createOrder(em,addressBuyer, buyer1, seller);
 
             return seller;
         });
@@ -205,7 +204,7 @@ public class SellerEntityTests extends EntityBaseTest{
             TestDataCreator.createProductsBaseData(em);
             TestDataCreator.createBuyerBaseData(em);
 
-            return TestDataCreator.createReview(em, buyer1, "good review", 4.5f, product1);
+            return TestDataCreator.createReview(buyer1, "good review", 4.5f, product1);
         });
 
 

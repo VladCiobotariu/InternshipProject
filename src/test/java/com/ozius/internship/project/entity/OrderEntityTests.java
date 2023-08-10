@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.entity.exeption.OrderAlreadyProcessedException;
+import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.order.OrderItem;
 import com.ozius.internship.project.entity.order.OrderStatus;
@@ -93,7 +93,6 @@ public class OrderEntityTests extends EntityBaseTest{
         Order persistedOrder = entityFinder.getTheOne(Order.class);
 
         assertThat(persistedOrder.getTotalPrice()).isEqualTo(28.0f);
-        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.READY_TO_BE_PROCESSED);
         assertThat(persistedOrder.getOrderItems().size()).isEqualTo(2);
     }
 
@@ -222,13 +221,13 @@ public class OrderEntityTests extends EntityBaseTest{
         //----Act
         Product addedProduct = doTransaction(em -> {
             Order orderMerged = em.merge(addedOrder);
-            orderMerged.setOrderStatus(OrderStatus.PROCESSED);
+            orderMerged.submit();
             Product product = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
 
             try {
                 orderMerged.addProduct(product, 2f);
                 fail("supposed to fail");
-            }catch (OrderAlreadyProcessedException exception){
+            }catch (IllegalOrderState exception){
                 //nothing to do, supposed to fail
             }
 
@@ -238,7 +237,7 @@ public class OrderEntityTests extends EntityBaseTest{
         //----Assert
         Order persistedOrder = entityFinder.getTheOne(Order.class);
 
-        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.PROCESSED);
+        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.SUBMITTED);
         assertThat(persistedOrder.getOrderItems().stream().map(OrderItem::getProduct)).doesNotContain(addedProduct);
     }
 }

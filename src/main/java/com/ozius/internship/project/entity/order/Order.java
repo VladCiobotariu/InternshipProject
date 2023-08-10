@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.*;
-import com.ozius.internship.project.entity.exeption.OrderAlreadyProcessedException;
+import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -98,18 +98,14 @@ public class Order extends BaseEntity {
     }
 
     public OrderItem addProduct(Product product, float quantity){
-        if(this.orderStatus==OrderStatus.PROCESSED ||
+        if(this.orderStatus==OrderStatus.SUBMITTED ||
                 this.orderStatus==OrderStatus.SHIPPED ||
                 this.orderStatus==OrderStatus.DELIVERED){
-            throw new OrderAlreadyProcessedException("can't add item, order already processed");
+            throw new IllegalOrderState("can't add item, order already processed");
         }
 
         OrderItem newItem = new OrderItem(product, quantity);
         this.orderItems.add(newItem);
-
-        if(this.orderStatus==OrderStatus.DRAFT){
-            this.orderStatus=OrderStatus.READY_TO_BE_PROCESSED;
-        }
 
         this.totalPrice = (float) this.orderItems
                 .stream()
@@ -163,8 +159,29 @@ public class Order extends BaseEntity {
         return sellerEmail;
     }
 
-    public void setOrderStatus(OrderStatus orderStatus){
-        this.orderStatus = orderStatus;
+    public void submit(){
+        if(this.orderStatus != OrderStatus.DRAFT) {
+            throw new IllegalOrderState("order state can only be draft if you want to submit");
+        } else if (this.orderItems.isEmpty()) {
+            throw new IllegalOrderState("order doesn't have any items, please add items to submit");
+        }
+        this.orderStatus = OrderStatus.SUBMITTED;
+    }
+
+    //TODO test
+    public void markedAsShipped(){
+        if(this.orderStatus != OrderStatus.SUBMITTED){
+            throw new IllegalOrderState("order state can only be submitted if you want to ship");
+        }
+        this.orderStatus = OrderStatus.SHIPPED;
+    }
+
+    //TODO test
+    public void markedAsDelivered(){
+        if(this.orderStatus != OrderStatus.SHIPPED){
+            throw new IllegalOrderState("order state can only be shipped if you want to deliver");
+        }
+        this.orderStatus = OrderStatus.DELIVERED;
     }
 
     @Override
