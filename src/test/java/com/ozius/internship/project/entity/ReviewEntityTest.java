@@ -5,6 +5,14 @@ import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+
+import java.util.Iterator;
+
+import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers1;
+import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers2;
+import static com.ozius.internship.project.TestDataCreatorErika.Products.product1;
+import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller1;
+import static com.ozius.internship.project.TestDataCreatorErika.createReview;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReviewEntityTest extends EntityBaseTest{
@@ -17,16 +25,14 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void reviews_are_added() {
         //----Act
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
-            Buyer buyer2 = em.merge(TestDataCreatorErika.Buyers.buyers2);
-            Product product = em.merge(TestDataCreatorErika.Products.product1);
+            Seller seller = em.merge(seller1);
+            Buyer buyer1 = em.merge(buyers1);
+            Buyer buyer2 = em.merge(buyers2);
+            Product product = em.merge(product1);
 
-//            Review review1 = new Review("review 1", 5F, buyer1, product);
-//            seller.addReview(review1.getBuyer(), review1.getDescription(), review1.getRating(), review1.getProduct());
+            seller.addReview(buyer1, "review 1", 5F, product);
 
-//            Review review2 = new Review("review 2", 4F, buyer2, product);
-//            seller.addReview(review2.getBuyer(), review2.getDescription(), review2.getRating(), review2.getProduct());
+            seller.addReview(buyer2, "review 2", 4F, product);
 
         });
 
@@ -39,26 +45,55 @@ public class ReviewEntityTest extends EntityBaseTest{
     }
 
     @Test
+    public void review_are_added_correctly() {
+        //----Act
+        doTransaction(em -> {
+            Buyer buyer1 = em.merge(buyers1);
+            Buyer buyer2 = em.merge(buyers2);
+            Product product = em.merge(product1);
+
+            // createReview adds the review to Seller directly (seller taken from product) -> in this case seller1
+            createReview("review 1", 5F, buyer1, product, em);
+            createReview("review 2", 4F, buyer2, product, em);
+
+        });
+
+        //----Assert
+        Seller persistedSeller = entityFinder.findAll(Seller.class).get(0);
+
+        Iterator<Review> iter = persistedSeller.getReviews().iterator();
+        Review r1 = iter.next();
+        Review r2 = iter.next();
+
+        assertThat(r1.getDescription()).isEqualTo("review 1");
+        assertThat(r1.getRating()).isEqualTo(5F);
+        assertThat(r1.getProduct()).isEqualTo(product1);
+        assertThat(r1.getBuyer()).isEqualTo(buyers1);
+
+        assertThat(r2.getDescription()).isEqualTo("review 2");
+        assertThat(r2.getRating()).isEqualTo(4F);
+        assertThat(r2.getProduct()).isEqualTo(product1);
+        assertThat(r2.getBuyer()).isEqualTo(buyers2);
+    }
+
+    @Test
     public void review_is_updated() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
-            Product product = em.merge(TestDataCreatorErika.Products.product1);
+            Seller seller = em.merge(seller1);
+            Buyer buyer1 = em.merge(buyers1);
+            Product product = em.merge(product1);
 
-//            Review review = new Review("review", 5F, buyer1, product);
-//            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
+            seller.addReview(buyer1, "review 1", 5F, product);
         });
 
         //----Act
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Seller seller = entityFinder.findAll(Seller.class).get(0);
-            Seller managedSeller = em.merge(seller);
-            Review reviewToUpdate = managedSeller.getReviews().iterator().next();
+            Review reviewToUpdate = seller.getReviews().iterator().next();
 
-//            reviewToUpdate.updateDescription("review updated");
-//            reviewToUpdate.updateRating(4F);
+            reviewToUpdate.updateReview("review updated", 4F);
         });
 
         //----Assert
@@ -75,20 +110,18 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void review_is_deleted() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(TestDataCreatorErika.Sellers.seller1);
-            Buyer buyer1 = em.merge(TestDataCreatorErika.Buyers.buyers1);
-            Product product = em.merge(TestDataCreatorErika.Products.product1);
+            Seller seller = em.merge(seller1);
+            Buyer buyer1 = em.merge(buyers1);
+            Product product = em.merge(product1);
 
-//            Review review = new Review("review", 5F, buyer1, product);
-//            seller.addReview(review.getBuyer(), review.getDescription(), review.getRating(), review.getProduct());
+            seller.addReview(buyer1, "review 1", 5F, product);
         });
 
         //----Act
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Seller seller = entityFinder.findAll(Seller.class).get(0);
-            Seller sellerForRemove = em.merge(seller);
-            Review reviewToRemove = sellerForRemove.getReviews().iterator().next();
+            Review reviewToRemove = seller.getReviews().iterator().next();
             seller.removeReview(reviewToRemove);
         });
 
