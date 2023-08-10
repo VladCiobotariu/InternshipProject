@@ -92,7 +92,7 @@ public class SellerEntityTests extends EntityBaseTest{
         });
 
         //----Act
-        Seller updatedSeller = doTransaction(em -> {
+        doTransaction(em -> {
             Seller mergedSeller = em.merge(seller);
             UserAccount account = mergedSeller.getAccount();
             mergedSeller.updateSeller(
@@ -102,37 +102,53 @@ public class SellerEntityTests extends EntityBaseTest{
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone());
-
-            return mergedSeller;
         });
 
         //----Assert
         Seller persistedSeller = entityFinder.getTheOne(Seller.class);
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad Cristian");
-        assertThat(persistedSeller).isEqualTo(updatedSeller);
-        assertThat(persistedSeller).isNotSameAs(seller);
+
+        assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
+        assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
+        assertThat(persistedSeller.getAccount().getPasswordHash()).isEqualTo("ozius12345");
+        assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
+        assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
+        assertThat(persistedSeller.getAlias()).isEqualTo("honey srl");
+        assertThat(persistedSeller.getLegalAddress().getCountry()).isEqualTo("Romania");
+        assertThat(persistedSeller.getLegalAddress().getState()).isEqualTo("Timis");
+        assertThat(persistedSeller.getLegalAddress().getCity()).isEqualTo("Timisoara");
+        assertThat(persistedSeller.getLegalAddress().getAddressLine1()).isEqualTo("Strada Circumvalatiunii nr 4");
+        assertThat(persistedSeller.getLegalAddress().getAddressLine2()).isEqualTo("Bloc 3 Scara B Ap 12");
+        assertThat(persistedSeller.getLegalAddress().getZipCode()).isEqualTo("303413");
+
     }
 
     @Test
     void test_remove_seller(){
 
         //----Arrange
-        Order order = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+        Seller sellerToAdd = doTransaction(em -> {
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
+            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+
+            Seller seller = TestDataCreator.createSeller(em, address, userAccount, "bio");
+
             TestDataCreator.createBuyerBaseData(em);
             TestDataCreator.createAddressBaseData(em); //needed for order to be created
 
-            return TestDataCreator.createOrder(em, buyer, seller);
+            TestDataCreator.createOrder(em, buyer, seller);
+
+            return seller;
         });
 
 
         //----Act
         Seller removedSeller = doTransaction(em -> {
 
-            Seller seller = em.merge(TestDataCreator.Sellers.seller);
-            em.remove(seller);
+            Seller mergedSeller = em.merge(sellerToAdd);
+            em.remove(mergedSeller);
 
-            return seller;
+            return mergedSeller;
         });
 
         //----Assert
@@ -144,7 +160,6 @@ public class SellerEntityTests extends EntityBaseTest{
 
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getSeller()).isNull();
-        assertThat(persistedOrder).isEqualTo(order);
 
         //TODO check reviews deleted? it has cascade.all and also is it necessary to check products deleted? it also has cascade.all
     }
@@ -195,19 +210,18 @@ public class SellerEntityTests extends EntityBaseTest{
 
 
         //----Act
-        Review updatedReview = doTransaction(em -> {
+        doTransaction(em -> {
             Review mergedReview = em.merge(review);
             mergedReview.updateReview("very very bad bad review", mergedReview.getRating(), mergedReview.getBuyer(), mergedReview.getProduct());
-
-            return mergedReview;
         });
 
         //----Assert
         Review persistedReview = entityFinder.getTheOne(Review.class);
 
         assertThat(persistedReview.getDescription()).isEqualTo("very very bad bad review");
-        assertThat(persistedReview).isEqualTo(updatedReview);
-        assertThat(persistedReview).isNotSameAs(review);
+        assertThat(persistedReview.getBuyer()).isEqualTo(buyer);
+        assertThat(persistedReview.getRating()).isEqualTo(4.5f);
+        assertThat(persistedReview.getProduct()).isEqualTo(product1);
     }
 
     @Test
