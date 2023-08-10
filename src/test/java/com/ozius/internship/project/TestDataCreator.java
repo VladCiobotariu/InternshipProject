@@ -8,6 +8,17 @@ import jakarta.persistence.EntityManager;
 
 public class TestDataCreator {
 
+    public static void createBaseDataForProduct(EntityManager em) {
+        createCategoriesBaseData(em);
+        createSellerBaseData(em);
+        createProductsBaseData(em);
+    }
+
+    public static void createBaseDataForReview(EntityManager em) {
+        createBaseDataForProduct(em);
+        createBuyerBaseData(em);
+    }
+
     public static Buyer createBuyer(EntityManager em, UserAccount account){
         Buyer buyer = new Buyer(account);
         em.persist(buyer);
