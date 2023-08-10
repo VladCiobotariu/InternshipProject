@@ -176,7 +176,7 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.SHIPPED;
     }
 
-    //TODO test 123
+    //TODO test
     public void markedAsDelivered(){
         if(this.orderStatus != OrderStatus.SHIPPED){
             throw new IllegalOrderState("order state can only be shipped if you want to deliver");
