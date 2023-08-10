@@ -1,6 +1,7 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
@@ -17,7 +18,7 @@ import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class SellerEntityTests extends EntityBaseTest{
+public class SellerEntityTests extends EntityBaseTest {
 
     private JpaRepository<Seller, Long> sellerRepository;
 
