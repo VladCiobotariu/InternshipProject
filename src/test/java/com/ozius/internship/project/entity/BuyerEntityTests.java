@@ -103,7 +103,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            TestDataCreator.addAddressBuyer(em, buyerToAdd, address);
+            TestDataCreator.addAddressBuyer(buyerToAdd, address);
 
             return buyerToAdd;
         });
@@ -130,7 +130,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            TestDataCreator.addAddressBuyer(em, buyerToAdd, address);
+            TestDataCreator.addAddressBuyer(buyerToAdd, address);
 
             return buyerToAdd;
         });
