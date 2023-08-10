@@ -2,25 +2,11 @@ package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.order.Order;
-import com.ozius.internship.project.entity.order.OrderItem;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
-import org.aspectj.weaver.ast.Or;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class TestDataCreator {
-
-    public static void createBaseData(EntityManager em){
-        createBuyerBaseData(em);
-        createSellerBaseData(em);
-        createCategoriesBaseData(em);
-        createProductsBaseData(em);
-    }
 
     public static Buyer createBuyer(EntityManager em, UserAccount account){
         Buyer buyer = new Buyer(account);
@@ -30,7 +16,7 @@ public class TestDataCreator {
     }
 
     public static void createBuyerBaseData(EntityManager em){
-        Buyers.buyer = createBuyer(em,
+        Buyers.buyer2 = createBuyer(em,
                 new UserAccount(
                         "Cosmina",
                         "Maria",
@@ -38,6 +24,15 @@ public class TestDataCreator {
                         "ozius1223423345",
                         "/src/image2",
                         "0735897635"));
+
+        Buyers.buyer1 = createBuyer(em,
+                new UserAccount(
+                        "Marcel",
+                        "Danila",
+                        "marceldanila@gmail.com",
+                        "ozius42",
+                        "/src/image90",
+                        "0777777635"));
 
     }
 
@@ -49,7 +44,7 @@ public class TestDataCreator {
     }
 
     public static void  createSellerBaseData(EntityManager em){
-        Sellers.seller = createSeller(em,
+        Sellers.seller2 = createSeller(em,
                 new Address("Romania",
                         "Timis",
                         "Timisoara",
@@ -63,6 +58,22 @@ public class TestDataCreator {
                         "/src/image1",
                         "0734896512"),
                 "Mega Fresh SRL");
+
+        Sellers.seller1 = createSeller(em,
+                new Address("Spania",
+                        "Granada",
+                        "Barcelona",
+                        "Strada Real Madrid nr 4",
+                        "Bloc Cupa Romaniei",
+                        "307773"),
+                new UserAccount("Mihnea",
+                        "Mondialu",
+                        "mihneamondialu@gmail.com",
+                        "ozius54",
+                        "/src/image99",
+                        "0734896777"),
+                "FC BARCELONA");
+
     }
 
     private static Category createCategory(EntityManager em, String name, String image) {
@@ -73,7 +84,8 @@ public class TestDataCreator {
 
     public static void createCategoriesBaseData(EntityManager em){
 
-        Categories.category = createCategory(em, "Cereale", "image09");
+        Categories.category2 = createCategory(em, "Cereale", "image09");
+        Categories.category1 = createCategory(em, "Fructe", "image0008");
     }
 
     public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
@@ -86,23 +98,25 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category, Sellers.seller);
-        Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category, Sellers.seller);
+        Products.product3 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category1, Sellers.seller1);
+        Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category1, Sellers.seller1);
+        Products.product1 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, Categories.category2, Sellers.seller2);
+
     }
 
-    public static void addAddressBuyer(EntityManager em, Buyer buyer, Address address){
+    public static void addAddressBuyer(Buyer buyer, Address address){
         buyer.addAddress(address);
     }
 
-    public static void createAddressBaseData(EntityManager em){
-        addAddressBuyer(em, Buyers.buyer, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
+    public static void createAddressBaseData(){
+        addAddressBuyer(Buyers.buyer1, new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091"));
     }
 
     public static void createAddresses(){
         Addresses.address1 = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
     }
 
-    private static void createOrderItem(EntityManager em, Order order, Product product, float quantity){
+    private static void createOrderItem(Order order, Product product, float quantity){
         order.addProduct(product, quantity);
     }
 
@@ -119,14 +133,6 @@ public class TestDataCreator {
         return order;
     }
 
-    public static void createOrdersBaseData(EntityManager em){
-
-        Orders.order = createOrder(em, Buyers.buyer, Sellers.seller);
-
-        createOrderItem(em, Orders.order, Products.product1, 5f);
-        createOrderItem(em, Orders.order, Products.product2, 2f);
-
-    }
 
     public static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
 
@@ -139,16 +145,19 @@ public class TestDataCreator {
     }
 
     public static void createReviewBaseData(EntityManager em){
-        Reviews.review1 = createReview(em, Buyers.buyer, "very good review89", 4f, Products.product1);
-        Reviews.review2 = createReview(em, Buyers.buyer, "bad review", 1.5f, Products.product2);
+        Reviews.review3 = createReview(em, Buyers.buyer1, "very good review89", 4f, Products.product1);
+        Reviews.review2 = createReview(em, Buyers.buyer1, "bad review", 1.5f, Products.product2);
+        Reviews.review1 = createReview(em, Buyers.buyer2, "NICE review", 5f, Products.product3);
     }
 
     public static class Buyers{
-        public static Buyer buyer;
+        public static Buyer buyer1;
+        public static Buyer buyer2;
     }
 
     public static class Sellers{
-        public static Seller seller;
+        public static Seller seller1;
+        public static Seller seller2;
     }
 
     public static class Orders{
@@ -158,15 +167,18 @@ public class TestDataCreator {
     public static class Products{
         public static Product product1;
         public static Product product2;
+        public static Product product3;
     }
 
     public static class Categories{
-        public static Category category;
+        public static Category category1;
+        public static Category category2;
     }
 
     public static class Reviews{
         public static Review review1;
         public static Review review2;
+        public static Review review3;
     }
 
     public static class Addresses{

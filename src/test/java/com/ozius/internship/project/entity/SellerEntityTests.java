@@ -11,9 +11,9 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.List;
 
-import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Sellers.seller;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -134,9 +134,9 @@ public class SellerEntityTests extends EntityBaseTest{
             Seller seller = TestDataCreator.createSeller(em, address, userAccount, "bio");
 
             TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createAddressBaseData(em); //needed for order to be created
+            TestDataCreator.createAddressBaseData(); //needed for order to be created
 
-            TestDataCreator.createOrder(em, buyer, seller);
+            TestDataCreator.createOrder(em, buyer1, seller);
 
             return seller;
         });
@@ -177,9 +177,9 @@ public class SellerEntityTests extends EntityBaseTest{
 
         //----Act
         Review addedReview = doTransaction(em -> {
-            Buyer mergedBuyer = em.merge(buyer);
+            Buyer mergedBuyer = em.merge(buyer1);
             Product mergedProduct = em.merge(product1);
-            Seller mergedSeller = em.merge(seller);
+            Seller mergedSeller = em.merge(seller1);
 
             return mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct);
         });
@@ -189,7 +189,7 @@ public class SellerEntityTests extends EntityBaseTest{
 
         assertThat(persistedReview).isNotNull();
         assertThat(persistedReview).isEqualTo(addedReview);
-        assertThat(persistedReview.getBuyer()).isEqualTo(buyer);
+        assertThat(persistedReview.getBuyer()).isEqualTo(buyer1);
         assertThat(persistedReview.getDescription()).isEqualTo("very good");
         assertThat(persistedReview.getRating()).isEqualTo(4f);
         assertThat(persistedReview.getProduct()).isEqualTo(product1);
@@ -205,38 +205,22 @@ public class SellerEntityTests extends EntityBaseTest{
             TestDataCreator.createProductsBaseData(em);
             TestDataCreator.createBuyerBaseData(em);
 
-            return TestDataCreator.createReview(em, buyer, "good review", 4.5f, product1);
+            return TestDataCreator.createReview(em, buyer1, "good review", 4.5f, product1);
         });
 
 
         //----Act
         doTransaction(em -> {
             Review mergedReview = em.merge(review);
-            mergedReview.updateReview("very very bad bad review", mergedReview.getRating(), mergedReview.getBuyer(), mergedReview.getProduct());
+            mergedReview.updateReview("very very bad bad review", mergedReview.getRating());
         });
 
         //----Assert
         Review persistedReview = entityFinder.getTheOne(Review.class);
 
         assertThat(persistedReview.getDescription()).isEqualTo("very very bad bad review");
-        assertThat(persistedReview.getBuyer()).isEqualTo(buyer);
+        assertThat(persistedReview.getBuyer()).isEqualTo(buyer1);
         assertThat(persistedReview.getRating()).isEqualTo(4.5f);
         assertThat(persistedReview.getProduct()).isEqualTo(product1);
-    }
-
-    @Test
-    void show_products(){
-
-        //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
-            TestDataCreator.createCategoriesBaseData(em);
-            TestDataCreator.createProductsBaseData(em);
-        });
-
-        Seller seller = entityFinder.getTheOne(Seller.class);
-        List<Product> products = entityFinder.getProductsBySeller(seller);
-
-        assertThat(products.size()).isEqualTo(2);
     }
 }

@@ -14,9 +14,9 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import java.time.LocalDate;
 
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
-import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
-import static com.ozius.internship.project.TestDataCreator.Categories.category;
-import static com.ozius.internship.project.TestDataCreator.Sellers.seller;
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
+import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.*;
 
 public class OrderEntityTests extends EntityBaseTest{
@@ -38,11 +38,11 @@ public class OrderEntityTests extends EntityBaseTest{
 
         //----Act
         Order addedOrder = doTransaction(em -> {
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
-            Order order = new Order(address, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             em.persist(order);
 
@@ -57,13 +57,13 @@ public class OrderEntityTests extends EntityBaseTest{
         assertThat(persistedOrder.getTotalPrice()).isEqualTo(0f);
         assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.DRAFT);
         assertThat(persistedOrder.getOrderItems().size()).isEqualTo(0);
-        assertThat(persistedOrder.getBuyer()).isEqualTo(buyer);
+        assertThat(persistedOrder.getBuyer()).isEqualTo(buyer1);
         assertThat(persistedOrder.getOrderDate().toLocalDate().isEqual(LocalDate.now())).isTrue();
-        assertThat(persistedOrder.getBuyerEmail()).isEqualTo(buyer.getAccount().getEmail());
-        assertThat(persistedOrder.getSeller()).isEqualTo(seller);
-        assertThat(persistedOrder.getTelephone()).isEqualTo(buyer.getAccount().getTelephone());
+        assertThat(persistedOrder.getBuyerEmail()).isEqualTo(buyer1.getAccount().getEmail());
+        assertThat(persistedOrder.getSeller()).isEqualTo(seller1);
+        assertThat(persistedOrder.getTelephone()).isEqualTo(buyer1.getAccount().getTelephone());
         assertThat(persistedOrder.getAddress()).isEqualTo(addedAddress);
-        assertThat(persistedOrder.getSellerEmail()).isEqualTo(seller.getAccount().getEmail());
+        assertThat(persistedOrder.getSellerEmail()).isEqualTo(seller1.getAccount().getEmail());
     }
 
     @Test
@@ -75,13 +75,13 @@ public class OrderEntityTests extends EntityBaseTest{
             // so i dont have to create an address everytime but the address isn't added to the database
             TestDataCreator.createAddresses();
 
-            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category, seller);
-            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category, seller);
+            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
 
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             order.addProduct(product1, 1f);
             order.addProduct(product2, 2f);
@@ -103,16 +103,16 @@ public class OrderEntityTests extends EntityBaseTest{
         //----Arrange
         Product product = doTransaction(em -> {
             TestDataCreator.createAddresses();
-            return TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category, seller);
+            return TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
         });
 
         //----Act
         OrderItem item = doTransaction(em -> {
 
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             OrderItem addedItem = order.addProduct(product, 2f);
 
@@ -138,12 +138,12 @@ public class OrderEntityTests extends EntityBaseTest{
         Product productToUpdate = doTransaction(em -> {
             TestDataCreator.createAddresses();
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category, seller);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             order.addProduct(product, 2f);
 
@@ -174,12 +174,12 @@ public class OrderEntityTests extends EntityBaseTest{
         Order addedOrder = doTransaction(em -> {
             TestDataCreator.createAddresses();
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category, seller);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             order.addProduct(product, 2f);
 
@@ -205,12 +205,12 @@ public class OrderEntityTests extends EntityBaseTest{
         Order addedOrder = doTransaction(em -> {
             TestDataCreator.createAddresses();
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category, seller);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            Buyer buyerMerged = em.merge(buyer);
-            Seller sellerMerged = em.merge(seller);
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
 
             order.addProduct(product, 2f);
 
@@ -223,7 +223,7 @@ public class OrderEntityTests extends EntityBaseTest{
         Product addedProduct = doTransaction(em -> {
             Order orderMerged = em.merge(addedOrder);
             orderMerged.setOrderStatus(OrderStatus.PROCESSED);
-            Product product = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category, seller);
+            Product product = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
 
             try {
                 orderMerged.addProduct(product, 2f);
