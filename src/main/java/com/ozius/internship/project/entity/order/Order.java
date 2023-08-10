@@ -17,7 +17,7 @@ public class Order extends BaseEntity {
 
     public static final String TABLE_NAME = "[ORDER]";
 
-    interface Columns{
+    interface Columns {
         String BUYER_EMAIL = "BUYER_EMAIL";
         String SELLER_ID = "SELLER_ID";
         String BUYER_ID = "BUYER_ID";
@@ -40,12 +40,12 @@ public class Order extends BaseEntity {
 
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride( name = "country", column = @Column(name = Columns.COUNTRY, nullable = false)),
-            @AttributeOverride( name = "state", column = @Column(name = Columns.STATE, nullable = false)),
-            @AttributeOverride( name = "city", column = @Column(name = Columns.CITY, nullable = false)),
-            @AttributeOverride( name = "addressLine1", column = @Column(name = Columns.ADDRESS_LINE_1, nullable = false)),
-            @AttributeOverride( name = "addressLine2", column = @Column(name = Columns.ADDRESS_LINE_2)),
-            @AttributeOverride( name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
+            @AttributeOverride(name = "country", column = @Column(name = Columns.COUNTRY, nullable = false)),
+            @AttributeOverride(name = "state", column = @Column(name = Columns.STATE, nullable = false)),
+            @AttributeOverride(name = "city", column = @Column(name = Columns.CITY, nullable = false)),
+            @AttributeOverride(name = "addressLine1", column = @Column(name = Columns.ADDRESS_LINE_1, nullable = false)),
+            @AttributeOverride(name = "addressLine2", column = @Column(name = Columns.ADDRESS_LINE_2)),
+            @AttributeOverride(name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
     })
     private Address address;
 
@@ -99,14 +99,14 @@ public class Order extends BaseEntity {
         this.totalPrice = 0f;
     }
 
-    public OrderItem addProduct(Product product, float quantity){
-        if(! (product.getSeller().equals(this.getSeller())) ){
+    public OrderItem addProduct(Product product, float quantity) {
+        if (!(product.getSeller().equals(this.getSeller()))) {
             throw new IllegalItemExeption("can't add this item, it belongs to different seller");
         }
 
-        if(this.orderStatus==OrderStatus.SUBMITTED ||
-                this.orderStatus==OrderStatus.SHIPPED ||
-                this.orderStatus==OrderStatus.DELIVERED){
+        if (this.orderStatus == OrderStatus.SUBMITTED ||
+                this.orderStatus == OrderStatus.SHIPPED ||
+                this.orderStatus == OrderStatus.DELIVERED) {
             throw new IllegalOrderState("can't add item, order already processed");
         }
 
@@ -165,8 +165,8 @@ public class Order extends BaseEntity {
         return sellerEmail;
     }
 
-    public void submit(){
-        if(this.orderStatus != OrderStatus.DRAFT) {
+    public void submit() {
+        if (this.orderStatus != OrderStatus.DRAFT) {
             throw new IllegalOrderState("order state can only be draft if you want to submit");
         } else if (this.orderItems.isEmpty()) {
             throw new IllegalOrderState("order doesn't have any items, please add items to submit");
@@ -175,16 +175,16 @@ public class Order extends BaseEntity {
     }
 
     //TODO test
-    public void markedAsShipped(){
-        if(this.orderStatus != OrderStatus.SUBMITTED){
+    public void markedAsShipped() {
+        if (this.orderStatus != OrderStatus.SUBMITTED) {
             throw new IllegalOrderState("order state can only be submitted if you want to ship");
         }
         this.orderStatus = OrderStatus.SHIPPED;
     }
 
     //TODO test
-    public void markedAsDelivered(){
-        if(this.orderStatus != OrderStatus.SHIPPED){
+    public void markedAsDelivered() {
+        if (this.orderStatus != OrderStatus.SHIPPED) {
             throw new IllegalOrderState("order state can only be shipped if you want to deliver");
         }
         this.orderStatus = OrderStatus.DELIVERED;
