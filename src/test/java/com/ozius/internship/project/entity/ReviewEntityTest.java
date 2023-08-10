@@ -53,38 +53,26 @@ public class ReviewEntityTest extends EntityBaseTest{
             Buyer buyer2 = em.merge(TestDataCreator.Buyers.buyer2);
             Product product = em.merge(product1);
 
-            // createReview adds the review to Seller directly (seller taken from product) -> in this case seller1
-            createReview(em, buyer1, "review 1", 5F, product);
-            createReview(em, buyer2,"review 2", 4F, product);
-
-            for(Seller s : entityFinder.findAll(Seller.class)) {
-                System.out.println(s);
-                for(Review r : s.getReviews())
-                    System.out.println(r);
-            }
+            createReview(buyer1, "review 1", 5F, product);
+            createReview(buyer2,"review 2", 4F, product);
 
         });
 
-        //----Assert
-        for(Seller s : entityFinder.findAll(Seller.class)) {
-            System.out.println(s);
-            for(Review r : s.getReviews())
-                System.out.println(r);
-        }
         Seller persistedSeller = entityFinder.findAll(Seller.class).get(0);
 
+        //----Assert
         Iterator<Review> iter = persistedSeller.getReviews().iterator();
         Review r1 = iter.next();
         Review r2 = iter.next();
 
         assertThat(r1.getDescription()).isEqualTo("review 1");
         assertThat(r1.getRating()).isEqualTo(5F);
-        assertThat(r1.getProduct()).isEqualTo(product3);
+        assertThat(r1.getProduct()).isEqualTo(product1);
         assertThat(r1.getBuyer()).isEqualTo(buyer1);
 
         assertThat(r2.getDescription()).isEqualTo("review 2");
         assertThat(r2.getRating()).isEqualTo(4F);
-        assertThat(r2.getProduct()).isEqualTo(product3);
+        assertThat(r2.getProduct()).isEqualTo(product1);
         assertThat(r2.getBuyer()).isEqualTo(buyer2);
     }
 
