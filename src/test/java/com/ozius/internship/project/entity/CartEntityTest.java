@@ -1,24 +1,21 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreatorErika;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.cart.CartItem;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers1;
-import static com.ozius.internship.project.TestDataCreatorErika.Categories.category1;
-import static com.ozius.internship.project.TestDataCreatorErika.Categories.category2;
-import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller1;
-import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller2;
-import static com.ozius.internship.project.TestDataCreatorErika.createBaseDataForProduct;
-import static com.ozius.internship.project.TestDataCreatorErika.Products.product1;
-import static com.ozius.internship.project.TestDataCreatorErika.Products.product2;
-import static com.ozius.internship.project.TestDataCreatorErika.createProduct;
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
+import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Categories.category2;
+import static com.ozius.internship.project.TestDataCreator.Products.*;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
+import static com.ozius.internship.project.TestDataCreator.createBaseDataForProduct;
+import static com.ozius.internship.project.TestDataCreator.createProduct;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CartEntityTest extends EntityBaseTest {
@@ -57,12 +54,12 @@ public class CartEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
             cart.addToCart(em.merge(product1), 2);
-            cart.addToCart(em.merge(product2), 3);
+            cart.addToCart(em.merge(product3), 3);
         });
 
         // ----Assert
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(14);
+        assertThat(persistedCart.calculateTotalPrice()).isEqualTo(48.1f);
         assertThat(persistedCart.getCartItems()).hasSize(2);
     }
 
@@ -78,8 +75,8 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct("rosii", "descriereRosii", "/rosii", 2.5F, category1, seller1, em);
-            Product p2 = createProduct("banana", "descriereBanana", "/banana", 3F, category2, seller2, em);
+            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+            Product p2 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, category2, seller2);
             cart.addToCart(p1, 2);
             cart.addToCart(p2, 3);
         });
@@ -90,10 +87,10 @@ public class CartEntityTest extends EntityBaseTest {
         CartItem cartItem1 = iter.next();
         CartItem cartItem2 = iter.next();
 
-        assertThat(cartItem1.getProduct().getName()).isEqualTo("rosii");
+        assertThat(cartItem1.getProduct().getName()).isEqualTo("orez");
         assertThat(cartItem1.getQuantity()).isEqualTo(2);
 
-        assertThat(cartItem2.getProduct().getName()).isEqualTo("banana");
+        assertThat(cartItem2.getProduct().getName()).isEqualTo("mar");
         assertThat(cartItem2.getQuantity()).isEqualTo(3);
     }
 
@@ -124,7 +121,7 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
-            Product product = createProduct("popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1, em);
+            Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1);
             cart.addToCart(product, 2);
             em.persist(cart);
         });
@@ -186,12 +183,12 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            cart.assignBuyerToCart(buyers1);
+            cart.assignBuyerToCart(buyer1);
         });
 
         // ----Assert
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        assertThat(persistedCart.getBuyer()).isEqualTo(buyers1);
+        assertThat(persistedCart.getBuyer()).isEqualTo(buyer1);
     }
 
 }

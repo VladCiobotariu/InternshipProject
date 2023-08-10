@@ -1,6 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreatorErika;
+import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
@@ -8,27 +8,28 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
-import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers1;
-import static com.ozius.internship.project.TestDataCreatorErika.Buyers.buyers2;
-import static com.ozius.internship.project.TestDataCreatorErika.Products.product1;
-import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller1;
-import static com.ozius.internship.project.TestDataCreatorErika.createReview;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product3;
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer2;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
+import static com.ozius.internship.project.TestDataCreator.createReview;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReviewEntityTest extends EntityBaseTest{
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreatorErika.createBaseDataForReview(em);
+        TestDataCreator.createBaseDataForReview(em);
     }
 
     @Test
     public void reviews_are_added() {
         //----Act
         doTransaction(em -> {
-            Seller seller = em.merge(seller1);
-            Buyer buyer1 = em.merge(buyers1);
-            Buyer buyer2 = em.merge(buyers2);
-            Product product = em.merge(product1);
+            Seller seller = em.merge(seller2);
+            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyer1);
+            Buyer buyer2 = em.merge(TestDataCreator.Buyers.buyer2);
+            Product product = em.merge(product3);
 
             seller.addReview(buyer1, "review 1", 5F, product);
 
@@ -48,17 +49,28 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void review_are_added_correctly() {
         //----Act
         doTransaction(em -> {
-            Buyer buyer1 = em.merge(buyers1);
-            Buyer buyer2 = em.merge(buyers2);
+            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyer1);
+            Buyer buyer2 = em.merge(TestDataCreator.Buyers.buyer2);
             Product product = em.merge(product1);
 
             // createReview adds the review to Seller directly (seller taken from product) -> in this case seller1
-            createReview("review 1", 5F, buyer1, product, em);
-            createReview("review 2", 4F, buyer2, product, em);
+            createReview(em, buyer1, "review 1", 5F, product);
+            createReview(em, buyer2,"review 2", 4F, product);
+
+            for(Seller s : entityFinder.findAll(Seller.class)) {
+                System.out.println(s);
+                for(Review r : s.getReviews())
+                    System.out.println(r);
+            }
 
         });
 
         //----Assert
+        for(Seller s : entityFinder.findAll(Seller.class)) {
+            System.out.println(s);
+            for(Review r : s.getReviews())
+                System.out.println(r);
+        }
         Seller persistedSeller = entityFinder.findAll(Seller.class).get(0);
 
         Iterator<Review> iter = persistedSeller.getReviews().iterator();
@@ -67,22 +79,22 @@ public class ReviewEntityTest extends EntityBaseTest{
 
         assertThat(r1.getDescription()).isEqualTo("review 1");
         assertThat(r1.getRating()).isEqualTo(5F);
-        assertThat(r1.getProduct()).isEqualTo(product1);
-        assertThat(r1.getBuyer()).isEqualTo(buyers1);
+        assertThat(r1.getProduct()).isEqualTo(product3);
+        assertThat(r1.getBuyer()).isEqualTo(buyer1);
 
         assertThat(r2.getDescription()).isEqualTo("review 2");
         assertThat(r2.getRating()).isEqualTo(4F);
-        assertThat(r2.getProduct()).isEqualTo(product1);
-        assertThat(r2.getBuyer()).isEqualTo(buyers2);
+        assertThat(r2.getProduct()).isEqualTo(product3);
+        assertThat(r2.getBuyer()).isEqualTo(buyer2);
     }
 
     @Test
     public void review_is_updated() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(seller1);
-            Buyer buyer1 = em.merge(buyers1);
-            Product product = em.merge(product1);
+            Seller seller = em.merge(seller2);
+            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyer1);
+            Product product = em.merge(product3);
 
             seller.addReview(buyer1, "review 1", 5F, product);
         });
@@ -110,9 +122,9 @@ public class ReviewEntityTest extends EntityBaseTest{
     public void review_is_deleted() {
         //----Arrange
         doTransaction(em -> {
-            Seller seller = em.merge(seller1);
-            Buyer buyer1 = em.merge(buyers1);
-            Product product = em.merge(product1);
+            Seller seller = em.merge(seller2);
+            Buyer buyer1 = em.merge(TestDataCreator.Buyers.buyer1);
+            Product product = em.merge(product3);
 
             seller.addReview(buyer1, "review 1", 5F, product);
         });
