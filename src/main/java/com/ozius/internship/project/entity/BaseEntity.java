@@ -24,15 +24,17 @@ public class BaseEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (this.id == 0) return false;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this.getId() == 0) return false;
+        if(o == null) return false;
+        if(!(o instanceof BaseEntity)) return false;
         BaseEntity that = (BaseEntity) o;
-        if(that.id == 0) return false;
-        return id == that.id;
+        if(that.getId() == 0) return false;
+        if (!getClass().equals(that.getClass())) return false;
+        return getId() == that.getId();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 }

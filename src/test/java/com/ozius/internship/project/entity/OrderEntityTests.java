@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product2;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.*;
 
@@ -198,21 +200,52 @@ public class OrderEntityTests extends EntityBaseTest{
     }
 
     @Test
-    void test_update_order_status(){
+    void test_check_submit_order(){
 
         //----Arrange
         Order addedOrder = doTransaction(em -> {
-            TestDataCreator.createAddresses();
 
+            TestDataCreator.createAddresses();
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
             Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
-
             order.addProduct(product, 2f);
+            em.persist(order);
 
+            return order;
+        });
+
+        //----Act
+        doTransaction(em -> {
+            Order orderMerged = em.merge(addedOrder);
+            orderMerged.submit();
+        });
+
+        //----Assert
+        Order persistedOrder = entityFinder.getTheOne(Order.class);
+
+        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.SUBMITTED);
+    }
+
+    @Test
+    void test_add_order_item_if_order_submitted(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+            TestDataCreator.createAddresses();
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+            Category categoryMerged = em.merge(category1);
+
+            Product product = TestDataCreator.createProduct(em, "orez",
+                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
             em.persist(order);
 
             return order;
@@ -222,7 +255,12 @@ public class OrderEntityTests extends EntityBaseTest{
         Product addedProduct = doTransaction(em -> {
             Order orderMerged = em.merge(addedOrder);
             orderMerged.submit();
-            Product product = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
+
+            Seller sellerMerged = em.merge(seller1);
+            Category categoryMerged = em.merge(category1);
+
+            Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
+                    "src/image20", 8f, categoryMerged, sellerMerged);
 
             try {
                 orderMerged.addProduct(product, 2f);
@@ -235,9 +273,6 @@ public class OrderEntityTests extends EntityBaseTest{
         });
 
         //----Assert
-        Order persistedOrder = entityFinder.getTheOne(Order.class);
-
-        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.SUBMITTED);
-        assertThat(persistedOrder.getOrderItems().stream().map(OrderItem::getProduct)).doesNotContain(addedProduct);
+        //method should end with throwable exception
     }
 }

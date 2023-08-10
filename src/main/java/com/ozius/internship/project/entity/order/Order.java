@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
@@ -84,6 +85,7 @@ public class Order extends BaseEntity {
         this.address = address;
 
         this.buyer = buyer;
+        //TODO is it necessary to add seller to constructor or can we set it in addProduct if seller is null?
         this.seller = seller;
 
         this.orderItems = new HashSet<>();
@@ -98,6 +100,10 @@ public class Order extends BaseEntity {
     }
 
     public OrderItem addProduct(Product product, float quantity){
+        if(! (product.getSeller().equals(this.getSeller())) ){
+            throw new IllegalItemExeption("can't add this item, it belongs to different seller");
+        }
+
         if(this.orderStatus==OrderStatus.SUBMITTED ||
                 this.orderStatus==OrderStatus.SHIPPED ||
                 this.orderStatus==OrderStatus.DELIVERED){
