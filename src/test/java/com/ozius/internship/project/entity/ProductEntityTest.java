@@ -1,20 +1,20 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.TestDataCreatorErika;
+import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
-import static com.ozius.internship.project.TestDataCreatorErika.Categories.category1;
-import static com.ozius.internship.project.TestDataCreatorErika.Sellers.seller2;
+import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProductEntityTest extends EntityBaseTest {
 
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreatorErika.createCategoriesBaseData(em);
-        TestDataCreatorErika.createSellerBaseData(em);
+        TestDataCreator.createCategoriesBaseData(em);
+        TestDataCreator.createSellerBaseData(em);
     }
 
     @Test

@@ -25,11 +25,11 @@ public class Review extends BaseEntity {
     private float rating;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Review.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
+    @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Buyer buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.PRODUCT_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Review.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
+    @JoinColumn(name = Columns.PRODUCT_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Product.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Product product;
 
     protected Review() {
@@ -58,7 +58,6 @@ public class Review extends BaseEntity {
         return product;
     }
 
-    //TODO I think we dont want to update a buyer or a product for a review, only description, or maybe the rating but this is debate-able
     public void updateReview(String description, float rating) {
         this.description = description;
         this.rating = rating;
