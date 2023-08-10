@@ -22,7 +22,7 @@ public class TestDataCreator {
         createProductsBaseData(em);
     }
 
-    private static Buyer createBuyer(EntityManager em, UserAccount account){
+    public static Buyer createBuyer(EntityManager em, UserAccount account){
         Buyer buyer = new Buyer(account);
         em.persist(buyer);
 
@@ -90,7 +90,7 @@ public class TestDataCreator {
         Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category, Sellers.seller);
     }
 
-    private static void addAddressBuyer(EntityManager em, Buyer buyer, Address address){
+    public static void addAddressBuyer(EntityManager em, Buyer buyer, Address address){
         buyer.addAddress(address);
     }
 
@@ -108,7 +108,11 @@ public class TestDataCreator {
 
     public static Order createOrder(EntityManager em, Buyer buyer, Seller seller){
 
-        Order order = new Order(buyer.getAddresses().stream().findFirst().get().getAddress(), buyer, seller, buyer.getAccount().getTelephone());
+        Order order = new Order(
+                buyer.getAddresses().stream().findFirst().orElseThrow().getAddress(),
+                buyer,
+                seller,
+                buyer.getAccount().getTelephone());
 
         em.persist(order);
 

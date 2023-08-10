@@ -16,19 +16,10 @@ public class Buyer extends BaseEntity{
 
     interface Columns{
         String ACCOUNT_ID = "ACCOUNT_ID";
-        String CART_ID = "CART_ID";
         String BUYER_ID = "BUYER_ID";
         String PRODUCT_ID = "PRODUCT_ID";
 
     }
-
-    //TODO - the current model couples the card to the buyer, do we have any reasons to do that(business logic reasons)
-    // Also it's currently possible for a card to exist in the database even it's not assigned to any buyer (orphan card)
-    // how would you fix that?
-    // while doing the refactoring, please also ensure that a buyer can only one card(the current implementation ensures that but it has the other disadvantages listed above).
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.CART_ID, nullable = false)
-    private Cart cart;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
@@ -49,14 +40,9 @@ public class Buyer extends BaseEntity{
     }
 
     public Buyer(UserAccount account) {
-        this.cart = new Cart();
         this.account = account;
         this.favoriteProducts = new HashSet<>();
         this.addresses = new HashSet<>();
-    }
-
-    public Cart getCart() {
-        return cart;
     }
 
     public UserAccount getAccount() {

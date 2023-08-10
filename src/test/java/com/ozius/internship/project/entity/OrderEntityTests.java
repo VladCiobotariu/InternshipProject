@@ -28,7 +28,6 @@ public class OrderEntityTests extends EntityBaseTest{
         //----Arrange
         TestDataCreator.createBuyerBaseData(em);
         TestDataCreator.createSellerBaseData(em);
-//        TestDataCreator.createAddressBaseData(em);
         TestDataCreator.createCategoriesBaseData(em);
 
         this.orderRepository = new SimpleJpaRepository<>(Order.class, emb);

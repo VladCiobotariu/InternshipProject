@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.util.List;
 
-import static com.ozius.internship.project.TestDataCreator.Buyers.buyer;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 public class BuyerEntityTests extends EntityBaseTest{
 
@@ -29,7 +27,6 @@ public class BuyerEntityTests extends EntityBaseTest{
             em.persist(buyer);
         });
 
-        //TODO hows better, compare hard coded values or objects
         //----Assert
         Buyer persistedBuyer = buyerRepository.findAll().get(0);
         assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
@@ -43,29 +40,26 @@ public class BuyerEntityTests extends EntityBaseTest{
     @Test
     void test_add_address(){
         //----Arrange
-        doTransaction(em -> {
-            /*
-             *   TODO It's better to create the entity that's being tested explicitly in test, without relying on predefined test data
-             *    Advatanges:
-             *   - Improves readability. It's hard for me to know if buyer already has any addresses
-             *   - Avoids side effects - if any other devs goes to test data creator and adds an address to Buyers.buyer this test will break.
-             *
-             *   hint: You can do   Buyer buyer = doTransaction(em -> {...} to make it easier to reference it later.
-             */
-
-            TestDataCreator.createBuyerBaseData(em);
+        Buyer buyer = doTransaction(em -> {
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            return TestDataCreator.createBuyer(em, account);
         });
 
         //----Act
-        doTransaction(em -> {
+        Address addedAddress = doTransaction(em -> {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
-            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
-            buyer.addAddress(address);
+            Buyer mergedBuyer = em.merge(buyer);
+            mergedBuyer.addAddress(address);
+
+            return address;
         });
 
         //----Assert
-        Buyer persistedBuyer = buyerRepository.findAll().get(0);
-        Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().get().getAddress();
+        Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
+
+        Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow().getAddress();
+        assertThat(persistedAddress).isEqualTo(addedAddress);
+
         assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
         assertThat(persistedAddress.getState()).isEqualTo("Timis");
         assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
@@ -79,19 +73,24 @@ public class BuyerEntityTests extends EntityBaseTest{
     void test_buyer_updated(){
 
         //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createBuyerBaseData(em);
+        Buyer buyer = doTransaction(em -> {
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            return TestDataCreator.createBuyer(em, account);
         });
 
         //----Act
-        doTransaction(em -> {
-            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
-            buyer.updateEmail("cosminaa@gmail.com");
+        Buyer addedBuyer= doTransaction(em -> {
+            Buyer mergedBuyer = em.merge(buyer);
+            mergedBuyer.updateEmail("cosminaa@gmail.com");
+
+            return mergedBuyer;
         });
 
         //----Assert
-        Buyer persistedBuyer = buyerRepository.findAll().get(0);
+        Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminaa@gmail.com");
+        assertThat(persistedBuyer).isEqualTo(addedBuyer);
+        assertThat(persistedBuyer).isNotSameAs(buyer);
     }
 
 
@@ -99,54 +98,57 @@ public class BuyerEntityTests extends EntityBaseTest{
     void test_buyer_remove(){
 
         //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createAddressBaseData(em);
+        Buyer buyer = doTransaction(em -> {
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+
+            Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
+            TestDataCreator.addAddressBuyer(em, buyerToAdd, address);
+
+            return buyerToAdd;
         });
 
         //----Act
         doTransaction(em -> {
-            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
-            em.remove(buyer);
+            Buyer mergedBuyer = em.merge(buyer);
+            em.remove(mergedBuyer);
         });
 
         //----Assert
-        List<Buyer> persistedBuyer = buyerRepository.findAll();
-        assertThat(persistedBuyer).isEmpty();
         List<BuyerAddress> buyerAddress = new SimpleJpaRepository<>(BuyerAddress.class, emb).findAll();
+
+        assertThat(buyerRepository.findAll().contains(buyer)).isFalse();
         assertThat(buyerAddress).isEmpty();
     }
 
     @Test
     void test_buyer_address_remove(){
+
         //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createAddressBaseData(em);
+        Buyer buyer = doTransaction(em -> {
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+
+            Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
+            TestDataCreator.addAddressBuyer(em, buyerToAdd, address);
+
+            return buyerToAdd;
         });
+
 
         //----Act
         doTransaction(em -> {
-            Buyer buyer = em.merge(TestDataCreator.Buyers.buyer);
+            Buyer mergedBuyer = em.merge(buyer);
 
-            BuyerAddress removeAddress = buyer.getAddresses().stream()
+            BuyerAddress addressToRemove = mergedBuyer.getAddresses().stream()
                     .findFirst()
                     .orElse(null);
 
-            buyer.removeAddress(removeAddress);
-
-
-            //TODO tests should only do asserts ideally. Unless it's really required, tests should not write logs.
-            System.out.println("Buyer addreses:");
-            buyer.getAddresses().stream().forEach(System.out::println);
-
-            System.out.println("Repository addreses:");
-            new SimpleJpaRepository<>(BuyerAddress.class, em).findAll().forEach(System.out::println);
+            mergedBuyer.removeAddress(addressToRemove);
         });
 
-        emb.clear(); //TODO is this needed?
         //----Assert
-        Buyer persistedBuyer = buyerRepository.findAll().get(0);
+        Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
         assertThat(persistedBuyer.getAddresses()).isEmpty();
     }
 }
