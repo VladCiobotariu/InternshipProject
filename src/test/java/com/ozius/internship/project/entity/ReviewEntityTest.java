@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;

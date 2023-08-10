@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Buyer;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
 import jakarta.persistence.*;
 

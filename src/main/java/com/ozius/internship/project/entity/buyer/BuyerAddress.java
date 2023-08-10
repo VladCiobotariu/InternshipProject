@@ -1,10 +1,12 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.buyer;
 
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = BuyerAddress.TABLE_NAME)
-public class BuyerAddress extends BaseEntity{
+public class BuyerAddress extends BaseEntity {
 
     public static final String TABLE_NAME = "BUYER_ADDRESS";
 
@@ -39,6 +41,8 @@ public class BuyerAddress extends BaseEntity{
     public Address getAddress() {
         return address;
     }
+
+    //TODO setters for address change
 
     @Override
     public String toString() {

@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.Seller;

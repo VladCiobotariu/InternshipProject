@@ -1,6 +1,8 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.buyer.BuyerAddress;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;

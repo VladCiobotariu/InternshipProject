@@ -1,6 +1,7 @@
 package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
@@ -140,6 +141,7 @@ public class TestDataCreator {
         return seller.addReview(buyer, description, rating, product);
     }
 
+    //TODO remove if no usage
     public static void createReviewBaseData(EntityManager em){
         Reviews.review3 = createReview(Buyers.buyer1, "very good review89", 4f, Products.product1);
         Reviews.review2 = createReview(Buyers.buyer1, "bad review", 1.5f, Products.product2);
