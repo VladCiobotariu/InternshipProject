@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.entity.Buyer;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.EntityBaseTest;
 import com.ozius.internship.project.entity.EntityFinder;
 import com.ozius.internship.project.entity.Product;

@@ -8,7 +8,7 @@ import jakarta.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     public static final String ID = "id";
 

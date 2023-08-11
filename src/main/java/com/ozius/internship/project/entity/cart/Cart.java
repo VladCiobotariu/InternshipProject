@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.cart;
 
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Buyer;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
 import com.ozius.internship.project.entity.exeption.InvalidCartItemQuantity;

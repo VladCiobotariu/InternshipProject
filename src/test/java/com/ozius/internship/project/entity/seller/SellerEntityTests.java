@@ -1,11 +1,10 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.order.Order;
-import com.ozius.internship.project.entity.seller.Review;
-import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class SellerEntityTests extends EntityBaseTest{
+public class SellerEntityTests extends EntityBaseTest {
 
     private JpaRepository<Seller, Long> sellerRepository;
 
