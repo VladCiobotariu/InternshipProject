@@ -34,7 +34,6 @@ public class CategoryEntityTest extends EntityBaseTest {
         });
 
         // ----Arrange
-        // need to get the object again because category is now detached
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Category category = entityFinder.getTheOne(Category.class);
@@ -65,4 +64,5 @@ public class CategoryEntityTest extends EntityBaseTest {
         // ----Assert
         assertThat(entityFinder.findAll(Category.class).isEmpty());
     }
+
 }

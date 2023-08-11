@@ -141,13 +141,6 @@ public class TestDataCreator {
         return seller.addReview(buyer, description, rating, product);
     }
 
-    //TODO remove if no usage
-    public static void createReviewBaseData(EntityManager em){
-        Reviews.review3 = createReview(Buyers.buyer1, "very good review89", 4f, Products.product1);
-        Reviews.review2 = createReview(Buyers.buyer1, "bad review", 1.5f, Products.product2);
-        Reviews.review1 = createReview(Buyers.buyer2, "NICE review", 5f, Products.product3);
-    }
-
     public static class Buyers{
         public static Buyer buyer1;
         public static Buyer buyer2;
@@ -167,12 +160,6 @@ public class TestDataCreator {
     public static class Categories{
         public static Category category1;
         public static Category category2;
-    }
-
-    public static class Reviews{
-        public static Review review1;
-        public static Review review2;
-        public static Review review3;
     }
 
     public static class Addresses{

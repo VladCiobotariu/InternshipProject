@@ -1,4 +1,4 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;

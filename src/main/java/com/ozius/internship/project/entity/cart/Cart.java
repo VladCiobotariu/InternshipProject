@@ -1,8 +1,10 @@
 package com.ozius.internship.project.entity.cart;
 
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.Buyer;
 import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
+import com.ozius.internship.project.entity.exeption.InvalidCartItemQuantity;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -17,6 +19,7 @@ public class Cart extends BaseEntity {
 
     interface Columns {
         String BUYER_ID = "BUYER_ID";
+        String TOTAL_PRICE = "TOTAL_PRICE";
     }
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -27,6 +30,9 @@ public class Cart extends BaseEntity {
     @JoinColumn(name = CartItem.Columns.CART_ID)
     private Set<CartItem> cartItems;
 
+    @Column(name = Columns.TOTAL_PRICE, nullable = false)
+    private double totalCartPrice;
+
     public Cart() {
         this.cartItems = new HashSet<>();
     }
@@ -34,6 +40,7 @@ public class Cart extends BaseEntity {
     public Cart(Buyer buyer) {
         this.buyer = buyer;
         this.cartItems = new HashSet<>();
+        this.totalCartPrice = 0f;
     }
 
     public Set<CartItem> getCartItems() {
@@ -42,6 +49,10 @@ public class Cart extends BaseEntity {
 
     public Buyer getBuyer() {
         return buyer;
+    }
+
+    public double getTotalCartPrice() {
+        return totalCartPrice;
     }
 
     public float calculateItemPrice(CartItem cartItem) {
@@ -67,30 +78,48 @@ public class Cart extends BaseEntity {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
+        if(quantity == 0) {
+            throw new IllegalQuantityException("Quantity cannot be 0!");
+        }
+        if(quantity < 0) {
+            throw new InvalidCartItemQuantity("Quantity can be less than 0!");
+        }
+
         if (existingCartItem != null) {
             existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            this.totalCartPrice = calculateTotalPrice();
             return existingCartItem;
         } else {
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
+            this.totalCartPrice = calculateTotalPrice();
             return cartItem;
         }
     }
 
+    // TODO - should i check the quantity to make quantity-1 or just delete the entire cartItem?
     public void removeFromCart(Product product) {
         CartItem cartItem = getCartItemByProduct(product);
 
         if(cartItem != null) {
             this.cartItems.remove(cartItem);
-            System.out.println("CartItem removed: " + cartItem);
+            this.totalCartPrice = calculateTotalPrice();
         }
     }
 
     public void updateCartItem(Product product, float quantity) {
+        if(quantity == 0) {
+            throw new IllegalQuantityException("Quantity cannot be 0!");
+        }
+        if(quantity < 0) {
+            throw new InvalidCartItemQuantity("Quantity can be less than 0!");
+        }
+
         CartItem cartItem = getCartItemByProduct(product);
 
         if (cartItem != null) {
             cartItem.setQuantity(quantity);
+            this.totalCartPrice = calculateTotalPrice();
         }
     }
 
