@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.exeption.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -45,6 +46,9 @@ public class Product extends BaseEntity {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
+        if (price < 0) {
+            throw new IllegalPriceException("Price cannot be negative!");
+        }
         this.price = price;
         this.category = category;
         this.seller = seller;
@@ -82,6 +86,9 @@ public class Product extends BaseEntity {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
+        if (price < 0) {
+            throw new IllegalPriceException("Price cannot be negative!");
+        }
         this.price = price;
         this.category = category;
         this.seller = seller;
