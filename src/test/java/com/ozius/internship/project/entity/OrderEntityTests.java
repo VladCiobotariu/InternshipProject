@@ -1,6 +1,8 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.order.OrderItem;
@@ -16,10 +18,11 @@ import java.time.LocalDate;
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
-import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product2;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
+import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OrderEntityTests extends EntityBaseTest{
 
@@ -252,7 +255,8 @@ public class OrderEntityTests extends EntityBaseTest{
         });
 
         //----Act
-        Product addedProduct = doTransaction(em -> {
+        Exception exception = doTransaction(em -> {
+
             Order orderMerged = em.merge(addedOrder);
             orderMerged.submit();
 
@@ -262,18 +266,51 @@ public class OrderEntityTests extends EntityBaseTest{
             Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
                     "src/image20", 8f, categoryMerged, sellerMerged);
 
-            try {
-                orderMerged.addProduct(product, 2f);
-                fail("supposed to fail");
-            }catch (IllegalOrderState exception){
-                //nothing to do, supposed to fail
-            }
-
-            return product;
+            return assertThrows(IllegalOrderState.class, () -> orderMerged.addProduct(product, 2f));
         });
 
         //----Assert
-        //method should end with throwable exception
+        assertTrue(exception.getMessage().contains("can't add item, order already processed"));
+    }
+
+    @Test
+    void test_add_order_item_if_item_belongs_to_other_seller(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+            TestDataCreator.createAddresses();
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+            Category categoryMerged = em.merge(category1);
+
+            Product product = TestDataCreator.createProduct(em, "orez",
+                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+            orderMerged.submit();
+
+            Seller sellerMerged = em.merge(seller2);//added other seller and creates a new product
+            Category categoryMerged = em.merge(category1);
+
+            Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
+                    "src/image20", 8f, categoryMerged, sellerMerged);
+
+            return assertThrows(IllegalItemExeption.class, () -> orderMerged.addProduct(product, 2f));
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("can't add this item, it belongs to different seller"));
     }
 
 }

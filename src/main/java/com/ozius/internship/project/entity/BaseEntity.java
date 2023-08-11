@@ -1,6 +1,5 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -9,7 +8,7 @@ import jakarta.persistence.MappedSuperclass;
 import java.util.Objects;
 
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
     public static final String ID = "id";
 

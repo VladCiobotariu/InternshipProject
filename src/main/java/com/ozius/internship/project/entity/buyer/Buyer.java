@@ -1,6 +1,9 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.buyer;
 
-import com.ozius.internship.project.entity.cart.Cart;
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.UserAccount;
 import jakarta.persistence.*;
 
 import java.util.Collections;
@@ -9,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = Buyer.TABLE_NAME)
-public class Buyer extends BaseEntity{
+public class Buyer extends BaseEntity {
 
     public static final String TABLE_NAME = "BUYER";
     public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
@@ -49,6 +52,7 @@ public class Buyer extends BaseEntity{
         return account;
     }
 
+    //TODO test
     public Set<Product> getFavoriteProducts() {
         return Collections.unmodifiableSet(favoriteProducts);
     }
@@ -76,6 +80,7 @@ public class Buyer extends BaseEntity{
         this.addresses.remove(address);
     }
 
+    //TODO test
     public void updateBuyer(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
         this.account.setEmail(email);
         this.account.setFirstName(firstName);
@@ -90,7 +95,7 @@ public class Buyer extends BaseEntity{
         this.account.setEmail(email);
     }
 
-    @Override//TODO
+    @Override
     public String toString() {
         return "Buyer{" +
                 "account=" + account +

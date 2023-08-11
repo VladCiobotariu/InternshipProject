@@ -1,6 +1,8 @@
 package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -76,6 +78,10 @@ public class Seller extends BaseEntity {
     }
 
     public Review addReview(Buyer buyer, String description, float rating, Product product){
+
+        if(!product.getSeller().equals(this)){
+            throw new IllegalItemExeption("can't add review, product must correspond to this seller");
+        }
 
         Review reviewNew = new Review(description, rating, buyer, product);
         this.reviews.add(reviewNew);

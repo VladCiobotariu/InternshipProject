@@ -1,6 +1,7 @@
 package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;

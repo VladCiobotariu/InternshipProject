@@ -2,9 +2,9 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.order.Order;
-import com.ozius.internship.project.entity.seller.Review;
-import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,8 +14,11 @@ import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product3;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class SellerEntityTests extends EntityBaseTest {
@@ -178,7 +181,7 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Act
         Review addedReview = doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer1);
-            Product mergedProduct = em.merge(product1);
+            Product mergedProduct = em.merge(product3);
             Seller mergedSeller = em.merge(seller1);
 
             return mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct);
@@ -192,7 +195,32 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedReview.getBuyer()).isEqualTo(buyer1);
         assertThat(persistedReview.getDescription()).isEqualTo("very good");
         assertThat(persistedReview.getRating()).isEqualTo(4f);
-        assertThat(persistedReview.getProduct()).isEqualTo(product1);
+        assertThat(persistedReview.getProduct()).isEqualTo(product3);
+    }
+
+    @Test
+    void test_review_add_wrong_product(){
+
+        //----Arrange
+        doTransaction(em -> {
+            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createBuyerBaseData(em);
+            TestDataCreator.createCategoriesBaseData(em);
+            TestDataCreator.createProductsBaseData(em);
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Buyer mergedBuyer = em.merge(buyer1);
+            Product mergedProduct = em.merge(product1);//product1 does not belong to seller1
+            Seller mergedSeller = em.merge(seller1);
+
+            return assertThrows(IllegalItemExeption.class, () -> mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct));
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("can't add review, product must correspond to this seller"));
     }
 
     @Test
