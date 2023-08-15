@@ -80,19 +80,15 @@ public class Buyer extends BaseEntity {
         this.addresses.remove(address);
     }
 
-    //TODO test
-    public void updateBuyer(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
-        this.account.setEmail(email);
-        this.account.setFirstName(firstName);
-        this.account.setLastName(lastName);
-        this.account.setPasswordHash(passwordHash);
-        this.account.setImageName(image);
-        this.account.setTelephone(telephone);
+    public void updateBuyer(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
+        this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
     }
 
-    //TODO remove after updating SellerEntityTest
-    public void updateEmail(String email){
-        this.account.setEmail(email);
+    //TODO test
+    public void updateAddress(Address address, long id){
+        BuyerAddress addressToUpdate = this.addresses.stream().filter(item -> item.getId() == getId()).findFirst().orElseThrow();
+
+        addressToUpdate.updateAddress(address);
     }
 
     @Override

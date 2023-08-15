@@ -72,8 +72,6 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    // return CartItem because of TestDataCreator
-    //TODO why return cartItem only because TestDataCreator?
     public CartItem addToCart(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);

@@ -2,7 +2,7 @@ package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
+import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.order.OrderItem;
@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Products.product3;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.*;
@@ -76,8 +77,7 @@ public class OrderEntityTests extends EntityBaseTest{
 
         //----Act
         doTransaction(em -> {
-            //TODO is it okay to add a address to a static field and use it?
-            // so i dont have to create an address everytime but the address isn't added to the database
+
             TestDataCreator.createAddresses();
 
             Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
@@ -203,6 +203,70 @@ public class OrderEntityTests extends EntityBaseTest{
     }
 
     @Test
+    void test_submit_order_if_order_not_draft(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+
+            orderMerged.submit();
+            orderMerged.markedAsShipped();
+
+            return assertThrows(IllegalOrderState.class, orderMerged::submit);
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("order state can only be draft if you want to submit"));
+    }
+
+    @Test
+    void test_submit_order_if_not_added_item(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+
+            return assertThrows(IllegalOrderState.class, orderMerged::submit);
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("order doesn't have any items, please add items to submit"));
+    }
+
+    @Test
     void test_check_submit_order(){
 
         //----Arrange
@@ -231,6 +295,165 @@ public class OrderEntityTests extends EntityBaseTest{
         Order persistedOrder = entityFinder.getTheOne(Order.class);
 
         assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.SUBMITTED);
+    }
+
+    @Test
+    void test_marked_shipped_if_order_not_submitted(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+
+            return assertThrows(IllegalOrderState.class, orderMerged::markedAsShipped);
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("order state can only be submitted if you want to ship"));
+    }
+
+    @Test
+    void test_check_shipped_order(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        doTransaction(em -> {
+            Order orderMerged = em.merge(addedOrder);
+            orderMerged.submit();
+            orderMerged.markedAsShipped();
+        });
+
+        //----Assert
+        Order persistedOrder = entityFinder.getTheOne(Order.class);
+
+        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.SHIPPED);
+    }
+
+    @Test
+    void test_marked_delivered_if_order_not_submitted(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+
+            return assertThrows(IllegalOrderState.class, orderMerged::markedAsDelivered);
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("order state can only be shipped if you want to deliver"));
+    }
+
+    @Test
+    void test_marked_delivered_if_order_not_shipped(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+            orderMerged.submit();
+
+            return assertThrows(IllegalOrderState.class, orderMerged::markedAsDelivered);
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("order state can only be shipped if you want to deliver"));
+    }
+
+    @Test
+    void test_check_delivered_order(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+
+            TestDataCreator.createAddresses();
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        doTransaction(em -> {
+            Order orderMerged = em.merge(addedOrder);
+            orderMerged.submit();
+            orderMerged.markedAsShipped();
+            orderMerged.markedAsDelivered();
+        });
+
+        //----Assert
+        Order persistedOrder = entityFinder.getTheOne(Order.class);
+
+        assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.DELIVERED);
     }
 
     @Test
@@ -306,11 +529,42 @@ public class OrderEntityTests extends EntityBaseTest{
             Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
                     "src/image20", 8f, categoryMerged, sellerMerged);
 
-            return assertThrows(IllegalItemExeption.class, () -> orderMerged.addProduct(product, 2f));
+            return assertThrows(IllegalItemException.class, () -> orderMerged.addProduct(product, 2f));
         });
 
         //----Assert
         assertTrue(exception.getMessage().contains("can't add this item, it belongs to different seller"));
+    }
+
+    @Test
+    void test_add_order_item_if_item_already_added(){
+
+        //----Arrange
+        Order addedOrder = doTransaction(em -> {
+            TestDataCreator.createAddresses();
+            TestDataCreator.createProductsBaseData(em);
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+            Category categoryMerged = em.merge(category1);
+
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order.addProduct(product3, 2f);
+            em.persist(order);
+
+            return order;
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+
+            Order orderMerged = em.merge(addedOrder);
+
+            return assertThrows(IllegalItemException.class, () -> orderMerged.addProduct(product3, 1f));
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("can't add this item, already added"));
     }
 
 }

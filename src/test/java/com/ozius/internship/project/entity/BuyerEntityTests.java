@@ -77,22 +77,47 @@ public class BuyerEntityTests extends EntityBaseTest{
         //----Arrange
         Buyer buyer = doTransaction(em -> {
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
-            return TestDataCreator.createBuyer(em, account);
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+
+            Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
+            buyerToAdd.addAddress(address);
+
+            return buyerToAdd;
         });
 
         //----Act
         Buyer addedBuyer= doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
-            mergedBuyer.updateEmail("cosminaa@gmail.com");
+            mergedBuyer.updateBuyer(
+                    buyer.getAccount().getFirstName(),
+                    buyer.getAccount().getLastName(),
+                    "cosminaa@gmail.com",
+                    buyer.getAccount().getPasswordHash(),
+                    buyer.getAccount().getImageName(),
+                    buyer.getAccount().getTelephone()
+            );
 
             return mergedBuyer;
         });
 
         //----Assert
         Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
+        Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow().getAddress();
+
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminaa@gmail.com");
-        assertThat(persistedBuyer).isEqualTo(addedBuyer);
-        assertThat(persistedBuyer).isNotSameAs(buyer);
+
+        assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
+        assertThat(persistedBuyer.getAccount().getLastName()).isEqualTo("Maria");
+        assertThat(persistedBuyer.getAccount().getPasswordHash()).isEqualTo("ozius1223423345");
+        assertThat(persistedBuyer.getAccount().getImageName()).isEqualTo("/src/image2");
+        assertThat(persistedBuyer.getAccount().getTelephone()).isEqualTo("0735897635");
+
+        assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
+        assertThat(persistedAddress.getState()).isEqualTo("Timis");
+        assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
+        assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
+        assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
+        assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
     }
 
 

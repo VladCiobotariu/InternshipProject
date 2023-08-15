@@ -2,8 +2,6 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.*;
-import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
 import com.ozius.internship.project.entity.order.Order;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
-import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product3;
-import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -99,9 +95,9 @@ public class SellerEntityTests extends EntityBaseTest {
             Seller mergedSeller = em.merge(seller);
             UserAccount account = mergedSeller.getAccount();
             mergedSeller.updateSeller(
-                    account.getEmail(),
                     "Vlad Cristian",
                     account.getLastName(),
+                    account.getEmail(),
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone());
@@ -167,88 +163,4 @@ public class SellerEntityTests extends EntityBaseTest {
         //TODO check reviews deleted? it has cascade.all and also is it necessary to check products deleted? it also has cascade.all
     }
 
-    @Test
-    void test_review_add(){
-
-        //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
-            TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createCategoriesBaseData(em);
-            TestDataCreator.createProductsBaseData(em);
-        });
-
-        //----Act
-        Review addedReview = doTransaction(em -> {
-            Buyer mergedBuyer = em.merge(buyer1);
-            Product mergedProduct = em.merge(product3);
-            Seller mergedSeller = em.merge(seller1);
-
-            return mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct);
-        });
-
-        //----Assert
-        Review persistedReview = entityFinder.getTheOne(Review.class);
-
-        assertThat(persistedReview).isNotNull();
-        assertThat(persistedReview).isEqualTo(addedReview);
-        assertThat(persistedReview.getBuyer()).isEqualTo(buyer1);
-        assertThat(persistedReview.getDescription()).isEqualTo("very good");
-        assertThat(persistedReview.getRating()).isEqualTo(4f);
-        assertThat(persistedReview.getProduct()).isEqualTo(product3);
-    }
-
-    @Test
-    void test_review_add_wrong_product(){
-
-        //----Arrange
-        doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
-            TestDataCreator.createBuyerBaseData(em);
-            TestDataCreator.createCategoriesBaseData(em);
-            TestDataCreator.createProductsBaseData(em);
-        });
-
-        //----Act
-        Exception exception = doTransaction(em -> {
-
-            Buyer mergedBuyer = em.merge(buyer1);
-            Product mergedProduct = em.merge(product1);//product1 does not belong to seller1
-            Seller mergedSeller = em.merge(seller1);
-
-            return assertThrows(IllegalItemExeption.class, () -> mergedSeller.addReview(mergedBuyer, "very good", 4f, mergedProduct));
-        });
-
-        //----Assert
-        assertTrue(exception.getMessage().contains("can't add review, product must correspond to this seller"));
-    }
-
-    @Test
-    void test_review_update(){
-
-        //----Arrange
-        Review review = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
-            TestDataCreator.createCategoriesBaseData(em);
-            TestDataCreator.createProductsBaseData(em);
-            TestDataCreator.createBuyerBaseData(em);
-
-            return TestDataCreator.createReview(buyer1, "good review", 4.5f, product1);
-        });
-
-
-        //----Act
-        doTransaction(em -> {
-            Review mergedReview = em.merge(review);
-            mergedReview.updateReview("very very bad bad review", mergedReview.getRating());
-        });
-
-        //----Assert
-        Review persistedReview = entityFinder.getTheOne(Review.class);
-
-        assertThat(persistedReview.getDescription()).isEqualTo("very very bad bad review");
-        assertThat(persistedReview.getBuyer()).isEqualTo(buyer1);
-        assertThat(persistedReview.getRating()).isEqualTo(4.5f);
-        assertThat(persistedReview.getProduct()).isEqualTo(product1);
-    }
 }

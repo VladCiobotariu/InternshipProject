@@ -2,7 +2,7 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
+import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -35,6 +35,8 @@ public class Seller extends BaseEntity {
             @AttributeOverride( name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
     })
     private Address legalAddress;
+
+    //TODO legal object optional + sellerType
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
@@ -80,7 +82,7 @@ public class Seller extends BaseEntity {
     public Review addReview(Buyer buyer, String description, float rating, Product product){
 
         if(!product.getSeller().equals(this)){
-            throw new IllegalItemExeption("can't add review, product must correspond to this seller");
+            throw new IllegalItemException("can't add review, product must correspond to this seller");
         }
 
         Review reviewNew = new Review(description, rating, buyer, product);
@@ -89,17 +91,9 @@ public class Seller extends BaseEntity {
         return reviewNew;
     }
 
-    public void removeReview(Review review) {
-        this.reviews.remove(review);
-    }
 
-    public void updateSeller(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
-        this.account.setEmail(email);
-        this.account.setFirstName(firstName);
-        this.account.setLastName(lastName);
-        this.account.setPasswordHash(passwordHash);
-        this.account.setImageName(image);
-        this.account.setTelephone(telephone);
+    public void updateSeller(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
+        this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
     }
 
     @Override

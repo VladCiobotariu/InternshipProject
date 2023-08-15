@@ -73,29 +73,13 @@ public class UserAccount extends BaseEntity{
         return telephone;
     }
 
-    //TODO ask about this setters
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
-    }
-
-    public void setImageName(String imageName) {
-        this.imageName = imageName;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
+    public void updateAccount(UserAccount account){
+        this.firstName = account.getFirstName();
+        this.lastName = account.getLastName();
+        this.email = account.getEmail();
+        this.passwordHash = account.getPasswordHash();
+        this.imageName = account.getImageName();
+        this.telephone = account.getTelephone();
     }
 
     @Override
