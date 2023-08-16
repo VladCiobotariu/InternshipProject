@@ -3,8 +3,6 @@ package com.ozius.internship.project.entity.seller;
 import jakarta.persistence.Embeddable;
 
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.Set;
 
 @Embeddable
 public class LegalDetails {
