@@ -33,7 +33,7 @@ public class Cart extends BaseEntity {
     @Column(name = Columns.TOTAL_PRICE, nullable = false)
     private double totalCartPrice;
 
-    protected Cart() {
+    public Cart() {
         this.cartItems = new HashSet<>();
     }
 

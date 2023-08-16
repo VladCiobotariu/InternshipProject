@@ -4,7 +4,7 @@ import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.EntityBaseTest;
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
+import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalRatingException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -107,7 +107,7 @@ public class SellerReviewEntityTests extends EntityBaseTest {
             Seller seller = em.merge(seller2);
             Product product = em.merge(product1); // product1 has seller1
 
-            return assertThrows(IllegalItemExeption.class, () -> seller.addReview(buyer1, "review 1", 5F, product));
+            return assertThrows(IllegalItemException.class, () -> seller.addReview(buyer1, "review 1", 5F, product));
         });
 
         //----Assert

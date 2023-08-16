@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
 import static com.ozius.internship.project.TestDataCreator.Products.product3;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
@@ -540,26 +541,27 @@ public class OrderEntityTests extends EntityBaseTest{
     void test_add_order_item_if_item_already_added(){
 
         //----Arrange
-        Order addedOrder = doTransaction(em -> {
+        Product addedProduct = doTransaction(em -> {
             TestDataCreator.createAddresses();
-            TestDataCreator.createProductsBaseData(em);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged);
+
             Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
-            order.addProduct(product3, 2f);
+            order.addProduct(product, 2f);
             em.persist(order);
 
-            return order;
+            return product;
         });
 
         //----Act
         Exception exception = doTransaction(em -> {
 
-            Order orderMerged = em.merge(addedOrder);
+            Order orderMerged = entityFinder.getTheOne(Order.class);
 
-            return assertThrows(IllegalItemException.class, () -> orderMerged.addProduct(product3, 1f));
+            return assertThrows(IllegalItemException.class, () -> orderMerged.addProduct(addedProduct, 1f));
         });
 
         //----Assert
