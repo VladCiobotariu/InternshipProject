@@ -42,7 +42,9 @@ public class BuyerAddress extends BaseEntity {
         return address;
     }
 
-    //TODO setters for address change
+    void updateAddress(Address address) {
+        this.address.updateAddress(address.getCountry(), address.getState(), address.getCity(), address.getAddressLine1(), address.getAddressLine2(), address.getZipCode());
+    }
 
     @Override
     public String toString() {

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -46,7 +47,9 @@ public class SellerEntityTests extends EntityBaseTest {
                             "/src/image1",
                             "0734896512"
                     ),
-                    "Mega Fresh SRL"
+                    "Mega Fresh SRL",
+                    SellerType.LOCAL_FARMER,
+                    null
             );
             em.persist(seller);
 
@@ -69,6 +72,8 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedSeller.getLegalAddress().getAddressLine1()).isEqualTo("Strada Circumvalatiunii nr 4");
         assertThat(persistedSeller.getLegalAddress().getAddressLine2()).isEqualTo("Bloc 3 Scara B Ap 12");
         assertThat(persistedSeller.getLegalAddress().getZipCode()).isEqualTo("303413");
+        assertThat(persistedSeller.getSellerType()).isEqualTo(SellerType.LOCAL_FARMER);
+        assertThat(persistedSeller.getLegalDetails()).isNull();
 
         assertThat(persistedSeller).isEqualTo(addedSeller);
         assertThat(persistedSeller.getReviews()).isEmpty();
@@ -84,7 +89,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
             UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
 
-            return TestDataCreator.createSeller(em, address, userAccount, "honey srl");
+            return TestDataCreator.createSeller(em, address, userAccount, "honey srl", SellerType.LOCAL_FARMER, null);
         });
 
         //----Act
@@ -92,9 +97,9 @@ public class SellerEntityTests extends EntityBaseTest {
             Seller mergedSeller = em.merge(seller);
             UserAccount account = mergedSeller.getAccount();
             mergedSeller.updateSeller(
-                    account.getEmail(),
                     "Vlad Cristian",
                     account.getLastName(),
+                    account.getEmail(),
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone());
@@ -127,7 +132,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address addressSeller = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
             UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
 
-            Seller seller = TestDataCreator.createSeller(em, addressSeller, userAccount, "bio");
+            Seller seller = TestDataCreator.createSeller(em, addressSeller, userAccount, "bio", SellerType.LOCAL_FARMER, null);
 
             TestDataCreator.createBuyerBaseData(em);
             Address addressBuyer = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
@@ -159,6 +164,5 @@ public class SellerEntityTests extends EntityBaseTest {
 
         //TODO check reviews deleted? it has cascade.all and also is it necessary to check products deleted? it also has cascade.all
     }
-
 
 }

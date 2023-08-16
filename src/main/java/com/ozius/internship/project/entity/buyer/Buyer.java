@@ -4,6 +4,7 @@ import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import jakarta.persistence.*;
 
 import java.util.Collections;
@@ -28,7 +29,8 @@ public class Buyer extends BaseEntity {
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @ManyToMany(cascade = CascadeType.ALL) /*Cascade all for join table*/
+    //TODO ask orphan removal for join table
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = JOIN_TABLE_NAME,
             joinColumns = @JoinColumn(name = Columns.BUYER_ID),
@@ -52,7 +54,6 @@ public class Buyer extends BaseEntity {
         return account;
     }
 
-    //TODO test
     public Set<Product> getFavoriteProducts() {
         return Collections.unmodifiableSet(favoriteProducts);
     }
@@ -61,12 +62,14 @@ public class Buyer extends BaseEntity {
         return Collections.unmodifiableSet(addresses);
     }
 
-    //TODO add tests.
     public void addFavorite(Product product){
+        if(this.favoriteProducts.stream().anyMatch(item -> item.equals(product))){
+            throw new IllegalItemException("can't add to favorites, items already exists");
+        }
         this.favoriteProducts.add(product);
     }
 
-    //TODO add tests.
+    //TODO rm product by id or object
     public void removeFavorite(Product product){
         this.favoriteProducts.remove(product);
     }
@@ -80,19 +83,14 @@ public class Buyer extends BaseEntity {
         this.addresses.remove(address);
     }
 
-    //TODO test
-    public void updateBuyer(String email, String firstName, String lastName, String passwordHash, String image, String telephone){
-        this.account.setEmail(email);
-        this.account.setFirstName(firstName);
-        this.account.setLastName(lastName);
-        this.account.setPasswordHash(passwordHash);
-        this.account.setImageName(image);
-        this.account.setTelephone(telephone);
+    public void updateBuyer(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
+        this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
     }
 
-    //TODO remove after updating SellerEntityTest
-    public void updateEmail(String email){
-        this.account.setEmail(email);
+    public void updateAddress(Address address, long id){
+        BuyerAddress addressToUpdate = this.addresses.stream().filter(item -> item.getId() == id).findFirst().orElseThrow();
+
+        addressToUpdate.updateAddress(address);
     }
 
     @Override

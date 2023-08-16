@@ -2,7 +2,7 @@ package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalItemExeption;
+import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
@@ -86,7 +86,6 @@ public class Order extends BaseEntity {
         this.address = address;
 
         this.buyer = buyer;
-        //TODO is it necessary to add seller to constructor or can we set it in addProduct if seller is null?
         this.seller = seller;
 
         this.orderItems = new HashSet<>();
@@ -101,8 +100,13 @@ public class Order extends BaseEntity {
     }
 
     public OrderItem addProduct(Product product, float quantity) {
+
+        if(this.orderItems.stream().map(OrderItem::getProduct).anyMatch(item -> item.equals(product))){
+            throw new IllegalItemException("can't add this item, already added");
+        }
+
         if (!(product.getSeller().equals(this.getSeller()))) {
-            throw new IllegalItemExeption("can't add this item, it belongs to different seller");
+            throw new IllegalItemException("can't add this item, it belongs to different seller");
         }
 
         if (this.orderStatus == OrderStatus.SUBMITTED ||
@@ -175,7 +179,6 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.SUBMITTED;
     }
 
-    //TODO test
     public void markedAsShipped() {
         if (this.orderStatus != OrderStatus.SUBMITTED) {
             throw new IllegalOrderState("order state can only be submitted if you want to ship");
@@ -183,7 +186,6 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.SHIPPED;
     }
 
-    //TODO test
     public void markedAsDelivered() {
         if (this.orderStatus != OrderStatus.SHIPPED) {
             throw new IllegalOrderState("order state can only be shipped if you want to deliver");

@@ -51,6 +51,12 @@ public class EntityFinder {
                 .getResultList();
     }
 
+    //TODO i want to see a join table data, how?
+    public List getFavorites(){
+        return em.createQuery(
+                "select x from buyer_favorites x").getResultList();
+    }
+
     public Product getProductByName(String name) {
         try {
             return em.createQuery(
