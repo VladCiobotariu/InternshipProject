@@ -546,7 +546,6 @@ public class OrderEntityTests extends EntityBaseTest{
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
-            Category categoryMerged = em.merge(category1);
 
             Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
             order.addProduct(product3, 2f);

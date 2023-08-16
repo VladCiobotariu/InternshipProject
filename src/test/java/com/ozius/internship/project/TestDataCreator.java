@@ -3,8 +3,10 @@ package com.ozius.internship.project;
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
 
 public class TestDataCreator {
@@ -48,8 +50,8 @@ public class TestDataCreator {
 
     }
 
-    public static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias){
-        Seller seller = new Seller(address, account, alias);
+    public static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias, SellerType sellerType, LegalDetails legalDetails){
+        Seller seller = new Seller(address, account, alias, sellerType, legalDetails);
         em.persist(seller);
 
         return seller;
@@ -69,7 +71,9 @@ public class TestDataCreator {
                         "ozius12345",
                         "/src/image1",
                         "0734896512"),
-                "Mega Fresh SRL");
+                "Mega Fresh SRL",
+                SellerType.LOCAL_FARMER,
+                null);
 
         Sellers.seller1 = createSeller(em,
                 new Address("Spania",
@@ -84,7 +88,9 @@ public class TestDataCreator {
                         "ozius54",
                         "/src/image99",
                         "0734896777"),
-                "FC BARCELONA");
+                "FC BARCELONA",
+                SellerType.LOCAL_FARMER,
+                null);
 
     }
 
