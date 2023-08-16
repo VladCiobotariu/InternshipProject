@@ -11,6 +11,7 @@ public class LegalDetails {
 
     private String name;
     private String cui;
+    //TODO use string to define max length for jpa?
     private String caen;
     private LocalDate dateOfEstablishment;
 
@@ -39,5 +40,12 @@ public class LegalDetails {
 
     public LocalDate getDateOfEstablishment() {
         return dateOfEstablishment;
+    }
+
+    void updateLegalDetails(LegalDetails legalDetails){
+        this.name = legalDetails.getName();
+        this.cui = legalDetails.getCui();
+        this.caen = legalDetails.getCaen();
+        this.dateOfEstablishment = legalDetails.getDateOfEstablishment();
     }
 }

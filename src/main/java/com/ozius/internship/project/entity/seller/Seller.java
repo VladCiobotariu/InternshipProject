@@ -2,12 +2,13 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalISellerDetails;
+import com.ozius.internship.project.entity.exeption.IllegalSellerDetails;
 import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalRatingException;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,8 +48,8 @@ public class Seller extends BaseEntity {
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column(name = Columns.COMPANY_NAME)),
-            @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI)),
-            @AttributeOverride(name = "caen", column = @Column(name = Columns.CAEN)),
+            @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI, length = 10)),
+            @AttributeOverride(name = "caen", column = @Column(name = Columns.CAEN, length = 4)),
             @AttributeOverride(name = "dateOfEstablishment", column = @Column(name = Columns.DATE_OF_ESTABLISHMENT))
     })
     private LegalDetails legalDetails;
@@ -78,8 +79,12 @@ public class Seller extends BaseEntity {
         this.alias = alias;
         this.sellerType = sellerType;
         if(sellerType == SellerType.PFA || sellerType == SellerType.COMPANY){
-            if(legalDetails==null) throw new IllegalISellerDetails("legalDetails can't be null if company or pfa");
+            if(legalDetails==null) throw new IllegalSellerDetails("legalDetails can't be null if company or pfa");
             this.legalDetails = legalDetails;
+            //TODO add if statement if user inserts legal details if he is a local farmer?
+            // with this implementation it just doesn't add details and would not throw an exception
+        } else {
+            this.legalDetails = new LegalDetails(null, null, null, null);
         }
     }
 
@@ -126,8 +131,13 @@ public class Seller extends BaseEntity {
     }
 
 
-    public void updateSeller(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
+    public void updateSeller(String firstName, String lastName, String email, String passwordHash, String image, String telephone,
+                                String companyName, String cui, String caen, LocalDate dateOfEstablishment,
+                                    Address legalAddress ){
+
         this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
+        this.legalDetails.updateLegalDetails(new LegalDetails(companyName, cui, caen, dateOfEstablishment));
+        this.legalAddress.updateAddress(legalAddress.getCountry(), legalAddress.getState(), legalAddress.getCity(), legalAddress.getAddressLine1(), legalAddress.getAddressLine2(), legalAddress.getZipCode());
     }
 
     @Override
