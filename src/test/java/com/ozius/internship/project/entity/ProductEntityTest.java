@@ -1,6 +1,7 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
+import com.ozius.internship.project.entity.exeption.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductEntityTest extends EntityBaseTest {
 
@@ -19,7 +22,7 @@ public class ProductEntityTest extends EntityBaseTest {
 
     @Test
     public void product_is_created() {
-         //----Act
+        //----Act
         doTransaction(em -> {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
@@ -83,6 +86,45 @@ public class ProductEntityTest extends EntityBaseTest {
 
         //----Assert
         assertThat(entityFinder.findAll(Product.class)).isEmpty();
+    }
+
+    @Test
+    public void product_added_with_negative_price_throws_exception() {
+        //----Act
+        Exception exception = doTransaction(em -> {
+            Category cat = em.merge(category1);
+            Seller seller = em.merge(seller2);
+            return assertThrows(IllegalPriceException.class, () -> {
+                Product product = new Product("vinete", "descriereVinete", "/vinete", -2f, cat, seller);
+                em.persist(product);
+            });
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("Price cannot be negative!"));
+    }
+
+    @Test
+    public void product_updated_with_negative_price_throws_exception() {
+        //----Arrange
+        doTransaction(em -> {
+            Category cat = em.merge(category1);
+            Seller seller = em.merge(seller2);
+            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
+            em.persist(product);
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Product pr = entityFinder.getTheOne(Product.class);
+            return assertThrows(IllegalPriceException.class, () -> {
+                pr.updateProduct("vinete_schimbate", "vinete mari", pr.getImageName(), -1F, pr.getCategory(), pr.getSeller());
+            });
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("Price cannot be negative!"));
     }
 
 }
