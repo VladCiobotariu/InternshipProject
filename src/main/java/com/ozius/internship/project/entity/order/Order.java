@@ -33,6 +33,7 @@ public class Order extends BaseEntity {
         String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
         String ZIP_CODE = "ZIP_CODE";
         String SELLER_EMAIL = "SELLER_EMAIL";
+        String SELLER_ALIAS = "SELLER_ALIAS";
     }
 
     @Enumerated(EnumType.STRING)
@@ -60,6 +61,9 @@ public class Order extends BaseEntity {
 
     @Column(name = Columns.SELLER_EMAIL, nullable = false)
     private String sellerEmail;
+
+    @Column(name = Columns.SELLER_ALIAS, nullable = false)
+    private String sellerAlias;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = OrderItem.Columns.ORDER_ID)
@@ -91,6 +95,7 @@ public class Order extends BaseEntity {
         this.orderItems = new HashSet<>();
 
         this.sellerEmail = seller.getAccount().getEmail();
+        this.sellerAlias = seller.getAlias();
         this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
