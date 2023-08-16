@@ -175,6 +175,10 @@ public class Order extends BaseEntity {
         return sellerEmail;
     }
 
+    public String getSellerAlias(){
+        return sellerAlias;
+    }
+
     public void submit() {
         if (this.orderStatus != OrderStatus.DRAFT) {
             throw new IllegalOrderState("order state can only be draft if you want to submit");
