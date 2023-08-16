@@ -3,6 +3,7 @@ package com.ozius.internship.project.entity.seller;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.exeption.IllegalRatingException;
 import jakarta.persistence.*;
 
 @Entity
@@ -59,6 +60,9 @@ public class Review extends BaseEntity {
     }
 
     public void updateReview(String description, float rating) {
+        if(rating < 0 || rating > 5) {
+            throw new IllegalRatingException("Rating must be between 0 and 5!");
+        }
         this.description = description;
         this.rating = rating;
     }

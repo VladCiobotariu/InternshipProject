@@ -4,7 +4,7 @@ import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
-import com.ozius.internship.project.entity.exeption.InvalidCartItemQuantity;
+import com.ozius.internship.project.entity.exeption.NotFoundException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +18,7 @@ import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CartEntityTest extends EntityBaseTest {
 
@@ -56,8 +57,8 @@ public class CartEntityTest extends EntityBaseTest {
             Cart cart = entityFinder.getTheOne(Cart.class);
             Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
             Product p2 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, category2, seller2);
-            cart.addToCart(p1, 3);
-            cart.addToCart(p2, 2);
+            cart.addOrUpdateItem(p1, 3);
+            cart.addOrUpdateItem(p2, 2);
         });
 
         // ----Assert
@@ -79,7 +80,7 @@ public class CartEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
             Product p1 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, category2, seller2);
-            cart.addToCart(p1, 2);
+            cart.addOrUpdateItem(p1, 2);
         });
 
         // ----Assert
@@ -95,7 +96,8 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         doTransaction(em -> {
             Cart cart = new Cart();
-            cart.addToCart(product1, 1);
+            Product pr = em.merge(product1);
+            cart.addOrUpdateItem(pr, 1);
             em.persist(cart);
         });
 
@@ -119,7 +121,7 @@ public class CartEntityTest extends EntityBaseTest {
         Product productSaved = doTransaction(em -> {
             Cart cart = new Cart();
             Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1);
-            cart.addToCart(product, 2);
+            cart.addOrUpdateItem(product, 2);
             em.persist(cart);
 
             return product;
@@ -129,7 +131,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            cart.updateCartItem(productSaved, 20);
+            cart.addOrUpdateItem(productSaved, 20);
         });
 
         // ----Assert
@@ -149,10 +151,11 @@ public class CartEntityTest extends EntityBaseTest {
         // ----Arrange
         Product pr = doTransaction(em -> {
             Cart cart = new Cart();
-            cart.addToCart(product1, 1);
+            Product product = em.merge(product1);
+            cart.addOrUpdateItem(product, 1);
             em.persist(cart);
 
-            return product1;
+            return product;
         });
 
         // ----Act
@@ -194,6 +197,31 @@ public class CartEntityTest extends EntityBaseTest {
     }
 
     @Test
+    public void cart_is_cleared() {
+        //----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            cart.addOrUpdateItem(em.merge(product1), 1);
+            cart.addOrUpdateItem(em.merge(product2), 2);
+            em.persist(cart);
+        });
+
+        //----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            cart.clearCartFromAllCartItems();
+        });
+
+        //----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+
+        assertThat(persistedCart.getCartItems()).isEmpty();
+        assertThat(persistedCart.getTotalCartPrice()).isEqualTo(0);
+        assertThat(persistedCart.getCartItems().size()).isEqualTo(0);
+    }
+
+    @Test
     public void adding_cartItem_with_zero_quantity_throws_exception() {
         // ----Arrange
         doTransaction(em -> {
@@ -201,15 +229,17 @@ public class CartEntityTest extends EntityBaseTest {
             em.persist(cart);
         });
 
-        // ----Act & Assert
-        assertThrows(IllegalQuantityException.class, () -> {
-            doTransaction(em -> {
-                EntityFinder entityFinder = new EntityFinder(em);
-                Cart cart = entityFinder.getTheOne(Cart.class);
-                Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
-                cart.addToCart(p1, 0);
-            });
+        // ----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+
+            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, 0));
         });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("Quantity cannot be 0!"));
     }
 
     @Test
@@ -218,20 +248,21 @@ public class CartEntityTest extends EntityBaseTest {
         Product productSaved = doTransaction(em -> {
             Cart cart = new Cart();
             Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1);
-            cart.addToCart(product, 2);
+            cart.addOrUpdateItem(product, 2);
             em.persist(cart);
 
             return product;
         });
 
-        // ----Act & Assert
-        assertThrows(IllegalQuantityException.class, () -> {
-            doTransaction(em -> {
-                EntityFinder entityFinder = new EntityFinder(em);
-                Cart cart = entityFinder.getTheOne(Cart.class);
-                cart.updateCartItem(productSaved, 0);
-            });
+        // ----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(productSaved, 0));
         });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("Quantity cannot be 0!"));
     }
 
     @Test
@@ -242,15 +273,17 @@ public class CartEntityTest extends EntityBaseTest {
             em.persist(cart);
         });
 
-        // ----Act & Assert
-        assertThrows(InvalidCartItemQuantity.class, () -> {
-            doTransaction(em -> {
-                EntityFinder entityFinder = new EntityFinder(em);
-                Cart cart = entityFinder.getTheOne(Cart.class);
-                Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
-                cart.addToCart(p1, -5);
-            });
+        // ----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, -5));
         });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("Quantity cannot be less than 0!"));
+
     }
 
     @Test
@@ -259,20 +292,44 @@ public class CartEntityTest extends EntityBaseTest {
         Product productSaved = doTransaction(em -> {
             Cart cart = new Cart();
             Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1);
-            cart.addToCart(product, 2);
+            cart.addOrUpdateItem(product, 2);
             em.persist(cart);
 
             return product;
         });
 
-        // ----Act & Assert
-        assertThrows(InvalidCartItemQuantity.class, () -> {
-            doTransaction(em -> {
-                EntityFinder entityFinder = new EntityFinder(em);
-                Cart cart = entityFinder.getTheOne(Cart.class);
-                cart.updateCartItem(productSaved, -2);
+        // ----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(productSaved, -2));
+        });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("Quantity cannot be less than 0!"));
+    }
+
+    @Test
+    public void cartItem_not_found_when_want_to_remove() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            cart.addOrUpdateItem(em.merge(product1), 1);
+            em.persist(cart);
+
+        });
+
+        // ----Act
+        Exception exception = doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            return assertThrows(NotFoundException.class, () -> {
+                cart.removeFromCart(product2);
             });
         });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("Cart item was not found in the list!"));
     }
 
 }

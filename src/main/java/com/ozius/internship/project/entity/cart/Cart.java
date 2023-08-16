@@ -4,7 +4,7 @@ import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
-import com.ozius.internship.project.entity.exeption.InvalidCartItemQuantity;
+import com.ozius.internship.project.entity.exeption.NotFoundException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -72,9 +72,7 @@ public class Cart extends BaseEntity {
                 .orElse(null);
     }
 
-    // return CartItem because of TestDataCreator
-    //TODO why return cartItem only because TestDataCreator?
-    public CartItem addToCart(Product product, float quantity) {
+    public void addOrUpdateItem(Product product, float quantity) {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
@@ -82,45 +80,30 @@ public class Cart extends BaseEntity {
             throw new IllegalQuantityException("Quantity cannot be 0!");
         }
         if(quantity < 0) {
-            throw new InvalidCartItemQuantity("Quantity can be less than 0!");
+            throw new IllegalQuantityException("Quantity cannot be less than 0!");
         }
 
         if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
-            this.totalCartPrice = calculateTotalPrice();
-            return existingCartItem;
+            existingCartItem.setQuantity(quantity);
         } else {
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
-            this.totalCartPrice = calculateTotalPrice();
-            return cartItem;
         }
+        this.totalCartPrice = calculateTotalPrice();
     }
 
-    // TODO - should i check the quantity to make quantity-1 or just delete the entire cartItem?
     public void removeFromCart(Product product) {
         CartItem cartItem = getCartItemByProduct(product);
-
-        if(cartItem != null) {
-            this.cartItems.remove(cartItem);
-            this.totalCartPrice = calculateTotalPrice();
+        if(cartItem == null) {
+            throw new NotFoundException("Cart item was not found in the list!");
         }
+        this.cartItems.remove(cartItem);
+        this.totalCartPrice = calculateTotalPrice();
     }
 
-    public void updateCartItem(Product product, float quantity) {
-        if(quantity == 0) {
-            throw new IllegalQuantityException("Quantity cannot be 0!");
-        }
-        if(quantity < 0) {
-            throw new InvalidCartItemQuantity("Quantity can be less than 0!");
-        }
-
-        CartItem cartItem = getCartItemByProduct(product);
-
-        if (cartItem != null) {
-            cartItem.setQuantity(quantity);
-            this.totalCartPrice = calculateTotalPrice();
-        }
+    public void clearCartFromAllCartItems() {
+        this.cartItems.clear();
+        this.totalCartPrice = 0f;
     }
 
     public void assignBuyerToCart(Buyer buyer) {
