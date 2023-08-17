@@ -131,7 +131,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            cart.addOrUpdateItem(productSaved, 20);
+            cart.addOrUpdateItem(productSaved, 20); // 20 + 2
         });
 
         // ----Assert
@@ -140,10 +140,35 @@ public class CartEntityTest extends EntityBaseTest {
         Product persistedProduct = cartItem.getProduct();
 
         assertThat(persistedProduct).isEqualTo(productSaved);
-        assertThat(persistedCart.getTotalCartPrice()).isEqualTo(100);
+        assertThat(persistedCart.getTotalCartPrice()).isEqualTo(110);
         assertThat(cartItem.getProduct()).isEqualTo(productSaved);
-        assertThat(cartItem.getQuantity()).isEqualTo(20);
+        assertThat(cartItem.getQuantity()).isEqualTo(22);
 
+    }
+
+    @Test
+    public void same_cart_item_added() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            cart.addOrUpdateItem(em.merge(product1), 2);
+            em.persist(cart);
+
+        });
+
+        // ----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            cart.addOrUpdateItem(em.merge(product1), 1);
+        });
+
+        // ----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+        CartItem cartItem = persistedCart.getCartItems().stream().findFirst().orElseThrow();
+
+        assertThat(cartItem.getProduct()).isEqualTo(product1);
+        assertThat(cartItem.getQuantity()).isEqualTo(3);
     }
 
     @Test
@@ -323,9 +348,7 @@ public class CartEntityTest extends EntityBaseTest {
         Exception exception = doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            return assertThrows(NotFoundException.class, () -> {
-                cart.removeFromCart(product2);
-            });
+            return assertThrows(NotFoundException.class, () -> cart.removeFromCart(product2));
         });
 
         // ----Assert
