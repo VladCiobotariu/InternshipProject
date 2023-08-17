@@ -116,6 +116,31 @@ public class CartEntityTest extends EntityBaseTest {
     }
 
     @Test
+    public void same_cart_item_added() {
+        // ----Arrange
+        doTransaction(em -> {
+            Cart cart = new Cart();
+            cart.addOrUpdateItem(em.merge(product1), 2);
+            em.persist(cart);
+
+        });
+
+        // ----Act
+        doTransaction(em -> {
+            EntityFinder entityFinder = new EntityFinder(em);
+            Cart cart = entityFinder.getTheOne(Cart.class);
+            cart.addOrUpdateItem(em.merge(product1), 1);
+        });
+
+        // ----Assert
+        Cart persistedCart = entityFinder.getTheOne(Cart.class);
+        CartItem cartItem = persistedCart.getCartItems().stream().findFirst().orElseThrow();
+
+        assertThat(cartItem.getProduct()).isEqualTo(product1);
+        assertThat(cartItem.getQuantity()).isEqualTo(3);
+    }
+
+    @Test
     public void cartItem_is_updated() {
         // ----Arrange
         Product productSaved = doTransaction(em -> {
@@ -144,31 +169,6 @@ public class CartEntityTest extends EntityBaseTest {
         assertThat(cartItem.getProduct()).isEqualTo(productSaved);
         assertThat(cartItem.getQuantity()).isEqualTo(22);
 
-    }
-
-    @Test
-    public void same_cart_item_added() {
-        // ----Arrange
-        doTransaction(em -> {
-            Cart cart = new Cart();
-            cart.addOrUpdateItem(em.merge(product1), 2);
-            em.persist(cart);
-
-        });
-
-        // ----Act
-        doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class);
-            cart.addOrUpdateItem(em.merge(product1), 1);
-        });
-
-        // ----Assert
-        Cart persistedCart = entityFinder.getTheOne(Cart.class);
-        CartItem cartItem = persistedCart.getCartItems().stream().findFirst().orElseThrow();
-
-        assertThat(cartItem.getProduct()).isEqualTo(product1);
-        assertThat(cartItem.getQuantity()).isEqualTo(3);
     }
 
     @Test
