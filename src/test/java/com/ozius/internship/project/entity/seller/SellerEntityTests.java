@@ -228,7 +228,7 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Act
         doTransaction(em -> {
             UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
-            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
+            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address1, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
             em.persist(seller);
@@ -239,7 +239,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         assertThat(persistedLegalDetails.getName()).isEqualTo("MEGA FRESH SA");
         assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745609");
-        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.J);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.F);
         assertThat(persistedLegalDetails.getRegistrationNumber().getNumericCodeByState()).isEqualTo(41);
         assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
         assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
@@ -254,7 +254,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
 
             UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
-            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
+            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.C, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
             em.persist(seller);
@@ -303,7 +303,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         assertThat(persistedLegalDetails.getName()).isEqualTo("MEGA FRESH SA");
         assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745999");
-        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.J);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.C);
         assertThat(persistedLegalDetails.getRegistrationNumber().getNumericCodeByState()).isEqualTo(41);
         assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
         assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
