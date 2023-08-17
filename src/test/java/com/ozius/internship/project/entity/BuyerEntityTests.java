@@ -96,6 +96,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         //----Act
         doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
+
             //TODO how to do this better?
             long addressId = mergedBuyer.getAddresses().stream().findFirst().orElseThrow().getId();
             Address address = new Address("Spain", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
