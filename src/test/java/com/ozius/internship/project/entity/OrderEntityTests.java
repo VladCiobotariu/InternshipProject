@@ -18,8 +18,6 @@ import java.time.LocalDate;
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
-import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product3;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
 import static org.assertj.core.api.Assertions.*;
@@ -71,6 +69,7 @@ public class OrderEntityTests extends EntityBaseTest{
         assertThat(persistedOrder.getTelephone()).isEqualTo(buyer1.getAccount().getTelephone());
         assertThat(persistedOrder.getAddress()).isEqualTo(addedAddress);
         assertThat(persistedOrder.getSellerEmail()).isEqualTo(seller1.getAccount().getEmail());
+        assertThat(persistedOrder.getSellerAlias()).isEqualTo(seller1.getAlias());
     }
 
     @Test
