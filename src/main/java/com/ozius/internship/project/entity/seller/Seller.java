@@ -8,7 +8,6 @@ import com.ozius.internship.project.entity.exeption.IllegalRatingException;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,8 +28,10 @@ public class Seller extends BaseEntity {
         String ZIP_CODE = "ZIP_CODE";
         String COMPANY_NAME = "COMPANY_NAME";
         String CUI = "CUI";
-        String CAEN = "CAEN";
-        String DATE_OF_ESTABLISHMENT = "DATE_OF_ESTABLISHMENT";
+        String COMPANY_TYPE = "COMPANY_TYPE";
+        String NUMERIC_CODE_BY_STATE = "NUMERIC_CODE_BY_STATE";
+        String SERIAL_NUMBER = "SERIAL_NUMBER";
+        String DATE_OF_REGISTRATION = "DATE_OF_REGISTRATION";
         String SELLER_TYPE = "SELLER_TYPE";
     }
 
@@ -49,8 +50,10 @@ public class Seller extends BaseEntity {
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column(name = Columns.COMPANY_NAME)),
             @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI, length = 10)),
-            @AttributeOverride(name = "caen", column = @Column(name = Columns.CAEN, length = 4)),
-            @AttributeOverride(name = "dateOfEstablishment", column = @Column(name = Columns.DATE_OF_ESTABLISHMENT))
+            @AttributeOverride(name = "registrationNumber.companyType", column = @Column(name = Columns.COMPANY_TYPE, length = 10)),
+            @AttributeOverride(name = "registrationNumber.numericCodeByState", column = @Column(name = Columns.NUMERIC_CODE_BY_STATE, length = 10)),
+            @AttributeOverride(name = "registrationNumber.serialNumber", column = @Column(name = Columns.SERIAL_NUMBER, length = 10)),
+            @AttributeOverride(name = "registrationNumber.dateOfRegistration", column = @Column(name = Columns.DATE_OF_REGISTRATION, length = 10))
     })
     private LegalDetails legalDetails;
 
@@ -72,19 +75,16 @@ public class Seller extends BaseEntity {
     protected Seller() {
     }
 
+    //TODO add 2 constructors
     public Seller(Address legalAddress, UserAccount account, String alias, SellerType sellerType, LegalDetails legalDetails) {
         this.legalAddress = legalAddress;
         this.account = account;
         this.reviews = new HashSet<>();
         this.alias = alias;
         this.sellerType = sellerType;
-        if(sellerType == SellerType.PFA || sellerType == SellerType.COMPANY){
+        if(sellerType != SellerType.LOCAL_FARMER){
             if(legalDetails==null) throw new IllegalSellerDetails("legalDetails can't be null if company or pfa");
             this.legalDetails = legalDetails;
-            //TODO add if statement if user inserts legal details if he is a local farmer?
-            // with this implementation it just doesn't add details and would not throw an exception
-        } else {
-            this.legalDetails = new LegalDetails(null, null, null, null);
         }
     }
 
@@ -132,12 +132,12 @@ public class Seller extends BaseEntity {
 
 
     public void updateSeller(String firstName, String lastName, String email, String passwordHash, String image, String telephone,
-                                String companyName, String cui, String caen, LocalDate dateOfEstablishment,
+                                LegalDetails legalDetails,
                                     Address legalAddress ){
 
         this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
-        this.legalDetails.updateLegalDetails(new LegalDetails(companyName, cui, caen, dateOfEstablishment));
-        this.legalAddress.updateAddress(legalAddress.getCountry(), legalAddress.getState(), legalAddress.getCity(), legalAddress.getAddressLine1(), legalAddress.getAddressLine2(), legalAddress.getZipCode());
+        this.legalDetails = legalDetails;
+        this.legalAddress = legalAddress;
     }
 
     @Override

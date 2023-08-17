@@ -29,8 +29,7 @@ public class Buyer extends BaseEntity {
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    //TODO ask orphan removal for join table
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = JOIN_TABLE_NAME,
             joinColumns = @JoinColumn(name = Columns.BUYER_ID),
@@ -87,6 +86,7 @@ public class Buyer extends BaseEntity {
         this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
     }
 
+    //TODO i cant move it because i dont know what to modify because id
     public void updateAddress(Address address, long id){
         BuyerAddress addressToUpdate = this.addresses.stream().filter(item -> item.getId() == id).findFirst().orElseThrow();
 

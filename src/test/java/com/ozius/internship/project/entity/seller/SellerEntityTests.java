@@ -100,8 +100,6 @@ public class SellerEntityTests extends EntityBaseTest {
         doTransaction(em -> {
             Seller mergedSeller = em.merge(seller);
             UserAccount account = mergedSeller.getAccount();
-            LegalDetails legalDetails = mergedSeller.getLegalDetails();
-            Address legalAddress = mergedSeller.getLegalAddress();
 
             mergedSeller.updateSeller(
                     "Vlad Cristian",
@@ -110,11 +108,8 @@ public class SellerEntityTests extends EntityBaseTest {
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone(),
-                    legalDetails.getName(),
-                    legalDetails.getCui(),
-                    legalDetails.getCaen(),
-                    legalDetails.getDateOfEstablishment(),
-                    legalAddress);
+                    mergedSeller.getLegalDetails(),
+                    mergedSeller.getLegalAddress());
         });
 
         //----Assert
@@ -233,7 +228,7 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Act
         doTransaction(em -> {
             UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
-            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", "8559", LocalDate.now());
+            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address1, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
             em.persist(seller);
@@ -244,9 +239,10 @@ public class SellerEntityTests extends EntityBaseTest {
 
         assertThat(persistedLegalDetails.getName()).isEqualTo("MEGA FRESH SA");
         assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745609");
-        assertThat(persistedLegalDetails.getCaen()).isEqualTo("8559");
-        assertEquals(persistedLegalDetails.getDateOfEstablishment(), LocalDate.now());
-
+        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.J);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getNumericCodeByState()).isEqualTo(41);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
     }
 
     @Test
@@ -258,7 +254,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
 
             UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
-            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", "8559", LocalDate.now());
+            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
             em.persist(seller);
@@ -271,7 +267,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Seller mergedSeller = em.merge(sellerToUpdate);
             UserAccount account = mergedSeller.getAccount();
             LegalDetails legalDetails = mergedSeller.getLegalDetails();
-            Address legalAddress = mergedSeller.getLegalAddress();
+            LegalDetails legalDetailsToAdd = new LegalDetails(legalDetails.getName(), "RO37745999", legalDetails.getRegistrationNumber());
 
             mergedSeller.updateSeller(
                     account.getFirstName(),
@@ -280,11 +276,8 @@ public class SellerEntityTests extends EntityBaseTest {
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone(),
-                    legalDetails.getName(),
-                    legalDetails.getCui(),
-                    "3489",
-                    legalDetails.getDateOfEstablishment(),
-                    legalAddress
+                    legalDetailsToAdd,
+                    mergedSeller.getLegalAddress()
             );
         });
 
@@ -309,9 +302,11 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedSeller.getSellerType()).isEqualTo(SellerType.PFA);
 
         assertThat(persistedLegalDetails.getName()).isEqualTo("MEGA FRESH SA");
-        assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745609");
-        assertThat(persistedLegalDetails.getCaen()).isEqualTo("3489");
-        assertEquals(persistedLegalDetails.getDateOfEstablishment(), LocalDate.now());
+        assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745999");
+        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.J);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getNumericCodeByState()).isEqualTo(41);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
 
     }
 
@@ -324,7 +319,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
 
             UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
-            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", "8559", LocalDate.now());
+            LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
             em.persist(seller);
@@ -337,9 +332,9 @@ public class SellerEntityTests extends EntityBaseTest {
             Seller mergedSeller = em.merge(sellerToUpdate);
             UserAccount account = mergedSeller.getAccount();
             LegalDetails legalDetails = mergedSeller.getLegalDetails();
+            Address legalAddress = mergedSeller.getLegalAddress();
 
-            //TODO how to do this better? like in BuyerEntityTests.java in line 100
-            Address legalAddress = new Address("Italy", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
+            Address legalAddressToAdd = new Address("Italy", legalAddress.getState(), legalAddress.getCity(), legalAddress.getAddressLine1(), legalAddress.getAddressLine2(), legalAddress.getZipCode());
 
             mergedSeller.updateSeller(
                     account.getFirstName(),
@@ -348,11 +343,8 @@ public class SellerEntityTests extends EntityBaseTest {
                     account.getPasswordHash(),
                     account.getImageName(),
                     account.getTelephone(),
-                    legalDetails.getName(),
-                    legalDetails.getCui(),
-                    legalDetails.getCaen(),
-                    legalDetails.getDateOfEstablishment(),
-                    legalAddress
+                    legalDetails,
+                    legalAddressToAdd
             );
         });
 
@@ -378,9 +370,10 @@ public class SellerEntityTests extends EntityBaseTest {
 
         assertThat(persistedLegalDetails.getName()).isEqualTo("MEGA FRESH SA");
         assertThat(persistedLegalDetails.getCui()).isEqualTo("RO37745609");
-        assertThat(persistedLegalDetails.getCaen()).isEqualTo("8559");
-        assertEquals(persistedLegalDetails.getDateOfEstablishment(), LocalDate.now());
-
+        assertThat(persistedLegalDetails.getRegistrationNumber().getCompanyType()).isEqualTo(CompanyType.J);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getNumericCodeByState()).isEqualTo(41);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
+        assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
     }
 
 }

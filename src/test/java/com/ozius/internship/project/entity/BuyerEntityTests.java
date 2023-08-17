@@ -97,7 +97,6 @@ public class BuyerEntityTests extends EntityBaseTest{
         doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
 
-            //TODO how to do this better?
             long addressId = mergedBuyer.getAddresses().stream().findFirst().orElseThrow().getId();
             Address address = new Address("Spain", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
@@ -373,7 +372,6 @@ public class BuyerEntityTests extends EntityBaseTest{
         doTransaction(em -> {
             Buyer mergedBuyer = new EntityFinder(em).getTheOne(Buyer.class);
 
-            //TODO ask if this is merged because many to many table
             Product mergedProduct = em.merge(productToRemove);
             mergedBuyer.removeFavorite(mergedProduct);
         });
