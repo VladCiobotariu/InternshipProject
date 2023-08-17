@@ -167,11 +167,16 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
+            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createCategoriesBaseData(em);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
             buyerToAdd.addAddress(address);
+            buyerToAdd.addFavorite(product);
 
             return buyerToAdd;
         });
@@ -187,6 +192,8 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         assertThat(buyerRepository.findAll().contains(buyer)).isFalse();
         assertThat(buyerAddress).isEmpty();
+        assertThat(entityFinder.getFavorites()).isEmpty();
+        assertThat(entityFinder.getAll(Product.class).size()).isEqualTo(1);
     }
 
     @Test
@@ -208,11 +215,9 @@ public class BuyerEntityTests extends EntityBaseTest{
         doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
 
-            BuyerAddress addressToRemove = mergedBuyer.getAddresses().stream()
-                    .findFirst()
-                    .orElse(null);
+            long addressId = mergedBuyer.getAddresses().stream().findFirst().orElseThrow().getId();
 
-            mergedBuyer.removeAddress(addressToRemove);
+            mergedBuyer.removeAddress(addressId);
         });
 
         //----Assert

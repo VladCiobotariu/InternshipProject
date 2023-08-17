@@ -29,7 +29,7 @@ public class Buyer extends BaseEntity {
     @JoinColumn(name = Columns.ACCOUNT_ID, nullable = false)
     private UserAccount account;
 
-    @ManyToMany
+    @ManyToMany//dont put cascade all here because if buyer deleted it deletes products
     @JoinTable(
             name = JOIN_TABLE_NAME,
             joinColumns = @JoinColumn(name = Columns.BUYER_ID),
@@ -37,7 +37,8 @@ public class Buyer extends BaseEntity {
     private Set<Product> favoriteProducts;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false)
+    @JoinColumn(name = BuyerAddress.Columns.BUYER_ID, nullable = false, foreignKey = @ForeignKey(foreignKeyDefinition =
+            "FOREIGN KEY (" + BuyerAddress.Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<BuyerAddress> addresses;
 
     protected Buyer() {
@@ -68,7 +69,6 @@ public class Buyer extends BaseEntity {
         this.favoriteProducts.add(product);
     }
 
-    //TODO rm product by id or object
     public void removeFavorite(Product product){
         this.favoriteProducts.remove(product);
     }
@@ -78,15 +78,15 @@ public class Buyer extends BaseEntity {
         this.addresses.add(newBuyerAddress);
     }
 
-    public void removeAddress(BuyerAddress address){
-        this.addresses.remove(address);
+    public void removeAddress(long id){
+        BuyerAddress addressToRemove = this.addresses.stream().filter(item -> item.getId() == id).findFirst().orElseThrow();
+        this.addresses.remove(addressToRemove);
     }
 
     public void updateBuyer(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
         this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
     }
 
-    //TODO i cant move it because i dont know what to modify because id
     public void updateAddress(Address address, long id){
         BuyerAddress addressToUpdate = this.addresses.stream().filter(item -> item.getId() == id).findFirst().orElseThrow();
 

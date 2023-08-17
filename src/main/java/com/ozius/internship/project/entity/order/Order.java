@@ -4,6 +4,7 @@ import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
+import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 @Table(name = Order.TABLE_NAME)
 public class Order extends BaseEntity {
 
-    public static final String TABLE_NAME = "[ORDER]";
+    public static final String TABLE_NAME = "CUSTOMER_ORDER";
 
     interface Columns {
         String BUYER_EMAIL = "BUYER_EMAIL";
@@ -34,6 +35,12 @@ public class Order extends BaseEntity {
         String ZIP_CODE = "ZIP_CODE";
         String SELLER_EMAIL = "SELLER_EMAIL";
         String SELLER_ALIAS = "SELLER_ALIAS";
+        String COMPANY_NAME = "COMPANY_NAME";
+        String CUI = "CUI";
+        String COMPANY_TYPE = "COMPANY_TYPE";
+        String NUMERIC_CODE_BY_STATE = "NUMERIC_CODE_BY_STATE";
+        String SERIAL_NUMBER = "SERIAL_NUMBER";
+        String DATE_OF_REGISTRATION = "DATE_OF_REGISTRATION";
     }
 
     @Enumerated(EnumType.STRING)
@@ -55,7 +62,7 @@ public class Order extends BaseEntity {
     @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Buyer buyer;
 
-    @ManyToOne(fetch = FetchType.LAZY) //TODO Seller info more than email?
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.SELLER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
     private Seller seller;
 
@@ -65,8 +72,20 @@ public class Order extends BaseEntity {
     @Column(name = Columns.SELLER_ALIAS, nullable = false)
     private String sellerAlias;
 
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "name", column = @Column(name = Columns.COMPANY_NAME)),
+            @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI, length = 10)),
+            @AttributeOverride(name = "registrationNumber.companyType", column = @Column(name = Columns.COMPANY_TYPE, length = 10)),
+            @AttributeOverride(name = "registrationNumber.numericCodeByState", column = @Column(name = Columns.NUMERIC_CODE_BY_STATE, length = 10)),
+            @AttributeOverride(name = "registrationNumber.serialNumber", column = @Column(name = Columns.SERIAL_NUMBER, length = 10)),
+            @AttributeOverride(name = "registrationNumber.dateOfRegistration", column = @Column(name = Columns.DATE_OF_REGISTRATION, length = 10))
+    })
+    private LegalDetails legalDetails;
+
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = OrderItem.Columns.ORDER_ID)
+    @JoinColumn(name = OrderItem.Columns.ORDER_ID, foreignKey = @ForeignKey(foreignKeyDefinition =
+            "FOREIGN KEY (" + OrderItem.Columns.ORDER_ID + ") REFERENCES " + Order.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<OrderItem> orderItems;
 
     @Column(name = Columns.BUYER_EMAIL, nullable = false)
@@ -96,6 +115,7 @@ public class Order extends BaseEntity {
 
         this.sellerEmail = seller.getAccount().getEmail();
         this.sellerAlias = seller.getAlias();
+        this.legalDetails = seller.getLegalDetails();
         this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
@@ -177,6 +197,10 @@ public class Order extends BaseEntity {
 
     public String getSellerAlias(){
         return sellerAlias;
+    }
+
+    public LegalDetails getLegalDetails() {
+        return legalDetails;
     }
 
     public void submit() {

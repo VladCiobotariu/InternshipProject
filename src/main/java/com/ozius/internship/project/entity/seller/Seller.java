@@ -26,13 +26,13 @@ public class Seller extends BaseEntity {
         String ADDRESS_LINE_1 = "ADDRESS_LINE_1";
         String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
         String ZIP_CODE = "ZIP_CODE";
+        String SELLER_TYPE = "SELLER_TYPE";
         String COMPANY_NAME = "COMPANY_NAME";
         String CUI = "CUI";
         String COMPANY_TYPE = "COMPANY_TYPE";
         String NUMERIC_CODE_BY_STATE = "NUMERIC_CODE_BY_STATE";
         String SERIAL_NUMBER = "SERIAL_NUMBER";
         String DATE_OF_REGISTRATION = "DATE_OF_REGISTRATION";
-        String SELLER_TYPE = "SELLER_TYPE";
     }
 
     @Embedded
@@ -66,7 +66,8 @@ public class Seller extends BaseEntity {
     private UserAccount account;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = Review.Columns.SELLER_ID)
+    @JoinColumn(name = Review.Columns.SELLER_ID, nullable = false, foreignKey = @ForeignKey(foreignKeyDefinition =
+            "FOREIGN KEY (" + Review.Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<Review> reviews;
 
     @Column(name = Columns.ALIAS, nullable = false)
@@ -75,7 +76,6 @@ public class Seller extends BaseEntity {
     protected Seller() {
     }
 
-    //TODO add 2 constructors
     public Seller(Address legalAddress, UserAccount account, String alias, SellerType sellerType, LegalDetails legalDetails) {
         this.legalAddress = legalAddress;
         this.account = account;
@@ -86,6 +86,14 @@ public class Seller extends BaseEntity {
             if(legalDetails==null) throw new IllegalSellerDetails("legalDetails can't be null if company or pfa");
             this.legalDetails = legalDetails;
         }
+    }
+
+    public Seller(Address legalAddress, UserAccount account, String alias, SellerType sellerType) {
+        this.legalAddress = legalAddress;
+        this.account = account;
+        this.reviews = new HashSet<>();
+        this.alias = alias;
+        this.sellerType = sellerType;
     }
 
     public Address getLegalAddress() {

@@ -50,7 +50,14 @@ public class TestDataCreator {
 
     }
 
-    public static Seller createSeller(EntityManager em, Address address, UserAccount account, String alias, SellerType sellerType, LegalDetails legalDetails){
+    public static Seller createSellerFarmer(EntityManager em, Address address, UserAccount account, String alias){
+        Seller seller = new Seller(address, account, alias, SellerType.LOCAL_FARMER);
+        em.persist(seller);
+
+        return seller;
+    }
+
+    public static Seller createSellerCompany(EntityManager em, Address address, UserAccount account, String alias, SellerType sellerType, LegalDetails legalDetails){
         Seller seller = new Seller(address, account, alias, sellerType, legalDetails);
         em.persist(seller);
 
@@ -58,7 +65,7 @@ public class TestDataCreator {
     }
 
     public static void  createSellerBaseData(EntityManager em){
-        Sellers.seller2 = createSeller(em,
+        Sellers.seller2 = createSellerFarmer(em,
                 new Address("Romania",
                         "Timis",
                         "Timisoara",
@@ -71,11 +78,10 @@ public class TestDataCreator {
                         "ozius12345",
                         "/src/image1",
                         "0734896512"),
-                "Mega Fresh SRL",
-                SellerType.LOCAL_FARMER,
-                null);
+                "Mega Fresh SRL"
+        );
 
-        Sellers.seller1 = createSeller(em,
+        Sellers.seller1 = createSellerFarmer(em,
                 new Address("Spania",
                         "Granada",
                         "Barcelona",
@@ -88,9 +94,8 @@ public class TestDataCreator {
                         "ozius54",
                         "/src/image99",
                         "0734896777"),
-                "FC BARCELONA",
-                SellerType.LOCAL_FARMER,
-                null);
+                "FC BARCELONA"
+        );
 
     }
 

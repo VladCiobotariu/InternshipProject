@@ -29,7 +29,7 @@ public class SellerEntityTests extends EntityBaseTest {
     }
 
     @Test
-    void test_add_seller(){
+    void test_add_seller_farmer(){
 
         //----Act
         Seller addedSeller = doTransaction(em -> {
@@ -52,8 +52,7 @@ public class SellerEntityTests extends EntityBaseTest {
                             "0734896512"
                     ),
                     "Mega Fresh SRL",
-                    SellerType.LOCAL_FARMER,
-                    null
+                    SellerType.LOCAL_FARMER
             );
             em.persist(seller);
 
@@ -93,7 +92,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
             UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
 
-            return TestDataCreator.createSeller(em, address, userAccount, "honey srl", SellerType.LOCAL_FARMER, null);
+            return TestDataCreator.createSellerFarmer(em, address, userAccount, "honey srl");
         });
 
         //----Act
@@ -140,7 +139,7 @@ public class SellerEntityTests extends EntityBaseTest {
             Address addressSeller = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
             UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
 
-            Seller seller = TestDataCreator.createSeller(em, addressSeller, userAccount, "bio", SellerType.LOCAL_FARMER, null);
+            Seller seller = TestDataCreator.createSellerCompany(em, addressSeller, userAccount, "bio", SellerType.PFA, new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now())));
 
             TestDataCreator.createBuyerBaseData(em);
             Address addressBuyer = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
@@ -170,7 +169,6 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedOrder).isNotNull();
         assertThat(persistedOrder.getSeller()).isNull();
 
-        //TODO check reviews deleted? it has cascade.all and also is it necessary to check products deleted? it also has cascade.all
     }
 
     @Test
