@@ -3,8 +3,8 @@ package com.ozius.internship.project.entity.cart;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
-import com.ozius.internship.project.entity.exeption.NotFoundException;
+import com.ozius.internship.project.entity.exception.IllegalQuantityException;
+import com.ozius.internship.project.entity.exception.NotFoundException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
@@ -23,11 +23,12 @@ public class Cart extends BaseEntity {
     }
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Cart.Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
+    @JoinColumn(name = Cart.Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Buyer buyer;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = CartItem.Columns.CART_ID)
+    @JoinColumn(name = CartItem.Columns.CART_ID, foreignKey = @ForeignKey(foreignKeyDefinition =
+            "FOREIGN KEY (" + CartItem.Columns.CART_ID + ") REFERENCES " + Cart.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<CartItem> cartItems;
 
     @Column(name = Columns.TOTAL_PRICE, nullable = false)

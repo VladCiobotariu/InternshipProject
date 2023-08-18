@@ -1,11 +1,11 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.entity.exeption.IllegalPriceException;
+import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = Product.TABLE_NAME)
+@Table(name = Product.TABLE_NAME, uniqueConstraints = { @UniqueConstraint(columnNames = { Product.Columns.NAME, Product.Columns.SELLER_ID }) })
 public class Product extends BaseEntity {
     public static final String TABLE_NAME = "product";
 

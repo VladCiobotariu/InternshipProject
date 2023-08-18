@@ -1,7 +1,8 @@
 package com.ozius.internship.project.entity;
 
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.entity.exeption.IllegalPriceException;
+import com.ozius.internship.project.entity.exception.IllegalDuplicateName;
+import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -86,6 +87,7 @@ public class ProductEntityTest extends EntityBaseTest {
 
         //----Assert
         assertThat(entityFinder.findAll(Product.class)).isEmpty();
+
     }
 
     @Test
