@@ -6,8 +6,6 @@ import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
@@ -57,8 +55,8 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
-            Product p2 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, category2, seller2);
+            Product p1 = createProduct(em, "cartofi", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+            Product p2 = createProduct(em, "pere", "pentru glucoza", "src/image77", 5f, category2, seller2);
             cart.addOrUpdateItem(p1, 3);
             cart.addOrUpdateItem(p2, 2);
         });
@@ -81,7 +79,7 @@ public class CartEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, category2, seller2);
+            Product p1 = createProduct(em, "pere", "pentru glucoza", "src/image77", 5f, category2, seller2);
             cart.addOrUpdateItem(p1, 2);
         });
 
@@ -89,7 +87,7 @@ public class CartEntityTest extends EntityBaseTest {
         Cart persistedCart = entityFinder.getTheOne(Cart.class);
         CartItem cartItem = persistedCart.getCartItems().stream().findFirst().orElseThrow();
 
-        assertThat(cartItem.getProduct().getName()).isEqualTo("mar");
+        assertThat(cartItem.getProduct().getName()).isEqualTo("pere");
         assertThat(cartItem.getQuantity()).isEqualTo(2);
     }
 
@@ -260,7 +258,7 @@ public class CartEntityTest extends EntityBaseTest {
         Exception exception = doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+            Product p1 = createProduct(em, "cartofi", "pentru fiert", "src/image4", 12.7f, category1, seller1);
 
             return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, 0));
         });
@@ -304,7 +302,7 @@ public class CartEntityTest extends EntityBaseTest {
         Exception exception = doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, category1, seller1);
+            Product p1 = createProduct(em, "cartofi", "pentru fiert", "src/image4", 12.7f, category1, seller1);
             return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, -5));
         });
 
