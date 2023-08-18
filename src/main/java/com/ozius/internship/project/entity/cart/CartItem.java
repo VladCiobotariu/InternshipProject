@@ -19,7 +19,8 @@ public class CartItem extends BaseEntity {
     private float quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = Columns.PRODUCT_ID, nullable = false)
+    @JoinColumn(name = Columns.PRODUCT_ID, nullable = false, foreignKey = @ForeignKey(foreignKeyDefinition =
+            "FOREIGN KEY (" + Columns.PRODUCT_ID + ") REFERENCES " + Product.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Product product;
 
     protected CartItem() {
