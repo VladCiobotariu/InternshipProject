@@ -43,7 +43,7 @@ public class BuyerAddress extends BaseEntity {
     }
 
     void updateAddress(Address address) {
-        this.address.updateAddress(address.getCountry(), address.getState(), address.getCity(), address.getAddressLine1(), address.getAddressLine2(), address.getZipCode());
+        this.address = address;
     }
 
     @Override
