@@ -6,6 +6,8 @@ import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
+import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
