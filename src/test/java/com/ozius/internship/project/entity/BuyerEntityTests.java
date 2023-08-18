@@ -3,7 +3,7 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.buyer.BuyerAddress;
-import com.ozius.internship.project.entity.exeption.IllegalItemException;
+import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;

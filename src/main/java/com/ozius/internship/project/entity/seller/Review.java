@@ -3,7 +3,7 @@ package com.ozius.internship.project.entity.seller;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.exeption.IllegalRatingException;
+import com.ozius.internship.project.entity.exception.IllegalRatingException;
 import jakarta.persistence.*;
 
 @Entity

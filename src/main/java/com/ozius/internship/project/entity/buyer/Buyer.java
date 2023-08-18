@@ -4,7 +4,7 @@ import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.UserAccount;
-import com.ozius.internship.project.entity.exeption.IllegalItemException;
+import com.ozius.internship.project.entity.exception.IllegalItemException;
 import jakarta.persistence.*;
 
 import java.util.Collections;

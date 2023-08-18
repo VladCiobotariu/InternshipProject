@@ -2,8 +2,8 @@ package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalItemException;
-import com.ozius.internship.project.entity.exeption.IllegalOrderState;
+import com.ozius.internship.project.entity.exception.IllegalItemException;
+import com.ozius.internship.project.entity.exception.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 

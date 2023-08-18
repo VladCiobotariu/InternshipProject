@@ -1,9 +1,13 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.exception.IllegalDuplicateName;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
+import static com.ozius.internship.project.entity.Category.listOfCategoryNames;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CategoryEntityTest extends EntityBaseTest {
 
@@ -59,10 +63,52 @@ public class CategoryEntityTest extends EntityBaseTest {
             EntityFinder entityFinder = new EntityFinder(em);
             Category category = entityFinder.getTheOne(Category.class);
             em.remove(category);
+            listOfCategoryNames.remove(category.getName());
         });
 
         // ----Assert
         assertThat(entityFinder.findAll(Category.class).isEmpty());
     }
 
+    @Test
+    public void category_added_with_already_existing_name_throws_exception() {
+        // ----Arrange
+        doTransaction(em -> {
+            Category category = new Category("legume", "/legume");
+            em.persist(category);
+        });
+
+        // ----Arrange
+        Exception exception = doTransaction(em -> {
+            return assertThrows(IllegalDuplicateName.class, () -> {
+                Category categoryAdded = new Category("legume", "/newLegume");
+                em.persist(categoryAdded);
+            });
+        });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("A category with this name already exists!"));
+    }
+
+    @Test
+    public void category_updated_with_already_existing_name_throws_exception() {
+        // ----Arrange
+        Category categoryToUpdate = doTransaction(em -> {
+            Category category1 = new Category("legume", "/legume");
+            Category category2 = new Category("dulciuri", "/dulciuri");
+            em.persist(category1);
+            em.persist(category2);
+            return category2;
+        });
+
+        // ----Arrange
+        Exception exception = doTransaction(em -> {
+            return assertThrows(IllegalDuplicateName.class, () -> {
+                categoryToUpdate.updateCategory("legume", "/vegetables");
+            });
+        });
+
+        // ----Assert
+        assertTrue(exception.getMessage().contains("Seller already has a product with this name!"));
+    }
 }
