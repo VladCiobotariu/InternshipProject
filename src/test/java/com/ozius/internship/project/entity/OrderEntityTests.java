@@ -70,6 +70,7 @@ public class OrderEntityTests extends EntityBaseTest{
         assertThat(persistedOrder.getAddress()).isEqualTo(addedAddress);
         assertThat(persistedOrder.getSellerEmail()).isEqualTo(seller1.getAccount().getEmail());
         assertThat(persistedOrder.getSellerAlias()).isEqualTo(seller1.getAlias());
+        assertThat(persistedOrder.getLegalDetails()).isEqualTo(seller1.getLegalDetails());
     }
 
     @Test

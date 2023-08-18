@@ -2,26 +2,21 @@ package com.ozius.internship.project.entity.seller;
 
 import jakarta.persistence.Embeddable;
 
-import java.time.LocalDate;
-
 @Embeddable
 public class LegalDetails {
 
     private String name;
     private String cui;
-    //TODO use string to define max length for jpa?
-    private String caen;
-    private LocalDate dateOfEstablishment;
+    private RegistrationNumber registrationNumber;
 
     protected LegalDetails(){
 
     }
 
-    LegalDetails(String name, String cui, String caen, LocalDate dateOfEstablishment) {
+    LegalDetails(String name, String cui, RegistrationNumber registrationNumber) {
         this.name = name;
         this.cui = cui;
-        this.caen = caen;
-        this.dateOfEstablishment = dateOfEstablishment;
+        this.registrationNumber = registrationNumber;
     }
 
     public String getName() {
@@ -32,18 +27,16 @@ public class LegalDetails {
         return cui;
     }
 
-    public String getCaen() {
-        return caen;
+    public RegistrationNumber getRegistrationNumber() {
+        return registrationNumber;
     }
 
-    public LocalDate getDateOfEstablishment() {
-        return dateOfEstablishment;
-    }
-
-    void updateLegalDetails(LegalDetails legalDetails){
-        this.name = legalDetails.getName();
-        this.cui = legalDetails.getCui();
-        this.caen = legalDetails.getCaen();
-        this.dateOfEstablishment = legalDetails.getDateOfEstablishment();
+    @Override
+    public String toString() {
+        return "LegalDetails{" +
+                "name='" + name + '\'' +
+                ", cui='" + cui + '\'' +
+                ", registrationNumber=" + registrationNumber +
+                '}';
     }
 }
