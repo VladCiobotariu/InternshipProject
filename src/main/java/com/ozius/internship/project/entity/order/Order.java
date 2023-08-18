@@ -6,6 +6,7 @@ import com.ozius.internship.project.entity.exeption.IllegalItemException;
 import com.ozius.internship.project.entity.exeption.IllegalOrderState;
 import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,7 @@ public class Order extends BaseEntity {
         String NUMERIC_CODE_BY_STATE = "NUMERIC_CODE_BY_STATE";
         String SERIAL_NUMBER = "SERIAL_NUMBER";
         String DATE_OF_REGISTRATION = "DATE_OF_REGISTRATION";
+        String SELLER_TYPE = "SELLER_TYPE";
     }
 
     @Enumerated(EnumType.STRING)
@@ -83,6 +85,10 @@ public class Order extends BaseEntity {
     })
     private LegalDetails legalDetails;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = Columns.SELLER_TYPE)
+    private SellerType sellerType;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = OrderItem.Columns.ORDER_ID, foreignKey = @ForeignKey(foreignKeyDefinition =
             "FOREIGN KEY (" + OrderItem.Columns.ORDER_ID + ") REFERENCES " + Order.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
@@ -116,6 +122,7 @@ public class Order extends BaseEntity {
         this.sellerEmail = seller.getAccount().getEmail();
         this.sellerAlias = seller.getAlias();
         this.legalDetails = seller.getLegalDetails();
+        this.sellerType = seller.getSellerType();
         this.buyerEmail = buyer.getAccount().getEmail();
         this.orderDate = LocalDateTime.now();
 
@@ -203,6 +210,10 @@ public class Order extends BaseEntity {
         return legalDetails;
     }
 
+    public SellerType getSellerType() {
+        return sellerType;
+    }
+
     public void submit() {
         if (this.orderStatus != OrderStatus.DRAFT) {
             throw new IllegalOrderState("order state can only be draft if you want to submit");
@@ -231,6 +242,11 @@ public class Order extends BaseEntity {
         return "Order{" +
                 "orderStatus=" + orderStatus +
                 ", address=" + address +
+                ", sellerEmail='" + sellerEmail + '\'' +
+                ", sellerAlias='" + sellerAlias + '\'' +
+                ", sellerType='" + sellerType + '\'' +
+                ", legalDetails=" + legalDetails +
+                ", orderItems=" + orderItems +
                 ", buyerEmail='" + buyerEmail + '\'' +
                 ", orderDate=" + orderDate +
                 ", telephone='" + telephone + '\'' +

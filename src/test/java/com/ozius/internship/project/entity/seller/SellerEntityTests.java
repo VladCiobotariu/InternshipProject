@@ -374,4 +374,52 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
     }
 
+    @Test
+    void test_same_legal_details_to_different_seller(){
+
+        //----Arrange
+        doTransaction(em -> {
+            TestDataCreator.createAddresses();
+        });
+
+        //----Act
+        doTransaction(em -> {
+            UserAccount account1 =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account2 =  new UserAccount("Cosmina", "Ciobotariu", "cosminaciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+
+            LegalDetails legalDetails1 = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now()));
+            LegalDetails legalDetails2 = new LegalDetails("MEGA FRESH SA", "RO37745608", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now()));
+
+            Seller seller1 = new Seller(address1, account1, "Honey SRL", SellerType.PFA, legalDetails1);
+            Seller seller2 = new Seller(address1, account2, "Mega Fresh SRL", SellerType.PFA, legalDetails2);
+
+            em.persist(seller1);
+            em.persist(seller2);
+        });
+
+        //----Assert
+
+        assertThat(entityFinder.findAll(Seller.class).size()).isEqualTo(2);
+    }
+
 }
+
+//Hibernate: create table seller (
+//        date_of_registration date unique,
+//        numeric_code_by_state integer unique,
+//        serial_number integer unique,
+//        zip_code varchar(6) not null,
+//        account_id bigint not null unique,
+//        id bigint not null,
+//        cui varchar(10) unique,
+//        address_line_1 varchar(255) not null,
+//        address_line_2 varchar(255),
+//        alias varchar(255) not null,
+//        city varchar(255) not null,
+//        company_name varchar(255) unique,
+//        company_type varchar(255) unique check (company_type in ('J','F','C')),
+//        country varchar(255) not null,
+//        seller_type varchar(255) not null check (seller_type in ('COMPANY','PFA','LOCAL_FARMER')),
+//        state varchar(255) not null,
+//        primary key (id)
+//        )

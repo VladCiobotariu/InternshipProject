@@ -193,7 +193,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         assertThat(buyerRepository.findAll().contains(buyer)).isFalse();
         assertThat(buyerAddress).isEmpty();
         assertThat(entityFinder.getFavorites()).isEmpty();
-        assertThat(entityFinder.getAll(Product.class).size()).isEqualTo(1);
+        assertThat(entityFinder.findAll(Product.class).size()).isEqualTo(1);
     }
 
     @Test

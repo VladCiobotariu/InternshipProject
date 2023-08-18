@@ -14,6 +14,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static com.ozius.internship.project.TestDataCreator.Addresses.address1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
@@ -57,20 +58,23 @@ public class OrderEntityTests extends EntityBaseTest{
 
         //----Assert
         Order persistedOrder = entityFinder.getTheOne(Order.class);
+        Seller addedSeller = addedOrder.getSeller();
+        Buyer addedBuyer = addedOrder.getBuyer();
 
         assertThat(persistedOrder).isEqualTo(addedOrder);
         assertThat(persistedOrder.getTotalPrice()).isEqualTo(0f);
         assertThat(persistedOrder.getOrderStatus()).isEqualTo(OrderStatus.DRAFT);
         assertThat(persistedOrder.getOrderItems().size()).isEqualTo(0);
-        assertThat(persistedOrder.getBuyer()).isEqualTo(buyer1);
+        assertThat(persistedOrder.getBuyer()).isEqualTo(addedBuyer);
         assertThat(persistedOrder.getOrderDate().toLocalDate().isEqual(LocalDate.now())).isTrue();
-        assertThat(persistedOrder.getBuyerEmail()).isEqualTo(buyer1.getAccount().getEmail());
-        assertThat(persistedOrder.getSeller()).isEqualTo(seller1);
-        assertThat(persistedOrder.getTelephone()).isEqualTo(buyer1.getAccount().getTelephone());
+        assertThat(persistedOrder.getBuyerEmail()).isEqualTo(addedBuyer.getAccount().getEmail());
+        assertThat(persistedOrder.getSeller()).isEqualTo(addedSeller);
+        assertThat(persistedOrder.getTelephone()).isEqualTo(addedBuyer.getAccount().getTelephone());
         assertThat(persistedOrder.getAddress()).isEqualTo(addedAddress);
-        assertThat(persistedOrder.getSellerEmail()).isEqualTo(seller1.getAccount().getEmail());
-        assertThat(persistedOrder.getSellerAlias()).isEqualTo(seller1.getAlias());
-        assertThat(persistedOrder.getLegalDetails()).isEqualTo(seller1.getLegalDetails());
+        assertThat(persistedOrder.getSellerEmail()).isEqualTo(addedSeller.getAccount().getEmail());
+        assertThat(persistedOrder.getSellerAlias()).isEqualTo(addedSeller.getAlias());
+        assertThat(persistedOrder.getLegalDetails()).isEqualTo(addedSeller.getLegalDetails());
+        assertThat(persistedOrder.getSellerType()).isEqualTo(addedSeller.getSellerType());
     }
 
     @Test
@@ -568,4 +572,34 @@ public class OrderEntityTests extends EntityBaseTest{
         assertTrue(exception.getMessage().contains("can't add this item, already added"));
     }
 
+    @Test
+    void test_add_multiple_order_with_same_seller_same_buyer(){
+
+        //----Arrange
+        doTransaction(em -> {
+            TestDataCreator.createAddresses();
+        });
+
+        //----Act
+        doTransaction(em -> {
+
+            Buyer buyerMerged = em.merge(buyer1);
+            Seller sellerMerged = em.merge(seller1);
+
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged);
+
+            Order order1 = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order2 = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            order1.addProduct(product, 2f);
+            order2.addProduct(product, 2f);
+            em.persist(order1);
+            em.persist(order2);
+
+        });
+
+        //----Assert
+        List<Order> orders = entityFinder.findAll(Order.class);
+
+        assertThat(orders.size()).isEqualTo(2);
+    }
 }

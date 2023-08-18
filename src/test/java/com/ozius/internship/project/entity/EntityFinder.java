@@ -34,10 +34,6 @@ public class EntityFinder {
         }
     }
 
-    public <E> List<E> getAll(Class<E> entityClass) {
-        return em.createQuery("select e from " + entityClass.getSimpleName() + " e ", entityClass).getResultList();
-    }
-
     public <E> E getById(Class<E> entityClass, Long id) {
         return new SimpleJpaRepository<>(entityClass, em).findById(id).orElseThrow();
     }

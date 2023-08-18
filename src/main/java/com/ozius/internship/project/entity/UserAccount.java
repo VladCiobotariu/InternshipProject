@@ -25,7 +25,7 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.LAST_NAME, nullable = false)
     private String lastName;
 
-    @Column(name = Columns.EMAIL, nullable = false)
+    @Column(name = Columns.EMAIL, nullable = false, unique = true)
     private String email;
 
     @Column(name = Columns.PASSWORD_HASH, nullable = false)
