@@ -3,8 +3,8 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.cart.CartItem;
-import com.ozius.internship.project.entity.exeption.IllegalQuantityException;
-import com.ozius.internship.project.entity.exeption.NotFoundException;
+import com.ozius.internship.project.entity.exception.IllegalQuantityException;
+import com.ozius.internship.project.entity.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package com.ozius.internship.project.entity;
 
-import com.ozius.internship.project.entity.exeption.IllegalPriceException;
+import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 

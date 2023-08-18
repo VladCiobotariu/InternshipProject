@@ -2,9 +2,9 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exeption.IllegalSellerDetails;
-import com.ozius.internship.project.entity.exeption.IllegalItemException;
-import com.ozius.internship.project.entity.exeption.IllegalRatingException;
+import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
+import com.ozius.internship.project.entity.exception.IllegalItemException;
+import com.ozius.internship.project.entity.exception.IllegalRatingException;
 
 import jakarta.persistence.*;
 
