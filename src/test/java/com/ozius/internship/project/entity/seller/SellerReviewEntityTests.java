@@ -37,7 +37,6 @@ public class SellerReviewEntityTests extends EntityBaseTest {
             seller.addReview(buyer2, "review 2", 4F, product);
 
             return seller;
-
         });
 
         //----Assert
