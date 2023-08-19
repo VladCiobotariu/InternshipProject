@@ -3,6 +3,7 @@ package com.ozius.internship.project.entity;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.buyer.BuyerAddress;
+import com.ozius.internship.project.entity.exception.IllegalAddressException;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
@@ -18,6 +19,7 @@ import static com.ozius.internship.project.TestDataCreator.Products.product2;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuyerEntityTests extends EntityBaseTest{
 
@@ -57,19 +59,16 @@ public class BuyerEntityTests extends EntityBaseTest{
         });
 
         //----Act
-        Address addedAddress = doTransaction(em -> {
+       doTransaction(em -> {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
             Buyer mergedBuyer = em.merge(buyer);
             mergedBuyer.addAddress(address);
-
-            return address;
         });
 
         //----Assert
         Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
 
         Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow().getAddress();
-        assertThat(persistedAddress).isEqualTo(addedAddress);
 
         assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
         assertThat(persistedAddress.getState()).isEqualTo("Timis");
@@ -77,6 +76,30 @@ public class BuyerEntityTests extends EntityBaseTest{
         assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
         assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
         assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
+    }
+
+    @Test
+    void test_add_double_address(){
+
+        //----Arrange
+        Buyer buyer = doTransaction(em -> {
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            return TestDataCreator.createBuyer(em, account);
+        });
+
+        //----Act
+        Exception exception = doTransaction(em -> {
+            Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+            Buyer mergedBuyer = em.merge(buyer);
+
+            mergedBuyer.addAddress(address);
+            em.flush();
+
+            return assertThrows(IllegalAddressException.class, ()-> mergedBuyer.addAddress(address));
+        });
+
+        //----Assert
+        assertTrue(exception.getMessage().contains("this address already exists"));
     }
 
     @Test
@@ -193,7 +216,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         assertThat(buyerRepository.findAll().contains(buyer)).isFalse();
         assertThat(buyerAddress).isEmpty();
         assertThat(entityFinder.getFavorites()).isEmpty();
-        assertThat(entityFinder.getAll(Product.class).size()).isEqualTo(1);
+        assertThat(entityFinder.findAll(Product.class).size()).isEqualTo(1);
     }
 
     @Test

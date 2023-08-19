@@ -4,6 +4,7 @@ import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.entity.exception.IllegalAddressException;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import jakarta.persistence.*;
 
@@ -74,6 +75,9 @@ public class Buyer extends BaseEntity {
     }
 
     public void addAddress(Address address){
+        if(this.addresses.stream().map(BuyerAddress::getAddress).anyMatch(item->item.equals(address))){
+            throw new IllegalAddressException("this address already exists");
+        }
         BuyerAddress newBuyerAddress = new BuyerAddress(address);
         this.addresses.add(newBuyerAddress);
     }

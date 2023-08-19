@@ -12,7 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = Seller.TABLE_NAME)
+@Table(name = Seller.TABLE_NAME, uniqueConstraints = {
+        @UniqueConstraint(columnNames =
+            { Seller.Columns.COMPANY_NAME, Seller.Columns.CUI, Seller.Columns.COMPANY_TYPE, Seller.Columns.NUMERIC_CODE_BY_STATE, Seller.Columns.SERIAL_NUMBER, Seller.Columns.DATE_OF_REGISTRATION }),
+        @UniqueConstraint(columnNames =
+            { Seller.Columns.COUNTRY, Seller.Columns.STATE, Seller.Columns.CITY, Seller.Columns.ADDRESS_LINE_1, Seller.Columns.ADDRESS_LINE_2, Seller.Columns.ZIP_CODE})})
 public class Seller extends BaseEntity {
 
     public static final String TABLE_NAME = "SELLER";
@@ -49,11 +53,11 @@ public class Seller extends BaseEntity {
     @Embedded
     @AttributeOverrides({
             @AttributeOverride(name = "name", column = @Column(name = Columns.COMPANY_NAME)),
-            @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI, length = 10)),
-            @AttributeOverride(name = "registrationNumber.companyType", column = @Column(name = Columns.COMPANY_TYPE, length = 10)),
-            @AttributeOverride(name = "registrationNumber.numericCodeByState", column = @Column(name = Columns.NUMERIC_CODE_BY_STATE, length = 10)),
-            @AttributeOverride(name = "registrationNumber.serialNumber", column = @Column(name = Columns.SERIAL_NUMBER, length = 10)),
-            @AttributeOverride(name = "registrationNumber.dateOfRegistration", column = @Column(name = Columns.DATE_OF_REGISTRATION, length = 10))
+            @AttributeOverride(name = "cui", column = @Column(name = Columns.CUI, length = 10, unique = true)),
+            @AttributeOverride(name = "registrationNumber.companyType", column = @Column(name = Columns.COMPANY_TYPE)),
+            @AttributeOverride(name = "registrationNumber.numericCodeByState", column = @Column(name = Columns.NUMERIC_CODE_BY_STATE)),
+            @AttributeOverride(name = "registrationNumber.serialNumber", column = @Column(name = Columns.SERIAL_NUMBER)),
+            @AttributeOverride(name = "registrationNumber.dateOfRegistration", column = @Column(name = Columns.DATE_OF_REGISTRATION))
     })
     private LegalDetails legalDetails;
 
@@ -70,7 +74,7 @@ public class Seller extends BaseEntity {
             "FOREIGN KEY (" + Review.Columns.SELLER_ID + ") REFERENCES " + Seller.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<Review> reviews;
 
-    @Column(name = Columns.ALIAS, nullable = false)
+    @Column(name = Columns.ALIAS, nullable = false, unique = true)
     private String alias;
 
     protected Seller() {

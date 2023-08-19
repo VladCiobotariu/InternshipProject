@@ -373,5 +373,4 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedLegalDetails.getRegistrationNumber().getSerialNumber()).isEqualTo(34);
         assertThat(persistedLegalDetails.getRegistrationNumber().getDateOfRegistration()).isEqualTo(LocalDate.now());
     }
-
 }
