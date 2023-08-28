@@ -15,7 +15,6 @@ function AuthProvider({children}){
     async function registerUser(email, password, firstName, lastName, telephone, image){
         const {status} = await registerApiService(email, password, firstName, lastName, telephone, image)
         if(status===201){
-            await login(email, password)
             return true
         }else{
             logout()

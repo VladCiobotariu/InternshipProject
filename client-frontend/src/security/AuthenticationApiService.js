@@ -11,7 +11,7 @@ export function registerApiService(email, password, firstName, lastName, telepho
             lastName: lastName,
             email: email,
             telephone: telephone,
-            imageName: image,
-            passwordHash: password
+            image: image,
+            password: password
         })
 }

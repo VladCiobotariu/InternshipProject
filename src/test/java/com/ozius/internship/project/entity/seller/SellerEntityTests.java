@@ -6,8 +6,10 @@ import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.order.Order;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -22,6 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SellerEntityTests extends EntityBaseTest {
 
     private JpaRepository<Seller, Long> sellerRepository;
+
+    //TODO ask if autowired is good?
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void createTestData(EntityManager em) {
@@ -47,7 +53,6 @@ public class SellerEntityTests extends EntityBaseTest {
                             "Vlad",
                             "Ciobotariu",
                             "vladciobotariu@gmail.com",
-                            "ozius12345",
                             "/src/image1",
                             "0734896512"
                     ),
@@ -65,7 +70,7 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertThat(persistedSeller.getAccount().getPasswordHash()).isEqualTo("ozius12345");
+        assertThat(persistedSeller.getAccount().getPasswordHash()).isNull();
         assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
         assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
         assertThat(persistedSeller.getAlias()).isEqualTo("Mega Fresh SRL");
@@ -84,13 +89,56 @@ public class SellerEntityTests extends EntityBaseTest {
     }
 
     @Test
+    void test_add_seller_password(){
+
+        //----Arrange
+        Seller addedSeller = doTransaction(em -> {
+            Address address = new Address(
+                    "Romania",
+                    "Timis",
+                    "Timisoara",
+                    "Strada Circumvalatiunii nr 4",
+                    "Bloc 3 Scara B Ap 12",
+                    "303413");
+
+            Seller seller = new Seller(
+                    address,
+                    new UserAccount(
+                            "Vlad",
+                            "Ciobotariu",
+                            "vladciobotariu@gmail.com",
+                            "/src/image1",
+                            "0734896512"
+                    ),
+                    "Mega Fresh SRL",
+                    SellerType.LOCAL_FARMER
+            );
+            em.persist(seller);
+
+            return seller;
+        });
+
+        //----Act
+        doTransaction(em -> {
+            Seller mergedSeller = em.merge(addedSeller);
+            mergedSeller.getAccount().setInitialPassword(passwordEncoder.encode("1234"));
+        });
+
+        //----Assert
+        Seller persistedSeller = entityFinder.getTheOne(Seller.class);
+
+        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
+    }
+
+    @Test
     void test_update_seller(){
 
         //----Arrange
         Seller seller = doTransaction(em -> {
 
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
-            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
+            userAccount.setInitialPassword(passwordEncoder.encode("1234"));
 
             return TestDataCreator.createSellerFarmer(em, address, userAccount, "honey srl");
         });
@@ -117,7 +165,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertThat(persistedSeller.getAccount().getPasswordHash()).isEqualTo("ozius12345");
+        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
         assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
         assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
         assertThat(persistedSeller.getAlias()).isEqualTo("honey srl");
@@ -137,7 +185,7 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Arrange
         Seller sellerToAdd = doTransaction(em -> {
             Address addressSeller = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
-            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
 
             Seller seller = TestDataCreator.createSellerCompany(em, addressSeller, userAccount, "bio", SellerType.PFA, new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now())));
 
@@ -181,7 +229,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         //----Act
         Exception exception = doTransaction(em -> {
-            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
             return assertThrows(IllegalSellerDetails.class, ()->{
                 Seller seller = new Seller(address1, account, "Mega Fresh SRL", SellerType.PFA, null);
                 em.persist(seller);
@@ -203,7 +251,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         //----Act
         Exception exception = doTransaction(em -> {
-            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
             return assertThrows(IllegalSellerDetails.class, ()->{
                 Seller seller = new Seller(address1, account, "Mega Fresh SRL", SellerType.COMPANY, null);
                 em.persist(seller);
@@ -225,7 +273,7 @@ public class SellerEntityTests extends EntityBaseTest {
 
         //----Act
         doTransaction(em -> {
-            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
             LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address1, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
@@ -251,7 +299,8 @@ public class SellerEntityTests extends EntityBaseTest {
 
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
 
-            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
+            account.setInitialPassword(passwordEncoder.encode("1234"));
             LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.C, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
@@ -286,7 +335,7 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertThat(persistedSeller.getAccount().getPasswordHash()).isEqualTo("ozius12345");
+        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
         assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
         assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
         assertThat(persistedSeller.getAlias()).isEqualTo("Mega Fresh SRL");
@@ -316,7 +365,8 @@ public class SellerEntityTests extends EntityBaseTest {
 
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
 
-            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "ozius12345", "/src/image1", "0734896512");
+            UserAccount account =  new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
+            account.setInitialPassword(passwordEncoder.encode("1234"));
             LegalDetails legalDetails = new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.J, 41, 34, LocalDate.now()));
 
             Seller seller = new Seller(address, account, "Mega Fresh SRL", SellerType.PFA, legalDetails);
@@ -353,7 +403,7 @@ public class SellerEntityTests extends EntityBaseTest {
         assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
         assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
         assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertThat(persistedSeller.getAccount().getPasswordHash()).isEqualTo("ozius12345");
+        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
         assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
         assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
         assertThat(persistedSeller.getAlias()).isEqualTo("Mega Fresh SRL");

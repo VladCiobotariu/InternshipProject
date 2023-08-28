@@ -147,7 +147,7 @@ public class Seller extends BaseEntity {
                                 LegalDetails legalDetails,
                                     Address legalAddress ){
 
-        this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
+        this.account.updateAccount(firstName, lastName, email, image, telephone);
         this.legalDetails = legalDetails;
         this.legalAddress = legalAddress;
     }

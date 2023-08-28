@@ -8,8 +8,10 @@ import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -25,6 +27,9 @@ public class BuyerEntityTests extends EntityBaseTest{
 
     private JpaRepository<Buyer, Long> buyerRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void createTestData(EntityManager em) {
         this.buyerRepository = new SimpleJpaRepository<>(Buyer.class, emb);
@@ -34,7 +39,7 @@ public class BuyerEntityTests extends EntityBaseTest{
     void test_add_buyer(){
         //----Act
         doTransaction(em -> {
-            Buyer buyer = new Buyer(new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635"));
+            Buyer buyer = new Buyer(new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635"));
             em.persist(buyer);
         });
 
@@ -43,10 +48,31 @@ public class BuyerEntityTests extends EntityBaseTest{
         assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
         assertThat(persistedBuyer.getAccount().getLastName()).isEqualTo("Maria");
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminamaria@gmail.com");
-        assertThat(persistedBuyer.getAccount().getPasswordHash()).isEqualTo("ozius1223423345");
         assertThat(persistedBuyer.getAccount().getImageName()).isEqualTo("/src/image2");
         assertThat(persistedBuyer.getAccount().getTelephone()).isEqualTo("0735897635");
         assertThat(persistedBuyer.getFavoriteProducts()).isEmpty();
+    }
+
+    @Test
+    void test_add_password_to_buyer(){
+
+        //----Arrange
+        Buyer addedBuyer = doTransaction(em -> {
+            Buyer buyer = new Buyer(new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635"));
+            em.persist(buyer);
+            return buyer;
+        });
+
+        //----Act
+        doTransaction(em -> {
+            Buyer mergedBuyer = em.merge(addedBuyer);
+            mergedBuyer.getAccount().setInitialPassword(passwordEncoder.encode("1234"));
+        });
+
+        //----Assert
+        Buyer persistedBuyer = buyerRepository.findAll().get(0);
+
+        assertTrue(passwordEncoder.matches("1234", persistedBuyer.getAccount().getPasswordHash()));
     }
 
     @Test
@@ -54,7 +80,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             return TestDataCreator.createBuyer(em, account);
         });
 
@@ -83,7 +109,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             return TestDataCreator.createBuyer(em, account);
         });
 
@@ -107,7 +133,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
@@ -142,7 +168,8 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
+            account.setInitialPassword(passwordEncoder.encode("1234"));
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
@@ -158,7 +185,6 @@ public class BuyerEntityTests extends EntityBaseTest{
                     buyer.getAccount().getFirstName(),
                     buyer.getAccount().getLastName(),
                     "cosminaa@gmail.com",
-                    buyer.getAccount().getPasswordHash(),
                     buyer.getAccount().getImageName(),
                     buyer.getAccount().getTelephone()
             );
@@ -172,7 +198,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
         assertThat(persistedBuyer.getAccount().getLastName()).isEqualTo("Maria");
-        assertThat(persistedBuyer.getAccount().getPasswordHash()).isEqualTo("ozius1223423345");
+        assertTrue(passwordEncoder.matches("1234", persistedBuyer.getAccount().getPasswordHash()));
         assertThat(persistedBuyer.getAccount().getImageName()).isEqualTo("/src/image2");
         assertThat(persistedBuyer.getAccount().getTelephone()).isEqualTo("0735897635");
 
@@ -194,7 +220,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
@@ -224,7 +250,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
@@ -257,7 +283,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
 
             return TestDataCreator.createBuyer(em, account);
         });
@@ -290,7 +316,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             TestDataCreator.createBuyer(em, account);
 
             return product;
@@ -325,7 +351,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);
 
             addedBuyer.addFavorite(product);
@@ -354,7 +380,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);
 
             addedBuyer.addFavorite(product);
@@ -387,7 +413,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
             Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
 
-            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "ozius1223423345", "/src/image2", "0735897635");
+            UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);
 
             addedBuyer.addFavorite(product1);

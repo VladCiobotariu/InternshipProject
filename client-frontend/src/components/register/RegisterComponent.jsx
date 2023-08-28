@@ -36,17 +36,18 @@ function RegisterComponent(){
     }
 
     async function handelSubmit(){
-        if(await auth.registerUser(email, password, firstName, lastName, telephone, image)){
-            navigate('/')
-        }
-        else{
-            console.log("error")
-        }
+        await auth.registerUser(email, password, firstName, lastName, telephone, image)
+            .then(
+                (response)=>navigate('/login')
+            )
+            .catch(
+                (error) => console.log(error.response.data)
+            )
     }
 
     return (
         <>
-            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 sm:py-6 lg:px-8 text-gray-900 dark:text-gray-100">
+            <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-0 lg:px-8 text-gray-900 dark:text-gray-100">
                 <div className="mx-auto w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-lg 2xl:max-w-xl">
                     <h2 className="mt-20 text-center text-2xl font-bold leading-9 tracking-tight">
                         Sign up
