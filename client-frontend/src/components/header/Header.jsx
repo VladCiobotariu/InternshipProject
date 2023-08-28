@@ -47,7 +47,6 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     const {isAuthenticated} = useAuth()
-    const {token} = useParams()
     const auth = useAuth()
 
     const buttonRef = useRef();

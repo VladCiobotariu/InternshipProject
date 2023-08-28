@@ -38,7 +38,7 @@ function RegisterComponent(){
     async function handelSubmit(){
         await auth.registerUser(email, password, firstName, lastName, telephone, image)
             .then(
-                (response)=>navigate('/login')
+                ()=>navigate('/login')
             )
             .catch(
                 (error) => console.log(error.response.data)

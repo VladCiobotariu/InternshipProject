@@ -142,7 +142,7 @@ public class Seller extends BaseEntity {
         return reviewNew;
     }
 
-
+    //TODO update seller info not with password
     public void updateSeller(String firstName, String lastName, String email, String passwordHash, String image, String telephone,
                                 LegalDetails legalDetails,
                                     Address legalAddress ){

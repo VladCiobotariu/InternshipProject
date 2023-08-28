@@ -3,7 +3,6 @@ package com.ozius.internship.project.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = UserAccount.TABLE_NAME)
