@@ -1,5 +1,5 @@
 import {Fragment, useRef, useState} from 'react'
-import {Link, useParams} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import { useAuth } from '../../security/AuthContext'
 
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
