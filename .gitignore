@@ -42,15 +42,15 @@ out/
 ### React ###
 
 # dependencies
-/front-end/node_modules
-/front-end/.pnp
+/client-frontend/node_modules
+/client-frontend/.pnp
 /front-end.pnp.js
 
 # testing
-/front-end/coverage
+/client-frontend/coverage
 
 # production
-/front-end/build
+/client-frontend/build
 
 # misc
 .DS_Store

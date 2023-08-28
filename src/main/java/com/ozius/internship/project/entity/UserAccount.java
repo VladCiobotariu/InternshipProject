@@ -3,8 +3,12 @@ package com.ozius.internship.project.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Entity
+@Builder
 @Table(name = UserAccount.TABLE_NAME)
 public class UserAccount extends BaseEntity{
 
@@ -34,7 +38,7 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    @Column(name = Columns.TELEPHONE, length = 10, nullable = false)
+    @Column(name = Columns.TELEPHONE, length = 12, nullable = false)
     private String telephone;
 
     protected UserAccount() {
@@ -47,30 +51,6 @@ public class UserAccount extends BaseEntity{
         this.passwordHash = passwordHash;
         this.imageName = imageName;
         this.telephone = telephone;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPasswordHash() {
-        return passwordHash;
-    }
-
-    public String getImageName() {
-        return imageName;
-    }
-
-    public String getTelephone() {
-        return telephone;
     }
 
     public void updateAccount(UserAccount account){

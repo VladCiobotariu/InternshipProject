@@ -1,0 +1,155 @@
+package com.ozius.internship.project.security.jwt;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+
+import com.nimbusds.jose.proc.SecurityContext;
+import com.ozius.internship.project.security.user.DatabaseUserDetailsService;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+import javax.sql.DataSource;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPublicKey;
+import java.util.UUID;
+
+@Configuration
+@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
+public class JwtSecurityConfiguration {
+
+    private final DatabaseUserDetailsService databaseUserDetailsService;
+
+    public JwtSecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService) {
+        this.databaseUserDetailsService = databaseUserDetailsService;
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(auth ->{
+            auth
+                    .requestMatchers("/authenticate").permitAll()
+                    .requestMatchers("/register-client").permitAll()
+                    .requestMatchers(PathRequest.toH2Console()).permitAll()
+                    .anyRequest().authenticated();
+        });
+
+        http.sessionManagement(
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
+
+        http.httpBasic().disable();
+        http.csrf().disable();
+        http.headers().frameOptions().sameOrigin();
+        http.oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+
+        return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(
+            UserDetailsService userDetailsService) {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
+        return new ProviderManager(authenticationProvider);
+    }
+
+//    @Bean
+    public DataSource dataSource(){
+        return new EmbeddedDatabaseBuilder()
+                .setType(EmbeddedDatabaseType.H2)
+                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
+                .build();
+    }
+
+//    @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource){
+
+        UserDetails client = User.withUsername("client@gmail.com")
+                .password("1234")
+                .passwordEncoder(str -> passwordEncoder().encode(str))
+                .roles("CLIENT")
+                .build();
+
+        UserDetails admin = User.withUsername("admin")
+                .password("1234")
+                .passwordEncoder(str -> passwordEncoder().encode(str))
+                .roles("ADMIN")
+                .build();
+
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        jdbcUserDetailsManager.createUser(client);
+        jdbcUserDetailsManager.createUser(admin);
+
+        return jdbcUserDetailsManager;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder(){
+
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public KeyPair keyPair(){
+        KeyPairGenerator keyPairGenerator = null;
+        try {
+            keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        keyPairGenerator.initialize(2048);
+        return keyPairGenerator.generateKeyPair();
+    }
+
+    @Bean
+    public RSAKey rsaKey(KeyPair keyPair){
+        return new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
+                .privateKey(keyPair.getPrivate())
+                .keyID(UUID.randomUUID().toString())
+                .build();
+    }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource(RSAKey rsaKey){
+        JWKSet jwkSet = new JWKSet(rsaKey);
+
+        return (jwkSelector, context) -> jwkSelector.select(jwkSet);
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder(RSAKey rsaKey) throws JOSEException {
+        return NimbusJwtDecoder
+                .withPublicKey(rsaKey.toRSAPublicKey())
+                .build();
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource){
+        return new NimbusJwtEncoder(jwkSource);
+    }
+
+}
+
