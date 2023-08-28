@@ -47,13 +47,11 @@ public class JwtSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth ->{
-            auth
-                    .requestMatchers("/authenticate").permitAll()
-                    .requestMatchers("/register-client").permitAll()
-                    .requestMatchers(PathRequest.toH2Console()).permitAll()
-                    .anyRequest().authenticated();
-        });
+        http.authorizeHttpRequests(auth -> auth
+                .requestMatchers("/authenticate").permitAll()
+                .requestMatchers("/register-client").permitAll()
+                .requestMatchers(PathRequest.toH2Console()).permitAll()
+                .anyRequest().authenticated());
 
         http.sessionManagement(
                 session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -68,42 +66,11 @@ public class JwtSecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            UserDetailsService userDetailsService) {
+    public AuthenticationManager authenticationManager() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
         authenticationProvider.setUserDetailsService(this.databaseUserDetailsService);
         return new ProviderManager(authenticationProvider);
-    }
-
-//    @Bean
-    public DataSource dataSource(){
-        return new EmbeddedDatabaseBuilder()
-                .setType(EmbeddedDatabaseType.H2)
-                .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-                .build();
-    }
-
-//    @Bean
-    public UserDetailsService userDetailsService(DataSource dataSource){
-
-        UserDetails client = User.withUsername("client@gmail.com")
-                .password("1234")
-                .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles("CLIENT")
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("1234")
-                .passwordEncoder(str -> passwordEncoder().encode(str))
-                .roles("ADMIN")
-                .build();
-
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        jdbcUserDetailsManager.createUser(client);
-        jdbcUserDetailsManager.createUser(admin);
-
-        return jdbcUserDetailsManager;
     }
 
     @Bean
@@ -114,7 +81,7 @@ public class JwtSecurityConfiguration {
 
     @Bean
     public KeyPair keyPair(){
-        KeyPairGenerator keyPairGenerator = null;
+        KeyPairGenerator keyPairGenerator;
         try {
             keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         } catch (NoSuchAlgorithmException e) {
