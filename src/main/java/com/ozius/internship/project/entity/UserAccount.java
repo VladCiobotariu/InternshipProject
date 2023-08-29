@@ -28,25 +28,43 @@ public class UserAccount extends BaseEntity{
     @Column(name = Columns.EMAIL, nullable = false, unique = true)
     private String email;
 
-    @Column(name = Columns.PASSWORD_HASH, nullable = false)
+    @Column(name = Columns.PASSWORD_HASH)
     private String passwordHash;
 
     @Column(name = Columns.IMAGE_NAME, nullable = false)
     private String imageName;
 
-    @Column(name = Columns.TELEPHONE, length = 10, nullable = false)
+    @Column(name = Columns.TELEPHONE, length = 12, nullable = false)
     private String telephone;
 
     protected UserAccount() {
     }
 
-    public UserAccount(String firstName, String lastName, String email, String passwordHash, String imageName, String telephone) {
+    public UserAccount(String firstName, String lastName, String email, String imageName, String telephone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.passwordHash = passwordHash;
         this.imageName = imageName;
         this.telephone = telephone;
+    }
+
+    public void updateAccount(String firstName, String lastName, String email, String image, String telephone){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.imageName = image;
+        this.telephone = telephone;
+    }
+
+    public void setInitialPassword(String passwordHashed){
+        this.passwordHash = passwordHashed;
+    }
+
+    public void updatePassword(String currentHashedPassword,String newHashedPassword){
+        if(!this.passwordHash.equals(currentHashedPassword)){
+            throw new IllegalArgumentException("passwords don't match, please check current password");
+        }
+        this.passwordHash = newHashedPassword;
     }
 
     public String getFirstName() {
@@ -71,15 +89,6 @@ public class UserAccount extends BaseEntity{
 
     public String getTelephone() {
         return telephone;
-    }
-
-    public void updateAccount(UserAccount account){
-        this.firstName = account.getFirstName();
-        this.lastName = account.getLastName();
-        this.email = account.getEmail();
-        this.passwordHash = account.getPasswordHash();
-        this.imageName = account.getImageName();
-        this.telephone = account.getTelephone();
     }
 
     @Override

@@ -87,8 +87,8 @@ public class Buyer extends BaseEntity {
         this.addresses.remove(addressToRemove);
     }
 
-    public void updateBuyer(String firstName, String lastName, String email, String passwordHash, String image, String telephone){
-        this.account.updateAccount(new UserAccount(firstName, lastName, email, passwordHash, image, telephone));
+    public void updateBuyer(String firstName, String lastName, String email, String image, String telephone){
+        this.account.updateAccount(firstName, lastName, email, image, telephone);
     }
 
     public void updateAddress(Address address, long id){
