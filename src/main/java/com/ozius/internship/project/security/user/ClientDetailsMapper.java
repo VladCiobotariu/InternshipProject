@@ -6,12 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserDetailsMapper {
+public class ClientDetailsMapper {
 
     public UserDetails toUserDetails(UserAccount userAccount) {
         return User.withUsername(userAccount.getEmail())
                 .password(userAccount.getPasswordHash())
-                .roles("client")
+                .roles("CLIENT") // this is how you add multiple roles --> roles("CLIENT", "ADMIN")
                 .build();
     }
 }

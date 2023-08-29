@@ -21,7 +21,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
                 new CharacterRule(EnglishCharacterData.Alphabetical, 5),
                 new LengthRule(8, 30),
                 new WhitespaceRule()
-//                new CharacterCharacteristicsRule()
+//                new CharacterCharacteristicsRule(3)
         ));
 
         RuleResult result = validator.validate(new PasswordData(password));
