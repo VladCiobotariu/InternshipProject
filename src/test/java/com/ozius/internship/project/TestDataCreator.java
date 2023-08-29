@@ -35,7 +35,6 @@ public class TestDataCreator {
                         "Cosmina",
                         "Maria",
                         "cosminamaria@gmail.com",
-                        "ozius1223423345",
                         "/src/image2",
                         "0735897635"));
 
@@ -44,7 +43,6 @@ public class TestDataCreator {
                         "Marcel",
                         "Danila",
                         "marceldanila@gmail.com",
-                        "ozius42",
                         "/src/image90",
                         "0777777635"));
 
@@ -75,7 +73,6 @@ public class TestDataCreator {
                 new UserAccount("Vlad",
                         "Ciobotariu",
                         "vladciobotariu@gmail.com",
-                        "ozius12345",
                         "/src/image1",
                         "0734896512"),
                 "Mega Fresh SRL"
@@ -91,7 +88,6 @@ public class TestDataCreator {
                 new UserAccount("Mihnea",
                         "Mondialu",
                         "mihneamondialu@gmail.com",
-                        "ozius54",
                         "/src/image99",
                         "0734896777"),
                 "FC BARCELONA"
