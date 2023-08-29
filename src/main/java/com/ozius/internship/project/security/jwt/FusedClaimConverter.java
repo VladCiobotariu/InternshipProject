@@ -18,7 +18,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
  * This is a custom converter to extract all entries of two Jwt claims "scope" and "role". All
  * findings are prefixed with the respective "SCOPE_" and "ROLE_" prefixes, and then wrapped up as a
  * list of authorities, which can be processed by Springs SPeL in @PreAuthorize annotations. This
- * implementation is based on: https://stackoverflow.com/a/58234971/13805480
+ * implementation is based on: <a href="https://stackoverflow.com/a/58234971/13805480">...</a>
  */
 public class FusedClaimConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
