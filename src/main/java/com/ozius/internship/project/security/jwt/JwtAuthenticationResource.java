@@ -1,11 +1,9 @@
 package com.ozius.internship.project.security.jwt;
 
-import com.ozius.internship.project.security.user.DatabaseUserDetailsService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -22,12 +20,9 @@ public class JwtAuthenticationResource {
     private final JwtEncoder jwtEncoder;
     private final AuthenticationManager authenticationManager;
 
-    private final DatabaseUserDetailsService databaseUserDetailsService;
-
-    public JwtAuthenticationResource(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager, DatabaseUserDetailsService databaseUserDetailsService) {
+    public JwtAuthenticationResource(JwtEncoder jwtEncoder, AuthenticationManager authenticationManager) {
         this.jwtEncoder = jwtEncoder;
         this.authenticationManager = authenticationManager;
-        this.databaseUserDetailsService = databaseUserDetailsService;
     }
 
     @PostMapping("/authenticate")
