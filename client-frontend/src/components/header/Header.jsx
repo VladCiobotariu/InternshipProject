@@ -2,7 +2,7 @@ import React, { Fragment, useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../security/AuthContext';
 import { getAllCategoriesApi } from "../../security/api/CategoryApi";
-import { getImageForCategoryApi } from "../../security/api/ImageApi";
+import { baseURL } from "../../security/ApiClient";
 
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import {
@@ -34,8 +34,6 @@ export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [categories, setCategories] = useState([]);
-    const [images, setImages] = useState({});
-
     const { isAuthenticated } = useAuth();
     const auth = useAuth();
 
@@ -52,20 +50,6 @@ export default function Header() {
     useEffect(() => {
         getCategoryList();
     }, []);
-
-    useEffect(() => {
-        categories.forEach((category) => {
-            getImageForCategoryApi(category.imageName)
-                .then((response) => {
-                    const blob = new Blob([response.data], { type: response.headers['content-type'] });
-                    const imageUrl = URL.createObjectURL(blob);
-                    setImages((prevImages) => ({ ...prevImages, [category.imageName]: imageUrl }));
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
-        });
-    }, [categories]);
 
     return (
         <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
@@ -131,7 +115,7 @@ export default function Header() {
                                         >
                                             <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white dark:bg-transparent dark:group-hover:bg-transparent dark:bg-zinc-800">
                                                 <img
-                                                    src={images[item.imageName]}
+                                                    src={`${baseURL}${item.imageName}`}
                                                     alt={item.name}
                                                     className="rounded-lg dark:bg-zinc-400 dark:rounded-lg"
                                                 />
@@ -318,7 +302,7 @@ export default function Header() {
                                                         <Link
                                                             onClick={()=>setMobileMenuOpen(false)}
                                                             key={item.name}
-                                                            to={item.href}
+                                                            to={`/products/categories/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                                                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
                                                         >
                                                             {item.name}
