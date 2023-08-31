@@ -39,11 +39,13 @@ public class JwtSecurityConfiguration {
         this.databaseUserDetailsService = databaseUserDetailsService;
     }
 
+    //TODO move to own class
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/authenticate").permitAll()
                 .requestMatchers("/register-client").permitAll()
+                .requestMatchers("/users/{email}").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()

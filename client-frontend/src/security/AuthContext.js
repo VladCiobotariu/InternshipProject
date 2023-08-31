@@ -1,6 +1,7 @@
-import { createContext, useContext, useState } from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import { api } from "./ApiClient";
 import {executeJwtAuthenticationService, registerApiService} from "./AuthenticationApiService";
+import {useSessionStorage} from "../hooks/useSessionStorage";
 
 const authContext = createContext(undefined)
 export const useAuth = () => useContext(authContext)
@@ -8,9 +9,9 @@ export const useAuth = () => useContext(authContext)
 
 function AuthProvider({children}){
 
-    const[isAuthenticated, setAuthenticated] = useState(false)
-    const[username, setUsername] = useState(null)
-    const[token, setToken] = useState(null)
+    const[isAuthenticated, setAuthenticated] = useSessionStorage("isAuthenticated", false)
+    const[username, setUsername] = useSessionStorage("username", "")
+    const[token, setToken] = useSessionStorage("token", "")
 
     async function registerUser(email, password, firstName, lastName, telephone, image){
         const {status} = await registerApiService(email, password, firstName, lastName, telephone, image)

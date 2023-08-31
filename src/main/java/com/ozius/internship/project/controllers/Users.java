@@ -1,24 +1,29 @@
 package com.ozius.internship.project.controllers;
 
-import org.springframework.security.access.prepost.PreAuthorize;
+import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.repository.UserAccountRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class Users {
 
-    @GetMapping("/hello-world")
-    @PreAuthorize("hasRole('CLIENT')")
-    public void helloWorld(){
+    private final UserAccountRepository userAccountRepository;
+
+    public Users(UserAccountRepository userAccountRepository) {
+        this.userAccountRepository = userAccountRepository;
     }
 
-    @GetMapping("/hello-world-v2")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void helloWorldV2(){
-    }
+    @GetMapping("/users/{email}")
+//    @PreAuthorize("hasRole('CLIENT') and #email == authentication.name")
+    public ResponseEntity<Object> retrieveUserByEmail(@PathVariable String email){
 
-    @GetMapping("/hello-world-v3")
-    @PreAuthorize("hasRole('MEGA_ADMIN')")
-    public void helloWorldV3(){
+        UserAccount user = userAccountRepository.findByEmail(email);
+        if(user!=null){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }

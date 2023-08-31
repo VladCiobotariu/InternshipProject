@@ -20,6 +20,18 @@ function AuthenticatedRoute({children}){
     return <Navigate to={"/"}/>
 }
 
+function NotAuthenticatedRoute({children}){
+
+    const auth = useAuth()
+    if(!auth.isAuthenticated){
+        return(
+            children
+        )
+    }
+    return <Navigate to={"/"}/>
+}
+
+
 function App() {
   return (
       <div className="bg-white dark:bg-inherit">
@@ -29,14 +41,22 @@ function App() {
                   <Routes>
                       <Route path='/' element={<WelcomeComponent/>}/>
                       <Route path='' element={<WelcomeComponent/>}/>
-                      <Route path='/login' element={<LoginComponent/>}/>
-                      <Route path='/register' element={<RegisterComponent/>}/>
+                      <Route path='/login' element={
+                          <NotAuthenticatedRoute>
+                              <LoginComponent/>
+                          </NotAuthenticatedRoute>
+                      }/>
+                      <Route path='/register' element={
+                          <NotAuthenticatedRoute>
+                              <RegisterComponent/>
+                          </NotAuthenticatedRoute>
+                      }/>
 
                       <Route path='/favorites' element={
                           <AuthenticatedRoute>
 
                           </AuthenticatedRoute>
-                      }></Route>
+                      }/>
 
                   </Routes>
               </BrowserRouter>
