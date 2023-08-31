@@ -43,6 +43,8 @@ public class JwtSecurityConfiguration {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/authenticate").permitAll()
                 .requestMatchers("/register-client").permitAll()
+                .requestMatchers("/images/**").permitAll()
+                .requestMatchers("/categories").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated());
