@@ -4,6 +4,7 @@ import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
+
 import com.nimbusds.jose.proc.SecurityContext;
 import com.ozius.internship.project.security.user.DatabaseUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -39,13 +40,15 @@ public class JwtSecurityConfiguration {
         this.databaseUserDetailsService = databaseUserDetailsService;
     }
 
-    //TODO move to own class
+    //TODO move bean into separate class
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/authenticate").permitAll()
                 .requestMatchers("/register-client").permitAll()
                 .requestMatchers("/users/{email}").permitAll()
+                .requestMatchers("/images/**").permitAll()
+                .requestMatchers("/categories").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()

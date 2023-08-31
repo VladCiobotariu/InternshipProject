@@ -1,8 +1,10 @@
-import {Fragment, useRef, useState} from 'react'
-import {Link} from 'react-router-dom'
-import { useAuth } from '../../security/AuthContext'
+import React, { Fragment, useRef, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../security/AuthContext';
+import { getAllCategoriesApi } from "../../security/api/CategoryApi";
+import { baseURL } from "../../security/ApiClient";
 
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react'
+import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import {
     Bars3Icon,
     XMarkIcon,
@@ -12,44 +14,42 @@ import {
     ArrowLeftOnRectangleIcon,
     ShoppingBagIcon,
     HeartIcon,
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
-
-import {ReactComponent as TomatoSvg} from "./svg/tomato-svgrepo-com.svg";
-import {ReactComponent as FruitSvg} from "./svg/fruits-pear-svgrepo-com.svg";
-import {ReactComponent as MilkSvg} from "./svg/milk-bottle-svgrepo-com.svg";
-import {ReactComponent as NutSvg} from "./svg/almond-svgrepo-com.svg";
-import {ReactComponent as HoneySvg} from "./svg/honey-2-svgrepo-com.svg";
-
-
-const products = [
-    { name: 'Fruits', href: '/products/categories/fruits', icon: FruitSvg },
-    { name: 'Vegetables', href: '/products/categories/vegetables', icon: TomatoSvg },
-    { name: 'Dairy', href: '/products/categories/dairy', icon: MilkSvg },
-    { name: 'Nuts', href: '/products/categories/nuts', icon: NutSvg },
-    { name: 'Honey', href: '/products/categories/honey', icon: HoneySvg },
-]
+} from '@heroicons/react/24/outline';
+import { ChevronDownIcon } from '@heroicons/react/20/solid';
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
     { name: 'Settings', href: '/account/settings', icon: Cog6ToothIcon },
-]
+];
 
 const callsToAction = [
     { name: 'See all', href: '/products/categories' },
-]
+];
 
 function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
+    return classes.filter(Boolean).join(' ');
 }
 
 export default function Header() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    const {isAuthenticated} = useAuth()
-    const auth = useAuth()
+    const [categories, setCategories] = useState([]);
+    const { isAuthenticated } = useAuth();
+    const auth = useAuth();
 
     const buttonRef = useRef();
+
+    const getCategoryList = () => {
+        getAllCategoriesApi()
+            .then((res) => {
+                setCategories(res.data);
+            })
+            .catch((err) => console.log(err));
+    };
+
+    useEffect(() => {
+        getCategoryList();
+    }, []);
 
     return (
         <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
@@ -77,7 +77,7 @@ export default function Header() {
                              text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
                              -top-2 -right-2
                              dark:border-gray-900">
-                                3
+                            3
                         </div>
                     </Link>
                     <button
@@ -96,7 +96,8 @@ export default function Header() {
                             <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400 dark:text-inherit" aria-hidden="true" />
                         </Popover.Button>
 
-                        <Transition className="text-inherit dark:text-inherit"
+                        <Transition
+                            className="text-inherit dark:text-inherit"
                             as={Fragment}
                             enter="transition ease-out duration-200"
                             enterFrom="opacity-0 translate-y-1"
@@ -105,21 +106,28 @@ export default function Header() {
                             leaveFrom="opacity-100 translate-y-0"
                             leaveTo="opacity-0 translate-y-1"
                         >
-                            <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-auto max-w-md overflow-hidden rounded-3xl bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-gray-900/5
-                            dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md">
+                            <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-auto max-w-md overflow-hidden rounded-3xl bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-gray-900/5 dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md">
                                 <div className="p-2">
-                                    {products.map((item) => (
+                                    {categories.map((item) => (
                                         <div
-                                            key={item.name}
+                                            key={item.id}
                                             className="group relative flex items-center gap-x-4 rounded-lg p-3 text-sm leading-6 hover:bg-gray-50 dark:hover:bg-zinc-900"
                                         >
                                             <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white dark:bg-transparent dark:group-hover:bg-transparent dark:bg-zinc-800">
-                                                <item.icon className="h-6 w-6 fill-gray-700 dark:fill-white group-hover:text-indigo-600 dark:group-hover:text-indigo-100" aria-hidden="true" />
+                                                <img
+                                                    src={`${baseURL}${item.imageName}`}
+                                                    alt={item.name}
+                                                    className="rounded-lg dark:bg-zinc-400 dark:rounded-lg"
+                                                />
                                             </div>
                                             <div className="flex-auto">
                                                 <Link
-                                                    onClick={() => buttonRef.current?.click()}
-                                                    to={item.href} className="block font-semibold text-inherit dark:text-inherit">
+                                                    onClick={() => {
+                                                        buttonRef.current?.click();
+                                                    }}
+                                                    to={`/products/categories/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                                                    className="block font-semibold text-inherit dark:text-inherit"
+                                                >
                                                     {item.name}
                                                     <span className="absolute inset-0" />
                                                 </Link>
@@ -290,11 +298,11 @@ export default function Header() {
                                                     />
                                                 </Disclosure.Button>
                                                 <Disclosure.Panel className="mt-2 space-y-2 text-inherit dark:text-inherit">
-                                                    {[...products].map((item) => (
+                                                    {[...categories].map((item) => (
                                                         <Link
                                                             onClick={()=>setMobileMenuOpen(false)}
                                                             key={item.name}
-                                                            to={item.href}
+                                                            to={`/products/categories/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                                                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
                                                         >
                                                             {item.name}
