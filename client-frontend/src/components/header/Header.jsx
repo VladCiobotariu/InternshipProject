@@ -117,7 +117,7 @@ export default function Header() {
                                                 <img
                                                     src={`${baseURL}${item.imageName}`}
                                                     alt={item.name}
-                                                    className="rounded-lg dark:bg-zinc-400 dark:rounded-lg"
+                                                    className="h-6 w-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-100 dark:invert" aria-hidden="true"
                                                 />
                                             </div>
                                             <div className="flex-auto">
