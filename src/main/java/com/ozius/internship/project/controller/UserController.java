@@ -1,4 +1,4 @@
-package com.ozius.internship.project.controllers;
+package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.repository.UserAccountRepository;
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class Users {
+public class UserController {
 
     private final UserAccountRepository userAccountRepository;
 
-    public Users(UserAccountRepository userAccountRepository) {
+    public UserController(UserAccountRepository userAccountRepository) {
         this.userAccountRepository = userAccountRepository;
     }
 

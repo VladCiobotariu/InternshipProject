@@ -8,11 +8,18 @@ import Header from "./components/header/Header";
 import WelcomeComponent from "./components/welcomePage/WelcomeComponent";
 import LoginComponent from "./components/login/LoginComponent";
 import RegisterComponent from "./components/register/RegisterComponent";
+import {AuthVerify} from "./security/AuthVerify";
+import Favorites from "./components/favorites/Favorites";
+import CartComponent from "./components/cart/CartComponent";
 
 function AuthenticatedRoute({children}){
 
-    const auth = useAuth()
-    if(auth.isAuthenticated){
+    const auth = sessionStorage.getItem('isAuthenticated')
+
+    if(auth === "false"){
+        return <Navigate to={"/"}/>
+    }
+    if(auth){
         return(
             children
         )
@@ -31,13 +38,14 @@ function NotAuthenticatedRoute({children}){
     return <Navigate to={"/"}/>
 }
 
-
 function App() {
   return (
       <div className="bg-white dark:bg-inherit">
           <AuthProvider>
               <BrowserRouter>
+
                   <Header/>
+
                   <Routes>
                       <Route path='/' element={<WelcomeComponent/>}/>
                       <Route path='' element={<WelcomeComponent/>}/>
@@ -46,19 +54,28 @@ function App() {
                               <LoginComponent/>
                           </NotAuthenticatedRoute>
                       }/>
+
                       <Route path='/register' element={
                           <NotAuthenticatedRoute>
                               <RegisterComponent/>
                           </NotAuthenticatedRoute>
                       }/>
 
-                      <Route path='/favorites' element={
+                      <Route path='/account/favorites' element={
                           <AuthenticatedRoute>
-
+                            <Favorites/>
                           </AuthenticatedRoute>
                       }/>
 
+                      <Route path='/account/cart' element={
+                          <AuthenticatedRoute>
+                              <CartComponent/>
+                          </AuthenticatedRoute>
+                      }/>
                   </Routes>
+
+                  <AuthVerify/>
+
               </BrowserRouter>
           </AuthProvider>
       </div>

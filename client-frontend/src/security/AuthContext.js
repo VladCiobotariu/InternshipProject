@@ -1,4 +1,4 @@
-import {createContext, useContext} from "react";
+import {createContext, useContext, useEffect} from "react";
 import { api } from "./ApiClient";
 import {executeJwtAuthenticationService, registerApiService} from "./AuthenticationApiService";
 import {useSessionStorage} from "../hooks/useSessionStorage";
@@ -23,6 +23,19 @@ function AuthProvider({children}){
         }
     }
 
+    // useEffect(() => {
+    //     console.log('success', token)
+    //     if(token){
+    //         api.interceptors.request.use(
+    //             (config) => {
+    //                 config.headers.Authorization=token
+    //                 console.log('interceptor', token)
+    //                 return config
+    //             }
+    //         )
+    //     }
+    // }, [token]);
+
     async function login(username, password){
 
         try{
@@ -34,12 +47,6 @@ function AuthProvider({children}){
                 const newToken = 'Bearer ' + jwtToken;
                 setToken(newToken)
 
-                api.interceptors.request.use(
-                    (config) => {
-                        config.headers.Authorization=newToken
-                        return config
-                    }
-                )
                 setUsername(username)
 
                 return true
@@ -60,6 +67,7 @@ function AuthProvider({children}){
         setToken(null)
         setAuthenticated(false)
         setUsername(null)
+        window.location.reload()
     }
 
     return (

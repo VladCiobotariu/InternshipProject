@@ -45,7 +45,7 @@ function RegisterComponent(){
                             validateOnChange={false}
                     >
 
-                        {({ errors,touched , validateField }) => {
+                        {({ errors, validateField }) => {
                             return (
                                 <Form className="space-y-2">
 

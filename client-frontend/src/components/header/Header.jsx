@@ -69,7 +69,7 @@ export default function Header() {
                     </Link>
                 </div>
                 <div className="flex md:hidden lg:hidden xl:hidden 2xl:hidden">
-                    <Link to='/cart' className="relative mr-6">
+                    <Link to='/account/cart' className="relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
                         <div className="absolute
                              inline-flex items-center justify-center
@@ -80,6 +80,7 @@ export default function Header() {
                             3
                         </div>
                     </Link>
+
                     <button
                         type="button"
                         className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-inherit"
@@ -89,6 +90,7 @@ export default function Header() {
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
+
                 <Popover.Group className="hidden md:flex md:gap-x-12 lg:flex lg:gap-x-12 xl:flex xl:gap-x-12 2xl:flex 2xl:gap-x-12 text-gray-900 dark:text-gray-100">
                     <Popover className="relative">
                         <Popover.Button ref={buttonRef} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
@@ -160,19 +162,58 @@ export default function Header() {
                 <div className="hidden md:flex md:flex-1 md:justify-end lg:flex lg:flex-1 lg:justify-end xl:flex xl:flex-1 xl:justify-end 2xl:flex 2xl:flex-1 2xl:justify-end text-inherit dark:text-inherit">
 
                     {isAuthenticated &&
-                        <Link to="/favorites" className="inline-flex relative mr-8">
-                            <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                            <div className="absolute inline-flex items-center justify-center
-                         w-4 h-4
-                         text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
-                         -top-2 -left-2
-                         dark:border-gray-900">
-                                3
-                            </div>
-                        </Link>
+                        <Popover className="relative mr-8 ">
+                            <Popover.Button ref={buttonRef}
+                                            className="inline-flex items-center gap-x-0 text-sm font-semibold leading-6 text-gray-900 dark:text-inherit">
+                                <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit"/>
+                                <div className="absolute inline-flex items-center justify-center
+                                     w-4 h-4
+                                     text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
+                                     -top-2 -left-2
+                                     dark:border-gray-900">
+                                    3
+                                </div>
+                            </Popover.Button>
+
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-200"
+                                enterFrom="opacity-0 translate-y-1"
+                                enterTo="opacity-100 translate-y-0"
+                                leave="transition ease-in duration-150"
+                                leaveFrom="opacity-100 translate-y-0"
+                                leaveTo="opacity-0 translate-y-1"
+                            >
+
+                                <Popover.Panel className="absolute -left-20 top-full z-10 mt-3 w-auto max-w-2xl overflow-hidden rounded-3xl bg-white dark:bg-zinc-800 shadow-lg ring-1 ring-gray-900/5
+                                dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md">
+                                    <div className="p-2">
+                                        {accountData.map((item) => (
+                                            <div
+                                                key={item.name}
+                                                className="group relative flex items-center gap-x-6 rounded-lg p-2 text-sm leading-6 hover:bg-gray-50 dark:hover:bg-zinc-900"
+                                            >
+                                                <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-transparent dark:bg-zinc-800">
+                                                    <item.icon className="h-6 w-6 text-gray-600 dark:text-gray-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-100" aria-hidden="true" />
+                                                </div>
+                                                <div className="flex-auto">
+                                                    <Link onClick={() => buttonRef.current?.click()}
+                                                          to={item.href}
+                                                          className="block font-semibold text-gray-900 dark:text-inherit">
+                                                        {item.name}
+                                                        <span className="absolute inset-0" />
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </Popover.Panel>
+
+                            </Transition>
+                        </Popover>
                     }
 
-                    <Link to='/cart' className="inline-flex relative mr-6">
+                    <Link to='/account/cart' className="inline-flex relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
                         <div className="absolute inline-flex items-center justify-center
                          w-4 h-4
