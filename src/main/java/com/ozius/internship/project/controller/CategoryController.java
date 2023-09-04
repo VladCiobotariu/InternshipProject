@@ -2,6 +2,7 @@ package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.service.CategoryService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +27,10 @@ public class CategoryController {
             @RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
             @RequestParam(name = "page", defaultValue = "1") int page
     ) {
-        List<Category> categories = categoryService.getCategoriesByItemsPerPage(itemsPerPage, page);
-        return new ApiPaginationResponse<>(page, itemsPerPage, categories);
+        Page<Category> categoryPage = categoryService.getCategoriesByItemsPerPage(page-1, itemsPerPage);
+        List<Category> categories = categoryPage.getContent();
+        int totalElements = (int) categoryPage.getTotalElements();
+        return new ApiPaginationResponse<>(page, itemsPerPage, totalElements, categories);
     }
 
     @PostMapping("/categories")

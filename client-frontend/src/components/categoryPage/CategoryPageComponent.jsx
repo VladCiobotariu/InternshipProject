@@ -21,13 +21,6 @@ const CategoryPageComponent = () => {
     //         })
     //         .catch((err) => console.log(err));
     // };
-    const getCategoriesNumber = () => {
-        getAllCategoriesApi()
-            .then((res) => {
-                setTotalNumberCategories(res.data.data.length);
-            })
-            .catch((err) => console.log(err));
-    }
 
     const getCategoriesWithItemsPerPage = (newItemsPerPage, page) => {
         setItemsPerPage(newItemsPerPage);
@@ -35,13 +28,13 @@ const CategoryPageComponent = () => {
         getAllCategoriesByItemsPerPageAndPage(page, newItemsPerPage)
             .then((res) => {
                 setDisplayedCategories(res.data.data);
+                setTotalNumberCategories(res.data.numberOfElements);
             })
             .catch((err) => console.log(err));
     }
 
     useEffect(() => {
         // getCategoryList();
-        getCategoriesNumber();
     }, []);
 
     useEffect( () => {
