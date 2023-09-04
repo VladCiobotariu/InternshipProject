@@ -8,6 +8,8 @@ import Header from "./components/header/Header";
 import WelcomeComponent from "./components/welcomePage/WelcomeComponent";
 import LoginComponent from "./components/login/LoginComponent";
 import RegisterComponent from "./components/register/RegisterComponent";
+import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
+
 
 function AuthenticatedRoute({children}){
 
@@ -24,22 +26,22 @@ function App() {
   return (
       <div className="bg-white dark:bg-inherit">
           <AuthProvider>
-              <BrowserRouter>
-                  <Header/>
-                  <Routes>
-                      <Route path='/' element={<WelcomeComponent/>}/>
-                      <Route path='' element={<WelcomeComponent/>}/>
-                      <Route path='/login' element={<LoginComponent/>}/>
-                      <Route path='/register' element={<RegisterComponent/>}/>
+                  <BrowserRouter>
+                      <Header/>
+                      <Routes>
+                          <Route path='/' element={<WelcomeComponent/>}/>
+                          <Route path='' element={<WelcomeComponent/>}/>
+                          <Route path='/login' element={<LoginComponent/>}/>
+                          <Route path='/register' element={<RegisterComponent/>}/>
+                          <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+                          <Route path='/favorites' element={
+                              <AuthenticatedRoute>
 
-                      <Route path='/favorites' element={
-                          <AuthenticatedRoute>
+                              </AuthenticatedRoute>
+                          }></Route>
 
-                          </AuthenticatedRoute>
-                      }></Route>
-
-                  </Routes>
-              </BrowserRouter>
+                      </Routes>
+                  </BrowserRouter>
           </AuthProvider>
       </div>
   );
