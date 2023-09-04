@@ -6,10 +6,13 @@ public class ApiPaginationResponse<T> {
     private int itemsPerPage;
     private T data;
 
-    public ApiPaginationResponse(int page, int itemsPerPage, T data) {
+//    private int numberOfElements;
+
+    public ApiPaginationResponse(int page, int itemsPerPage, T data /*, int numberOfElements */) {
         this.page = page;
         this.itemsPerPage = itemsPerPage;
         this.data = data;
+//        this.numberOfElements = numberOfElements;
     }
 
     public int getPage() {
@@ -23,4 +26,9 @@ public class ApiPaginationResponse<T> {
     public T getData() {
         return data;
     }
+
+//    public int getNumberOfElements() {
+//        return numberOfElements;
+//    }
+
 }
