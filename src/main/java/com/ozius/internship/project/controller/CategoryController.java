@@ -11,24 +11,30 @@ import java.util.List;
 @RestController
 public class CategoryController {
     private final CategoryService categoryService;
-    private final ImageController imageController;
 
-    public CategoryController(CategoryService categoryService, ImageController imageController) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.imageController = imageController;
     }
 
+//    @GetMapping("/categories")
+//    public List<Category> getCategories() {
+//        return categoryService.getCategories();
+//    }
+
     @GetMapping("/categories")
-    public List<Category> getCategories() {
-        return categoryService.getCategories();
+    public ApiPaginationResponse<List<Category>> getCategoriesByItemsPerPage(
+            @RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
+            @RequestParam(name = "page", defaultValue = "1") int page
+    ) {
+        List<Category> categories = categoryService.getCategoriesByItemsPerPage(itemsPerPage, page);
+        return new ApiPaginationResponse<>(page, itemsPerPage, categories);
     }
 
     @PostMapping("/categories")
-    public ResponseEntity<Object> createCategory(@PathVariable String categoryName,
-                                                 @PathVariable String imageUrl) {
+    public ResponseEntity<Object> createCategory(@RequestBody Category category) {
 
-        Category newCat = categoryService.createCategory(categoryName, imageUrl);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCat);
+        Category createdCategory = categoryService.createCategory(category);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
 
     }
 

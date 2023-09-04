@@ -1,10 +1,9 @@
 import React from 'react';
 import { baseURL } from '../../security/ApiClient';
-import './CategoryPageComponent.css'
 
 const CategoryComponent = ({ categoryName, imageUrl }) => {
     return (
-        <div className="category-component group relative items-center justify-center p-4">
+        <div className="group relative items-center justify-center p-4">
             <div className="relative overflow-hidden rounded-xl bg-white group-hover:opacity-75 border" style={{ paddingBottom: '100%' }}>
                 <img
                     src={`${baseURL}${imageUrl}`}

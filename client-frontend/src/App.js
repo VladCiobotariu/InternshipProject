@@ -3,7 +3,6 @@ import "@fontsource/roboto";
 
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import AuthProvider, { useAuth } from './security/AuthContext'
-import PaginationProvider from './components/context/PaginationContext'
 
 import Header from "./components/header/Header";
 import WelcomeComponent from "./components/welcomePage/WelcomeComponent";
@@ -27,7 +26,6 @@ function App() {
   return (
       <div className="bg-white dark:bg-inherit">
           <AuthProvider>
-              <PaginationProvider>
                   <BrowserRouter>
                       <Header/>
                       <Routes>
@@ -44,7 +42,6 @@ function App() {
 
                       </Routes>
                   </BrowserRouter>
-             </PaginationProvider>
           </AuthProvider>
       </div>
   );
