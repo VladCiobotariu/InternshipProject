@@ -1,0 +1,7 @@
+.select {
+    border-radius: 20px;
+    cursor: pointer;
+    border-width: 3px;
+    border-color: #0F172A;
+    color: #0F172A;
+}

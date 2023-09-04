@@ -42,7 +42,7 @@ export default function Header() {
     const getCategoryList = () => {
         getAllCategoriesApi()
             .then((res) => {
-                setCategories(res.data);
+                setCategories(res.data.data);
             })
             .catch((err) => console.log(err));
     };

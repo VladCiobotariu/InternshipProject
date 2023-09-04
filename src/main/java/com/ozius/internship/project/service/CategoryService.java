@@ -15,12 +15,21 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> getCategories() {
-        return categoryRepository.findAll();
+//    public List<Category> getCategories() {
+//        return categoryRepository.findAll();
+//    }
+
+    public List<Category> getCategoriesByItemsPerPage(int itemsPerPage, int page) {
+        List<Category> categories = categoryRepository.findAll();
+
+        int startIndex = (page - 1) * itemsPerPage;
+        int endIndex = Math.min(startIndex + itemsPerPage, categories.size());
+
+        return categories.subList(startIndex, endIndex);
     }
 
-    public Category createCategory(String name, String imageUrl) {
-        Category category = new Category(name, imageUrl);
+
+    public Category createCategory(Category category) {
         categoryRepository.save(category);
         return category;
     }

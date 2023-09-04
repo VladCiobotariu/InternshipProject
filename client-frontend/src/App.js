@@ -11,6 +11,8 @@ import RegisterComponent from "./components/register/RegisterComponent";
 import {AuthVerify} from "./security/AuthVerify";
 import Favorites from "./components/favorites/Favorites";
 import CartComponent from "./components/cart/CartComponent";
+import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
+
 
 function AuthenticatedRoute({children}){
 
@@ -66,6 +68,9 @@ function App() {
                             <Favorites/>
                           </AuthenticatedRoute>
                       }/>
+
+                      <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+
 
                       <Route path='/account/cart' element={
                           <AuthenticatedRoute>
