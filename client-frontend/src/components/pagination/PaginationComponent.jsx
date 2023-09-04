@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import usePagination, {DOTS} from "../hooks/usePagination";
-import classnames from "classnames";
+import classnames from 'classnames';
 import "./pagination.css";
 
 const PaginationComponent = ({ handlePageChange, totalCount, siblingCount=1, currentPage, itemsPerPage, className}) => {
