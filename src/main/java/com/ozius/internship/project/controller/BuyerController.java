@@ -1,28 +1,43 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.entity.cart.CartItem;
-import com.ozius.internship.project.repository.CartRepository;
+import com.ozius.internship.project.dto.CartItemDTO;
+import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.service.BuyerService;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Set;
+import java.security.Principal;
+import java.util.stream.Stream;
 
 @RestController
 public class BuyerController {
 
     private final BuyerService buyerService;
+    private final ModelMapper modelMapper;
 
-    public BuyerController(BuyerService buyerService) {
+    public BuyerController(BuyerService buyerService, ModelMapper modelMapper) {
         this.buyerService = buyerService;
+        this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/users/{email}/cart")
-    @PreAuthorize("#email == authentication.name")
-    public Set<CartItem> retrieveCartItemsByUserEmail(@PathVariable String email){
-        return buyerService.getCartItemsByUserEmail(email);
+    @GetMapping("/my-cart")
+    @PreAuthorize("hasRole('CLIENT')")
+    public Stream<CartItemDTO> retrieveCartItemsByUserEmail(Principal principal){
+        String loggedUserName = principal.getName();
+
+        return buyerService.getCartItemsByUserEmail(loggedUserName).stream().map(cartItem -> modelMapper.map(cartItem, CartItemDTO.class));
+    }
+
+    @GetMapping("/my-favorites")
+    @PreAuthorize("hasRole('CLIENT')")
+    public Stream<ProductDTO> retrieveFavoritesByUserEmail(Principal principal){
+        String loggedUserName = principal.getName();
+
+        return buyerService.getFavoritesByUserEmail(loggedUserName).stream().map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
 }

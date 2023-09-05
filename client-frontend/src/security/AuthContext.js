@@ -23,19 +23,6 @@ function AuthProvider({children}){
         }
     }
 
-    // useEffect(() => {
-    //     console.log('success', token)
-    //     if(token){
-    //         api.interceptors.request.use(
-    //             (config) => {
-    //                 config.headers.Authorization=token
-    //                 console.log('interceptor', token)
-    //                 return config
-    //             }
-    //         )
-    //     }
-    // }, [token]);
-
     async function login(username, password){
 
         try{

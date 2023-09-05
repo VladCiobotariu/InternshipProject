@@ -1,6 +1,6 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.CartRepository;
@@ -29,5 +29,12 @@ public class BuyerService {
         long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
 
         return cartRepository.findCartByBuyer_Id(buyerId).getCartItems();
+    }
+
+    @Transactional
+    public Set<Product> getFavoritesByUserEmail(String email){
+        long userId = userAccountRepository.findByEmail(email).getId();
+
+        return buyerRepository.findBuyerByAccount_Id(userId).getFavoriteProducts();
     }
 }

@@ -20,7 +20,6 @@ export const AuthVerify = () => {
             const decodedJwt = parseJwt(token);
 
             if (decodedJwt.exp * 1000 < Date.now()) {
-                console.log('error')
                 logout()
             }
         }

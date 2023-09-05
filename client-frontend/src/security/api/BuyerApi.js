@@ -1,5 +1,9 @@
 import {api} from "../ApiClient";
 
-export function getCartItemsByEmail(email){
-    return api.get(`/users/${email}/cart`)
+export function getCartItems(){
+    return api.get(`/my-cart`)
+}
+
+export function getFavorites(){
+    return api.get(`/my-favorites`)
 }

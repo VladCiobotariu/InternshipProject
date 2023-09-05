@@ -1,4 +1,4 @@
-import {getCartItemsByEmail} from "../../security/api/BuyerApi";
+import {getCartItems} from "../../security/api/BuyerApi";
 import React, {useEffect, useState} from "react";
 import {baseURL} from "../../security/ApiClient";
 import {useAuth} from "../../security/AuthContext";
@@ -10,8 +10,8 @@ function Cart(){
     const [cartItems, setCartItems] = useState([])
     const {username} = useAuth()
 
-    function getCartItems(email){
-        getCartItemsByEmail(email)
+    function getCartItemsList(){
+        getCartItems()
             .then(
                 (response) => setCartItems(response.data)
             )
@@ -23,39 +23,44 @@ function Cart(){
     const location = useLocation()
 
     useEffect(() => {
-        console.log('use effect get cart items')
         if(username){
-            getCartItems(username)
+            getCartItemsList()
         }
     }, [location, username]);
 
     return(
-        <div className="flex min-h-full flex-1 justify-center px-6 py-12">
+        <div className="flex px-6 py-12">
             <div className="mx-auto pt-10">
 
-                <div className="grid grid-cols-3 gap-8 dark:bg-[#192235] rounded-lg px-8">
+                {cartItems.map((item)=>(
+                    <div key={item.id} className="grid grid-cols-4 gap-8 dark:bg-[#192235] rounded-lg px-6 my-10 py-4"
+                    style={{
+                        // width: "500px"
+                    }}>
 
-                    {cartItems.map((item)=>(
-                        <div key={item.id}>
+                        <div className="">
+                            <img
+                                src={`${baseURL}/${item.product.imageName}`}
+                                alt=""
+                                className="h-20 w-20"
+                            />
+                        </div>
 
-                            <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white dark:bg-transparent dark:group-hover:bg-transparent dark:bg-zinc-800">
-                                <img
-                                    // src={`${baseURL}${item.getProduct().imageName}`}
-                                    alt={item.name}
-                                    className="h-6 w-6" aria-hidden="true"
-                                />
-                            </div>
+                        <div>
+                            {item.product.name}
+                        </div>
 
-                            <div>
-                                {item.quantity}
-                            </div>
+                        <div>
+                            <div>{item.product.price}</div>
+                            <div>{item.quantity}</div>
+                        </div>
+
+                        <div>
 
                         </div>
-                    ))}
 
-
-
-                </div>
+                    </div>
+                ))}
 
             </div>
         </div>
