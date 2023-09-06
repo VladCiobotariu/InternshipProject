@@ -216,7 +216,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
@@ -279,7 +279,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Buyer buyer = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
 
@@ -312,7 +312,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Product productToAdd = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
@@ -347,7 +347,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Product productToAdd = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
@@ -376,7 +376,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Product productToRemove = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
 
@@ -407,7 +407,7 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Arrange
         Product productToRemove = doTransaction(em -> {
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
 
             Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);

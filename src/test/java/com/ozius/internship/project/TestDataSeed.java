@@ -27,7 +27,7 @@ public class TestDataSeed {
         new JpaHelper(emf).doTransaction(em -> {
 
             TestDataCreator.createBuyerBaseData(em, passwordEncoder);
-            TestDataCreator.createSellerBaseData(em);
+            TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
 

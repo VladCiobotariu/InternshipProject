@@ -12,14 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class TestDataCreator {
 
-    public static void createBaseDataForProduct(EntityManager em) {
+    public static void createBaseDataForProduct(EntityManager em, PasswordEncoder passwordEncoder) {
         createCategoriesBaseData(em);
-        createSellerBaseData(em);
+        createSellerBaseData(em, passwordEncoder);
         createProductsBaseData(em);
     }
 
     public static void createBaseDataForReview(EntityManager em, PasswordEncoder passwordEncoder) {
-        createBaseDataForProduct(em);
+        createBaseDataForProduct(em, passwordEncoder);
         createBuyerBaseData(em, passwordEncoder);
     }
 
@@ -74,34 +74,39 @@ public class TestDataCreator {
         return seller;
     }
 
-    public static void  createSellerBaseData(EntityManager em){
-        Sellers.seller2 = createSellerFarmer(em,
+    public static void  createSellerBaseData(EntityManager em, PasswordEncoder passwordEncoder){
+
+        UserAccount account1 = new UserAccount("Vlad",
+                "Ciobotariu",
+                "vladciobotariu1@gmail.com",
+                "/src/image1",
+                "0734896512");
+        account1.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Sellers.seller1 = createSellerFarmer(em,
                 new Address("Romania",
                         "Timis",
                         "Timisoara",
                         "Strada Circumvalatiunii nr 4",
                         "Bloc 3 Scara B Ap 12",
                         "303413"),
-                new UserAccount("Vlad",
-                        "Ciobotariu",
-                        "vladciobotariu1@gmail.com",
-                        "/src/image1",
-                        "0734896512"),
+                account1,
                 "Mega Fresh SRL"
         );
 
-        Sellers.seller1 = createSellerFarmer(em,
+        UserAccount account2 = new UserAccount("Mihnea",
+                "Mondialu",
+                "mihneamondialu@gmail.com",
+                "/src/image99",
+                "0734896777");
+        account2.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Sellers.seller2 = createSellerFarmer(em,
                 new Address("Spania",
                         "Granada",
                         "Barcelona",
                         "Strada Real Madrid nr 4",
                         "Bloc Cupa Romaniei",
                         "307773"),
-                new UserAccount("Mihnea",
-                        "Mondialu",
-                        "mihneamondialu@gmail.com",
-                        "/src/image99",
-                        "0734896777"),
+                account2,
                 "FC BARCELONA"
         );
 

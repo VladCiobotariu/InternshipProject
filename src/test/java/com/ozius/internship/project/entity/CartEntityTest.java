@@ -7,6 +7,8 @@ import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
@@ -22,9 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CartEntityTest extends EntityBaseTest {
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void createTestData(EntityManager em) {
-        createBaseDataForProduct(em);
+        createBaseDataForProduct(em, passwordEncoder);
     }
 
     @Test
