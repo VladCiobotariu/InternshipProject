@@ -25,7 +25,6 @@ public class SellerEntityTests extends EntityBaseTest {
 
     private JpaRepository<Seller, Long> sellerRepository;
 
-    //TODO ask if autowired is good?
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -182,11 +181,11 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Arrange
         Seller sellerToAdd = doTransaction(em -> {
             Address addressSeller = new Address("Romania", "Timis", "Timisoara", "Strada Circumvalatiunii nr 4", "Bloc 3 Scara B Ap 12", "303413");
-            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu@gmail.com", "/src/image1", "0734896512");
+            UserAccount userAccount = new UserAccount("Vlad", "Ciobotariu", "vladciobotariu1@gmail.com", "/src/image1", "0734896512");
 
             Seller seller = TestDataCreator.createSellerCompany(em, addressSeller, userAccount, "bio", SellerType.PFA, new LegalDetails("MEGA FRESH SA", "RO37745609", new RegistrationNumber(CompanyType.F, 41, 34, LocalDate.now())));
 
-            TestDataCreator.createBuyerBaseData(em);
+            TestDataCreator.createBuyerBaseData(em, passwordEncoder);
             Address addressBuyer = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             TestDataCreator.createOrder(em,addressBuyer, buyer1, seller);

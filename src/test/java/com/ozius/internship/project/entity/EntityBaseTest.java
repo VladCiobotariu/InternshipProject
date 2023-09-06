@@ -32,14 +32,11 @@ public class EntityBaseTest {
 
         entityFinder = new EntityFinder(emb);
 
-        doTransaction(em -> {
-            createTestData(em);
-        });
+        doTransaction(this::createTestData);
     }
 
     @AfterEach
     void tearDown() {
-
         emb.close();
     }
 
@@ -48,20 +45,14 @@ public class EntityBaseTest {
     }
 
     public void doTransaction(JpaCallbackVoid callback){
-        new JpaHelper(emf).doTransaction(em -> {
-            callback.execute(em);
-        });
+        new JpaHelper(emf).doTransaction(callback);
     }
 
     public void doManaged(JpaCallbackVoid callback){
-        new JpaHelper(emf).doManaged(em -> {
-            callback.execute(em);
-        });
+        new JpaHelper(emf).doManaged(callback);
     }
 
     public <T> T doTransaction(JpaCallback<T> callback){
-        return new JpaHelper(emf).doTransaction(em -> {
-            return callback.execute(em);
-        });
+        return new JpaHelper(emf).doTransaction(callback);
     }
 }

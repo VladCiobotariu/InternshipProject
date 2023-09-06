@@ -10,8 +10,10 @@ import com.ozius.internship.project.entity.order.OrderStatus;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,11 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class OrderEntityTests extends EntityBaseTest{
 
     private JpaRepository<Order, Long> orderRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void createTestData(EntityManager em) {
         //----Arrange
-        TestDataCreator.createBuyerBaseData(em);
+        TestDataCreator.createBuyerBaseData(em, passwordEncoder);
         TestDataCreator.createSellerBaseData(em);
         TestDataCreator.createCategoriesBaseData(em);
 

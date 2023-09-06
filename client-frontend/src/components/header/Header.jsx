@@ -40,8 +40,8 @@ export default function Header() {
     const [categories, setCategories] = useState([]);
     const [favorites, setFavorites] = useState([])
 
-    const[numberOfCartItems, setNumberOfCartItems] = useState()
-    const[numberOfFavorites, setNumberOfFavorites] = useState()
+    const[numberOfCartItems, setNumberOfCartItems] = useState(0)
+    const[numberOfFavorites, setNumberOfFavorites] = useState(0)
 
     const { isAuthenticated, username } = useAuth();
     const auth = useAuth();
@@ -72,16 +72,13 @@ export default function Header() {
     }
 
     useEffect(() => {
-        getCategoryList()
-    }, []);
-
-    useEffect(() => {
         if(username){
             getFavoritesList()
 
             getNumberOfFavorites()
             getNumberOfCartItems()
         }
+        getCategoryList()
     }, [location, username]);
 
     function getNumberOfCartItems(){
@@ -119,14 +116,16 @@ export default function Header() {
                 <div className="flex md:hidden lg:hidden xl:hidden 2xl:hidden">
                     <Link to='/account/cart' className="relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                        <div className="absolute
-                             inline-flex items-center justify-center
-                             w-4 h-4
-                             text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
-                             -top-2 -right-2
-                             dark:border-gray-900">
-                            {numberOfCartItems}
-                        </div>
+                        {numberOfCartItems!==0 &&
+                            <div className="absolute
+                                 inline-flex items-center justify-center
+                                 w-4 h-4
+                                 text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
+                                 -top-2 -right-2
+                                 dark:border-gray-900">
+                                {numberOfCartItems}
+                            </div>
+                        }
                     </Link>
 
                     <button
@@ -210,14 +209,14 @@ export default function Header() {
                 <div className="hidden md:flex md:flex-1 md:justify-end lg:flex lg:flex-1 lg:justify-end xl:flex xl:flex-1 xl:justify-end 2xl:flex 2xl:flex-1 2xl:justify-end text-inherit dark:text-inherit">
 
                     {isAuthenticated &&
-                        <Popover className="relative mr-8 ">
+                        <Popover className="relative mr-6">
                             <Popover.Button onClick={()=> navigate('/account/favorites')}
                                             className="inline-flex items-center gap-x-0 text-sm font-semibold leading-6 text-gray-900 dark:text-inherit"
                                             onMouseEnter={() => setIsShowing(true)}
                                             onMouseLeave={() => setIsShowing(false)}
                             >
                                 <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit" aria-disabled="true"/>
-                                {numberOfFavorites &&
+                                {numberOfFavorites!==0 &&
                                     <div className="absolute inline-flex items-center justify-center
                                              w-4 h-4
                                              text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
@@ -303,7 +302,7 @@ export default function Header() {
 
                     <Link to='/account/cart' className="inline-flex relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                        {numberOfCartItems &&
+                        {numberOfCartItems!==0 &&
                             <div className="absolute inline-flex items-center justify-center
                                  w-4 h-4
                                  text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full

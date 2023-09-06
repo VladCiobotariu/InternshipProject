@@ -8,6 +8,8 @@ import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
 import static com.ozius.internship.project.TestDataCreator.Buyers.buyer1;
@@ -19,9 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SellerReviewEntityTests extends EntityBaseTest {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void createTestData(EntityManager em) {
-        TestDataCreator.createBaseDataForReview(em);
+        TestDataCreator.createBaseDataForReview(em, passwordEncoder);
     }
 
     @Test
