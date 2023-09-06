@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @RestController
 public class ProductController {
 
@@ -33,16 +35,15 @@ public class ProductController {
 
     @GetMapping("/products")
     public ApiPaginationResponse<List<ProductDTO>> getProductsByCategoryNamePageable(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
-                                                                                    @RequestParam(name = "page", defaultValue = "1") int page,
-                                                                                    @RequestParam(name="categoryName", defaultValue = "") String categoryName) {
+                                                                                     @RequestParam(name = "page", defaultValue = "1") int page,
+                                                                                     @RequestParam(name = "categoryName", required = false) String categoryName) {
 
-        Pageable pageable = PageRequest.of(page-1, itemsPerPage);
+        Pageable pageable = PageRequest.of(page - 1, itemsPerPage);
         Page<Product> productPage;
 
-        if(!Objects.equals(categoryName, "")) {
+        if (isNotEmpty(categoryName)) {
             productPage = productRepository.findByCategoryName(categoryName, pageable);
-        }
-        else {
+        } else {
             productPage = productRepository.findAll(pageable);
         }
 
