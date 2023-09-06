@@ -1,5 +1,4 @@
-import {createContext, useContext, useEffect} from "react";
-import { api } from "./ApiClient";
+import {createContext, useContext} from "react";
 import {executeJwtAuthenticationService, registerApiService} from "./AuthenticationApiService";
 import {useSessionStorage} from "../hooks/useSessionStorage";
 

@@ -1,5 +1,7 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.ProjectApplicationTest;
+import com.ozius.internship.project.SpringProfiles;
 import com.ozius.internship.project.infra.JpaCallback;
 import com.ozius.internship.project.infra.JpaCallbackVoid;
 import com.ozius.internship.project.infra.JpaHelper;
@@ -12,9 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
+@SpringBootTest(classes = ProjectApplicationTest.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@ActiveProfiles("test")
+@ActiveProfiles({SpringProfiles.DEV, SpringProfiles.EMBEDDED_DB_H2})
 public class EntityBaseTest {
 
     @PersistenceUnit
