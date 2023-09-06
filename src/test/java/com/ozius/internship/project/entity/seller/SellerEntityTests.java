@@ -148,15 +148,12 @@ public class SellerEntityTests extends EntityBaseTest {
             Seller mergedSeller = em.merge(seller);
             UserAccount account = mergedSeller.getAccount();
 
-            mergedSeller.updateSeller(
+            mergedSeller.getAccount().updateAccount(
                     "Vlad Cristian",
                     account.getLastName(),
                     account.getEmail(),
-                    account.getPasswordHash(),
                     account.getImageName(),
-                    account.getTelephone(),
-                    mergedSeller.getLegalDetails(),
-                    mergedSeller.getLegalAddress());
+                    account.getTelephone());
         });
 
         //----Assert
@@ -312,17 +309,10 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Act
         doTransaction(em -> {
             Seller mergedSeller = em.merge(sellerToUpdate);
-            UserAccount account = mergedSeller.getAccount();
             LegalDetails legalDetails = mergedSeller.getLegalDetails();
             LegalDetails legalDetailsToAdd = new LegalDetails(legalDetails.getName(), "RO37745999", legalDetails.getRegistrationNumber());
 
             mergedSeller.updateSeller(
-                    account.getFirstName(),
-                    account.getLastName(),
-                    account.getEmail(),
-                    account.getPasswordHash(),
-                    account.getImageName(),
-                    account.getTelephone(),
                     legalDetailsToAdd,
                     mergedSeller.getLegalAddress()
             );
@@ -332,13 +322,6 @@ public class SellerEntityTests extends EntityBaseTest {
         Seller persistedSeller = entityFinder.getTheOne(Seller.class);
         LegalDetails persistedLegalDetails = persistedSeller.getLegalDetails();
 
-        assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
-        assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
-        assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
-        assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
-        assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
-        assertThat(persistedSeller.getAlias()).isEqualTo("Mega Fresh SRL");
         assertThat(persistedSeller.getLegalAddress().getCountry()).isEqualTo("Romania");
         assertThat(persistedSeller.getLegalAddress().getState()).isEqualTo("Timis");
         assertThat(persistedSeller.getLegalAddress().getCity()).isEqualTo("Timisoara");
@@ -378,19 +361,12 @@ public class SellerEntityTests extends EntityBaseTest {
         //----Act
         doTransaction(em -> {
             Seller mergedSeller = em.merge(sellerToUpdate);
-            UserAccount account = mergedSeller.getAccount();
             LegalDetails legalDetails = mergedSeller.getLegalDetails();
             Address legalAddress = mergedSeller.getLegalAddress();
 
             Address legalAddressToAdd = new Address("Italy", legalAddress.getState(), legalAddress.getCity(), legalAddress.getAddressLine1(), legalAddress.getAddressLine2(), legalAddress.getZipCode());
 
             mergedSeller.updateSeller(
-                    account.getFirstName(),
-                    account.getLastName(),
-                    account.getEmail(),
-                    account.getPasswordHash(),
-                    account.getImageName(),
-                    account.getTelephone(),
                     legalDetails,
                     legalAddressToAdd
             );
@@ -400,13 +376,6 @@ public class SellerEntityTests extends EntityBaseTest {
         Seller persistedSeller = entityFinder.getTheOne(Seller.class);
         LegalDetails persistedLegalDetails = persistedSeller.getLegalDetails();
 
-        assertThat(persistedSeller.getAccount().getFirstName()).isEqualTo("Vlad");
-        assertThat(persistedSeller.getAccount().getLastName()).isEqualTo("Ciobotariu");
-        assertThat(persistedSeller.getAccount().getEmail()).isEqualTo("vladciobotariu@gmail.com");
-        assertTrue(passwordEncoder.matches("1234", persistedSeller.getAccount().getPasswordHash()));
-        assertThat(persistedSeller.getAccount().getImageName()).isEqualTo("/src/image1");
-        assertThat(persistedSeller.getAccount().getTelephone()).isEqualTo("0734896512");
-        assertThat(persistedSeller.getAlias()).isEqualTo("Mega Fresh SRL");
         assertThat(persistedSeller.getLegalAddress().getCountry()).isEqualTo("Italy");
         assertThat(persistedSeller.getLegalAddress().getState()).isEqualTo("Timis");
         assertThat(persistedSeller.getLegalAddress().getCity()).isEqualTo("Timisoara");

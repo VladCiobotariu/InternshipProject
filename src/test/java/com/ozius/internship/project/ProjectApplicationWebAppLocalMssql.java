@@ -1,19 +1,19 @@
 package com.ozius.internship.project;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class  ProjectApplication {
+public class ProjectApplicationWebAppLocalMssql {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder()
-				.sources(ProjectApplication.class)
+				.sources(ProjectApplicationWebAppLocalMssql.class)
 				.profiles(
-						SpringProfiles.PROD
+						SpringProfiles.DEV,
+						SpringProfiles.LOCAL_MS_SQL
 				)
 				.run(args);
 	}

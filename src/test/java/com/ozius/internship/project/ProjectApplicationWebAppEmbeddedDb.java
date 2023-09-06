@@ -1,19 +1,21 @@
 package com.ozius.internship.project;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class  ProjectApplication {
+public class ProjectApplicationWebAppEmbeddedDb {
+
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder()
-				.sources(ProjectApplication.class)
+				.sources(ProjectApplicationWebAppEmbeddedDb.class)
 				.profiles(
-						SpringProfiles.PROD
+						SpringProfiles.DEV,
+						SpringProfiles.EMBEDDED_DB_H2,
+						SpringProfiles.TEST_DATA_SEED
 				)
 				.run(args);
 	}

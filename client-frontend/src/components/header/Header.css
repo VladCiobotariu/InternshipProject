@@ -1,0 +1,17 @@
+@media (prefers-color-scheme: dark){
+    path.bottom{
+        fill: #47B385
+    }
+    path.top{
+        fill: #EFEFEF
+    }
+}
+
+@media (prefers-color-scheme: light){
+    path.bottom{
+        fill: #47B385
+    }
+    path.top{
+        fill: #1D1B1E
+    }
+}

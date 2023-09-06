@@ -28,6 +28,8 @@ public class JwtAuthenticationResource {
     @PostMapping("/authenticate")
     public JwtTokenResponse authenticate(@RequestBody JwtTokenRequest jwtTokenRequest){
 
+//        UserDetails userDetails = databaseUserDetailsService.loadUserByUsername(jwtTokenRequest.username()); //not needed, just for future to create scopes
+
         var authenticationToken =
                 new UsernamePasswordAuthenticationToken(
                         jwtTokenRequest.username(),
