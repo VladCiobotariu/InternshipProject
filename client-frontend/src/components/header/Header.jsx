@@ -1,8 +1,9 @@
 import React, { Fragment, useRef, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { useAuth } from '../../security/AuthContext';
 import { getAllCategoriesApi } from "../../security/api/CategoryApi";
 import { baseURL } from "../../security/ApiClient";
+import './Header.css'
 
 import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
 import {
@@ -16,6 +17,8 @@ import {
     HeartIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import {ReactComponent as Logo} from "./icon.svg";
+import {getFavorites, getCartItems} from "../../security/api/BuyerApi";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -32,10 +35,19 @@ function classNames(...classes) {
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isShowing, setIsShowing] = useState(false)
 
     const [categories, setCategories] = useState([]);
-    const { isAuthenticated } = useAuth();
+    const [favorites, setFavorites] = useState([])
+
+    const[numberOfCartItems, setNumberOfCartItems] = useState()
+    const[numberOfFavorites, setNumberOfFavorites] = useState()
+
+    const { isAuthenticated, username } = useAuth();
     const auth = useAuth();
+
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const buttonRef = useRef();
 
@@ -47,29 +59,65 @@ export default function Header() {
             .catch((err) => console.log(err));
     };
 
+    function getFavoritesList(){
+        getFavorites()
+            .then(
+                (response) => setFavorites(response.data)
+            )
+            .catch(
+                (err) => {
+                    console.log(err)
+                }
+            )
+    }
+
     useEffect(() => {
-        getCategoryList();
+        getCategoryList()
     }, []);
+
+    useEffect(() => {
+        if(username){
+            getFavoritesList()
+
+            getNumberOfFavorites()
+            getNumberOfCartItems()
+        }
+    }, [location, username]);
+
+    function getNumberOfCartItems(){
+        getCartItems()
+            .then(
+                (response) => setNumberOfCartItems(response.data.length)
+            )
+            .catch(
+                (err) => {
+                    console.log(err)
+                }
+            )
+    }
+
+    function getNumberOfFavorites(){
+        getFavorites()
+            .then(
+                (response) => setNumberOfFavorites(response.data.length)
+            )
+            .catch(
+                (err) => {
+                    console.log(err)
+                }
+            )
+    }
 
     return (
         <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 md:px-8 lg:px-8 xl:px-8 2xl:px-8" aria-label="Global">
                 <div className="flex md:flex-1 lg:flex-1 xl:flex-1 2xl:flex-1">
                     <Link to='/' className="-m-1.5 p-1.5">
-                        <picture>
-                            <source
-                                srcSet="./icon-dark.svg"
-                                media="(prefers-color-scheme: dark)"
-                                className="h-8 w-auto"
-                            />
-                            <img className="h-8 w-auto"
-                                 src="./icon.svg"
-                                 alt="" />
-                        </picture>
+                        <Logo className="h-8 w-auto"/>
                     </Link>
                 </div>
                 <div className="flex md:hidden lg:hidden xl:hidden 2xl:hidden">
-                    <Link to='/cart' className="relative mr-6">
+                    <Link to='/account/cart' className="relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
                         <div className="absolute
                              inline-flex items-center justify-center
@@ -77,9 +125,10 @@ export default function Header() {
                              text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
                              -top-2 -right-2
                              dark:border-gray-900">
-                            3
+                            {numberOfCartItems}
                         </div>
                     </Link>
+
                     <button
                         type="button"
                         className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-inherit"
@@ -89,6 +138,7 @@ export default function Header() {
                         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
                     </button>
                 </div>
+
                 <Popover.Group className="hidden md:flex md:gap-x-12 lg:flex lg:gap-x-12 xl:flex xl:gap-x-12 2xl:flex 2xl:gap-x-12 text-gray-900 dark:text-gray-100">
                     <Popover className="relative">
                         <Popover.Button ref={buttonRef} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
@@ -117,7 +167,7 @@ export default function Header() {
                                                 <img
                                                     src={`${baseURL}${item.imageName}`}
                                                     alt={item.name}
-                                                    className="rounded-lg dark:bg-zinc-400 dark:rounded-lg"
+                                                    className="h-6 w-6 group-hover:text-indigo-600 dark:group-hover:text-indigo-100 dark:invert" aria-hidden="true"
                                                 />
                                             </div>
                                             <div className="flex-auto">
@@ -160,27 +210,108 @@ export default function Header() {
                 <div className="hidden md:flex md:flex-1 md:justify-end lg:flex lg:flex-1 lg:justify-end xl:flex xl:flex-1 xl:justify-end 2xl:flex 2xl:flex-1 2xl:justify-end text-inherit dark:text-inherit">
 
                     {isAuthenticated &&
-                        <Link to="/favorites" className="inline-flex relative mr-8">
-                            <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                            <div className="absolute inline-flex items-center justify-center
-                         w-4 h-4
-                         text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
-                         -top-2 -left-2
-                         dark:border-gray-900">
-                                3
-                            </div>
-                        </Link>
+                        <Popover className="relative mr-8 ">
+                            <Popover.Button onClick={()=> navigate('/account/favorites')}
+                                            className="inline-flex items-center gap-x-0 text-sm font-semibold leading-6 text-gray-900 dark:text-inherit"
+                                            onMouseEnter={() => setIsShowing(true)}
+                                            onMouseLeave={() => setIsShowing(false)}
+                            >
+                                <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit" aria-disabled="true"/>
+                                {numberOfFavorites &&
+                                    <div className="absolute inline-flex items-center justify-center
+                                             w-4 h-4
+                                             text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
+                                             -top-2 -left-2
+                                             dark:border-gray-900">
+                                        {numberOfFavorites}
+                                    </div>
+                                }
+                            </Popover.Button>
+
+                            <Transition
+                                as={Fragment}
+                                enter="transition ease-out duration-900"
+                                enterFrom="opacity-0 translate-y-1"
+                                enterTo="opacity-100 translate-y-0"
+                                leave="transition ease-in duration-150"
+                                leaveFrom="opacity-100 translate-y-0"
+                                leaveTo="opacity-0 translate-y-1"
+                                show={isShowing}
+                                onMouseEnter={() => setIsShowing(true)}
+                                onMouseLeave={() => {
+                                    setTimeout(() => {
+                                        setIsShowing(false)
+                                    }, 400)
+                                }}
+                            >
+
+                                <Popover.Panel className=" w-max
+                                   absolute -left-20 mt-2 top-full z-10 max-w-[250px] overflow-hidden rounded-3xl bg-white
+                                   dark:bg-zinc-800 shadow-lg ring-1 ring-gray-900/5
+                                    dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md"
+                                >
+                                    <div className="p-2 pr-2">
+                                        {favorites.map((item) => (
+
+                                            <div
+                                                key={item.id}
+                                                className="relative flex items-center gap-x-2 rounded-lg text-sm leading-6"
+                                            >
+                                                <Link to={`/${item.seller.alias}/products/${item.name}`}
+                                                    className="flex items-center gap-x-6 hover:bg-gray-50 dark:hover:bg-zinc-900 rounded-lg p-2">
+                                                    <div className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-transparent dark:bg-zinc-800">
+                                                        <img className="h-6 w-6"
+                                                             alt=""
+                                                             src={`${baseURL}/${item.imageName}`}
+                                                        />
+                                                    </div>
+
+                                                    <div className="flex-auto">
+                                                        <div className="block font-semibold text-gray-900 dark:text-inherit">
+                                                            {item.name}
+                                                            <div style={{textOverflow: "ellipsis"}}>{item.price} RONNNNNNNNN</div>
+                                                        </div>
+                                                    </div>
+                                                </Link>
+
+                                                <button className="flex h-11 w-11 flex-none items-center justify-center rounded-lg
+                                                        text-gray-600 transition hover:text-red-600 hover:bg-gray-50 dark:hover:bg-zinc-900">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        strokeWidth="1.5"
+                                                        stroke="currentColor"
+                                                        className="h-5 w-5"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                        ))}
+                                    </div>
+                                </Popover.Panel>
+
+                            </Transition>
+                        </Popover>
                     }
 
-                    <Link to='/cart' className="inline-flex relative mr-6">
+                    <Link to='/account/cart' className="inline-flex relative mr-6">
                         <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                        <div className="absolute inline-flex items-center justify-center
-                         w-4 h-4
-                         text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
-                         -top-2 -left-2
-                         dark:border-gray-900">
-                            3
-                        </div>
+                        {numberOfCartItems &&
+                            <div className="absolute inline-flex items-center justify-center
+                                 w-4 h-4
+                                 text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
+                                 -top-2 -left-2
+                                 dark:border-gray-900">
+                                {numberOfCartItems}
+                            </div>
+                        }
                     </Link>
 
                     {isAuthenticated &&

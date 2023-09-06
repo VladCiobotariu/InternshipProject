@@ -1,6 +1,6 @@
 import {Link} from "react-router-dom";
-
 export default function WelcomeComponent() {
+
     return (
         <div className="bg-transparent dark:bg-transparent">
 

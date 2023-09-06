@@ -9,7 +9,9 @@ public class ProjectApplication {
 	public static void main(String[] args) {
 		new SpringApplicationBuilder()
 				.sources(ProjectApplication.class)
-				.profiles(SpringProfiles.PROD)
+				.profiles(
+						SpringProfiles.PROD
+				)
 				.run(args);
 	}
 

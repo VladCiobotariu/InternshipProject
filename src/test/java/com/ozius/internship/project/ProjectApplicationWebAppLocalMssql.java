@@ -13,8 +13,8 @@ public class ProjectApplicationWebAppLocalMssql {
 				.sources(ProjectApplicationWebAppLocalMssql.class)
 				.profiles(
 						SpringProfiles.DEV,
-						SpringProfiles.LOCAL_MSSQL,
-						SpringProfiles.TEST_DATA_SEED)
+						SpringProfiles.LOCAL_MS_SQL
+				)
 				.run(args);
 	}
 

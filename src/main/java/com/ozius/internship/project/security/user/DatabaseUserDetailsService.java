@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 public class DatabaseUserDetailsService implements UserDetailsService {
 
     private final UserAccountRepository userAccountRepository;
-    private final UserDetailsMapper userDetailsMapper;
+    private final ClientDetailsMapper userDetailsMapper;
 
-    public DatabaseUserDetailsService(UserAccountRepository userAccountRepository, UserDetailsMapper userDetailsMapper) {
+    public DatabaseUserDetailsService(UserAccountRepository userAccountRepository, ClientDetailsMapper clientDetailsMapper) {
         this.userAccountRepository = userAccountRepository;
-        this.userDetailsMapper = userDetailsMapper;
+        this.userDetailsMapper = clientDetailsMapper;
     }
 
     @Override

@@ -181,7 +181,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         //----Act
         doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
-            mergedBuyer.updateBuyer(
+            mergedBuyer.getAccount().updateAccount(
                     buyer.getAccount().getFirstName(),
                     buyer.getAccount().getLastName(),
                     "cosminaa@gmail.com",
