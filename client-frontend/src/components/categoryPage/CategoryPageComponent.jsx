@@ -12,7 +12,7 @@ const CategoryPageComponent = () => {
     const [itemsPerPage, setItemsPerPage] = useState(6);
     const [totalNumberCategories, setTotalNumberCategories] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
-    const numberColumns = 2;
+    const numberColumns = 4;
 
     // const getCategoryList = () => {
     //     getAllCategoriesApi()

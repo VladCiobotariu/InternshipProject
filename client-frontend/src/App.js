@@ -9,6 +9,7 @@ import WelcomeComponent from "./components/welcomePage/WelcomeComponent";
 import LoginComponent from "./components/login/LoginComponent";
 import RegisterComponent from "./components/register/RegisterComponent";
 import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
+import ProductPageComponent from './components/productPage/ProductPageComponent'
 
 
 function AuthenticatedRoute({children}){
@@ -34,6 +35,7 @@ function App() {
                           <Route path='/login' element={<LoginComponent/>}/>
                           <Route path='/register' element={<RegisterComponent/>}/>
                           <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+                          <Route path='/products/categories/:categoryName' element={<ProductPageComponent/>}/>
                           <Route path='/favorites' element={
                               <AuthenticatedRoute>
 

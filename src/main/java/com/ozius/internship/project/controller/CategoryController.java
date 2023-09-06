@@ -23,10 +23,8 @@ public class CategoryController {
 //    }
 
     @GetMapping("/categories")
-    public ApiPaginationResponse<List<Category>> getCategoriesByItemsPerPage(
-            @RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
-            @RequestParam(name = "page", defaultValue = "1") int page
-    ) {
+    public ApiPaginationResponse<List<Category>> getCategoriesByItemsPerPage(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
+                                                                             @RequestParam(name = "page", defaultValue = "1") int page) {
         Page<Category> categoryPage = categoryService.getCategoriesByItemsPerPage(page-1, itemsPerPage);
         List<Category> categories = categoryPage.getContent();
         int totalElements = (int) categoryPage.getTotalElements();

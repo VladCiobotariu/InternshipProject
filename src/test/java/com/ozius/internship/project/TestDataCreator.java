@@ -8,6 +8,7 @@ import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 public class TestDataCreator {
 
@@ -105,6 +106,9 @@ public class TestDataCreator {
 
         Categories.category2 = createCategory(em, "Cereale", "image09");
         Categories.category1 = createCategory(em, "Fructe", "image0008");
+        Categories.category3 = createCategory(em, "Legume", "image0007");
+        Categories.category4 = createCategory(em, "Honey", "image0006");
+        Categories.category5 = createCategory(em, "Nuci", "image0005");
     }
 
     public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
@@ -164,6 +168,9 @@ public class TestDataCreator {
     public static class Categories{
         public static Category category1;
         public static Category category2;
+        public static Category category3;
+        public static Category category4;
+        public static Category category5;
     }
 
     public static class Addresses{
