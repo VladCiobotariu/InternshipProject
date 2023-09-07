@@ -11,10 +11,6 @@ import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static com.ozius.internship.project.TestDataCreator.Buyers.buyer3;
-import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product2;
-
 public class TestDataCreator {
 
     public static void createBaseDataForProduct(EntityManager em, PasswordEncoder passwordEncoder) {
@@ -61,7 +57,7 @@ public class TestDataCreator {
                 "none",
                 "+40770157915");
         account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
-        buyer3 = createBuyer(em, account3);
+        Buyers.buyer3 = createBuyer(em, account3);
 
     }
 
@@ -125,10 +121,15 @@ public class TestDataCreator {
 
     public static void createCategoriesBaseData(EntityManager em){
 
-        Categories.category2 = createCategory(em, "Fruits", "/images/fruits.svg");
-        Categories.category1 = createCategory(em, "Vegetables", "/images/vegetables.svg");
-
-        createCategory(em, "Dairy", "/images/dairy.svg");
+        Categories.category1 = createCategory(em, "Fruits", "/images/fruits.svg");
+        Categories.category2 = createCategory(em, "Vegetables", "/images/vegetables.svg");
+        Categories.category3 = createCategory(em, "Dairy", "/images/dairy.svg");
+        Categories.category4 = createCategory(em, "Nuts", "/images/nuts.svg");
+        Categories.category5 = createCategory(em, "Honey", "/images/honey.svg");
+        Categories.category6 = createCategory(em, "Sweets", "/images/sweets.svg");
+        Categories.category7 = createCategory(em, "Oil", "/images/oil.svg");
+        Categories.category8 = createCategory(em, "Tea", "/images/tea.svg");
+        Categories.category9 = createCategory(em, "Juices", "/images/juice.svg");
     }
 
     public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
@@ -141,9 +142,14 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        product1 = createProduct(em, "Grapes", "for sugar", "/images/grapes.png", 12.7f, Categories.category2, Sellers.seller1);
-        Products.product2 = createProduct(em, "Kiwi", "for sugar", "/images/kiwi.png", 8.2f, Categories.category2, Sellers.seller1);
-        Products.product3 = createProduct(em, "Apple", "pentru glucoza", "/images/apple.png", 5f, Categories.category2, Sellers.seller2);
+        Products.product1 = createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpeg", 12.7f, Categories.category1, Sellers.seller1);
+        Products.product2 = createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.png", 8.2f, Categories.category1, Sellers.seller1);
+        Products.product3 = createProduct(em, "Kiwi", "This is a kiwi! It is a fruit!", "mages/kiwi.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product4 = createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product5 = createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.png", 5f, Categories.category1, Sellers.seller1);
+        Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.png", 5f, Categories.category1, Sellers.seller1);
+        Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.png", 5f, Categories.category1, Sellers.seller1);
+        Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/orange.png", 5f, Categories.category2, Sellers.seller1);
     }
 
     public static void createAddresses(){
@@ -182,16 +188,16 @@ public class TestDataCreator {
     }
 
     public static void createCartBaseData(EntityManager em){
-        Cart cart = createCart(em, buyer3);
+        Cart cart = createCart(em, Buyers.buyer3);
 
-        addItemToCart(em, cart, product1, 2.2F);
+        addItemToCart(em, cart, Products.product1, 2.2F);
         addItemToCart(em, cart, Products.product2, 5.9F);
     }
 
     public static void createFavoritesBaseData(EntityManager em){
-        Buyer buyer = em.merge(buyer3);
-        buyer.addFavorite(product1);
-        buyer.addFavorite(product2);
+        Buyer buyer = em.merge(Buyers.buyer3);
+        buyer.addFavorite(Products.product1);
+        buyer.addFavorite(Products.product2);
     }
 
     public static class Buyers{
@@ -209,11 +215,23 @@ public class TestDataCreator {
         public static Product product1;
         public static Product product2;
         public static Product product3;
+        public static Product product4;
+        public static Product product5;
+        public static Product product6;
+        public static Product product7;
+        public static Product product8;
     }
 
     public static class Categories{
         public static Category category1;
         public static Category category2;
+        public static Category category3;
+        public static Category category4;
+        public static Category category5;
+        public static Category category6;
+        public static Category category7;
+        public static Category category8;
+        public static Category category9;
     }
 
     public static class Addresses{
