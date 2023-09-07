@@ -6,7 +6,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
@@ -15,8 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Service
-public class LocalDiskImageService implements ImageService {
+public class LocalDiskImageHandlingService implements ImageService {
 
     @Value("${upload.path}")
     private String imageUploadPath;
@@ -33,17 +31,16 @@ public class LocalDiskImageService implements ImageService {
     }
 
     @Override
-    public ResponseEntity<String> upload(MultipartFile file) {
+    public String upload(MultipartFile file) {
         try {
             String fileName = file.getOriginalFilename();
             File imageFile = new File(imageUploadPath + fileName);
             try (FileOutputStream fos = new FileOutputStream(imageFile)) {
                 fos.write(file.getBytes());
             }
-            String imageUrl = "/images/" + fileName;
-            return ResponseEntity.status(HttpStatus.CREATED).body(imageUrl);
+            return "/images/" + fileName;
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+            return "Failed to upload image.";
         }
     }
 

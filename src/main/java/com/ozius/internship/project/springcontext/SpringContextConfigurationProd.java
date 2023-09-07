@@ -1,7 +1,7 @@
 package com.ozius.internship.project.springcontext;
 
 import com.ozius.internship.project.SpringProfiles;
-import com.ozius.internship.project.infra.images.service.AwsS3Service;
+import com.ozius.internship.project.infra.images.service.AwsS3ImageHandlingService;
 import com.ozius.internship.project.infra.images.service.ImageService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +13,6 @@ public class SpringContextConfigurationProd {
 
     @Bean
     public ImageService imageService() {
-        return new AwsS3Service();
+        return new AwsS3ImageHandlingService();
     }
 }

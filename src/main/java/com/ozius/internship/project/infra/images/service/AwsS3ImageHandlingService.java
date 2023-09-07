@@ -1,15 +1,13 @@
 package com.ozius.internship.project.infra.images.service;
 
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.ResponseEntity;
 
-@Service
-public class AwsS3Service implements ImageService {
+public class AwsS3ImageHandlingService implements ImageService {
 
     @Override
-    public ResponseEntity<String> upload(MultipartFile file) {
-        return ResponseEntity.notFound().build();
+    public String upload(MultipartFile file) {
+        return null;
     }
 
     @Override
