@@ -2,10 +2,12 @@ package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -16,11 +18,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getProducts() {
-        return productRepository.findAll();
+
+    public Page<Product> getProductsByCategoryName(String categoryName, int page, int itemsPerPage) {
+        Pageable pageable = PageRequest.of(page, itemsPerPage);
+        return productRepository.findByCategoryName(categoryName, pageable);
     }
 
-    public List<Product> getProductsByCategoryName(String categoryName) {
-        return productRepository.findByCategoryName(categoryName);
-    }
 }

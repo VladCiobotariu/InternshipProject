@@ -8,7 +8,7 @@ const SelectComponent = ({itemsPerPage, handleItemsPerPageChange}) => {
             <select value={itemsPerPage} onChange={handleItemsPerPageChange} className="ml-auto mb-2 dark:text-gray-800 select">
                 <option value="2">2 per page</option>
                 <option value="4">4 per page</option>
-                <option value="6">6 per page</option>
+                <option value="8">8 per page</option>
                 <option value="12">12 per page</option>
             </select>
         </div>

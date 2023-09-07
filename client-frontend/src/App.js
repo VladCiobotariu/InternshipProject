@@ -12,6 +12,7 @@ import {AuthVerify} from "./security/AuthVerify";
 import Favorites from "./components/favorites/Favorites";
 import CartComponent from "./components/cart/CartComponent";
 import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
+import ProductPageComponent from './components/productPage/ProductPageComponent'
 
 
 function AuthenticatedRoute({children}){
@@ -70,7 +71,7 @@ function App() {
                       }/>
 
                       <Route path='/products/categories' element={<CategoryPageComponent/>}/>
-
+                      <Route path='/products/categories/:categoryName' element={<ProductPageComponent/>}/>
 
                       <Route path='/account/cart' element={
                           <AuthenticatedRoute>
