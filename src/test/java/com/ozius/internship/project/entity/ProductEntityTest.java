@@ -6,6 +6,8 @@ import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
@@ -15,10 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ProductEntityTest extends EntityBaseTest {
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public void createTestData(EntityManager em) {
         TestDataCreator.createCategoriesBaseData(em);
-        TestDataCreator.createSellerBaseData(em);
+        TestDataCreator.createSellerBaseData(em, passwordEncoder);
     }
 
     @Test

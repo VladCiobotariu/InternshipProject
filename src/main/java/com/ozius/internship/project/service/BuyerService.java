@@ -28,6 +28,10 @@ public class BuyerService {
         long userId = userAccountRepository.findByEmail(email).getId();
         long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
 
+        if(cartRepository.findCartByBuyer_Id(buyerId) == null){
+            return null;
+        }
+
         return cartRepository.findCartByBuyer_Id(buyerId).getCartItems();
     }
 

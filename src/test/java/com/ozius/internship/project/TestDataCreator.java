@@ -8,18 +8,19 @@ import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class TestDataCreator {
 
-    public static void createBaseDataForProduct(EntityManager em) {
+    public static void createBaseDataForProduct(EntityManager em, PasswordEncoder passwordEncoder) {
         createCategoriesBaseData(em);
-        createSellerBaseData(em);
+        createSellerBaseData(em, passwordEncoder);
         createProductsBaseData(em);
     }
 
-    public static void createBaseDataForReview(EntityManager em) {
-        createBaseDataForProduct(em);
-        createBuyerBaseData(em);
+    public static void createBaseDataForReview(EntityManager em, PasswordEncoder passwordEncoder) {
+        createBaseDataForProduct(em, passwordEncoder);
+        createBuyerBaseData(em, passwordEncoder);
     }
 
     public static Buyer createBuyer(EntityManager em, UserAccount account){
@@ -29,22 +30,33 @@ public class TestDataCreator {
         return buyer;
     }
 
-    public static void createBuyerBaseData(EntityManager em){
-        Buyers.buyer2 = createBuyer(em,
-                new UserAccount(
-                        "Cosmina",
-                        "Maria",
-                        "cosminamaria@gmail.com",
-                        "/src/image2",
-                        "0735897635"));
+    public static void createBuyerBaseData(EntityManager em, PasswordEncoder passwordEncoder){
+        UserAccount account1 = new UserAccount(
+                "Cosmina",
+                "Maria",
+                "cosminamaria@gmail.com",
+                "/src/image2",
+                "0735897635");
+        account1.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Buyers.buyer1 = createBuyer(em, account1);
 
-        Buyers.buyer1 = createBuyer(em,
-                new UserAccount(
-                        "Marcel",
-                        "Danila",
-                        "marceldanila@gmail.com",
-                        "/src/image90",
-                        "0777777635"));
+        UserAccount account2 = new UserAccount(
+                "Marcel",
+                "Danila",
+                "marceldanila@gmail.com",
+                "/src/image90",
+                "0777777635");
+        account2.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Buyers.buyer2 = createBuyer(em, account2);
+
+        UserAccount account3 = new UserAccount(
+                "Vlad",
+                "Ciobotariu",
+                "vladciobotariu@gmail.com",
+                "none",
+                "+40770157915");
+        account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        createBuyer(em, account3);
 
     }
 
@@ -62,34 +74,39 @@ public class TestDataCreator {
         return seller;
     }
 
-    public static void  createSellerBaseData(EntityManager em){
-        Sellers.seller2 = createSellerFarmer(em,
+    public static void  createSellerBaseData(EntityManager em, PasswordEncoder passwordEncoder){
+
+        UserAccount account1 = new UserAccount("Vlad",
+                "Ciobotariu",
+                "vladciobotariu1@gmail.com",
+                "/src/image1",
+                "0734896512");
+        account1.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Sellers.seller1 = createSellerFarmer(em,
                 new Address("Romania",
                         "Timis",
                         "Timisoara",
                         "Strada Circumvalatiunii nr 4",
                         "Bloc 3 Scara B Ap 12",
                         "303413"),
-                new UserAccount("Vlad",
-                        "Ciobotariu",
-                        "vladciobotariu@gmail.com",
-                        "/src/image1",
-                        "0734896512"),
+                account1,
                 "Mega Fresh SRL"
         );
 
-        Sellers.seller1 = createSellerFarmer(em,
+        UserAccount account2 = new UserAccount("Mihnea",
+                "Mondialu",
+                "mihneamondialu@gmail.com",
+                "/src/image99",
+                "0734896777");
+        account2.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
+        Sellers.seller2 = createSellerFarmer(em,
                 new Address("Spania",
                         "Granada",
                         "Barcelona",
                         "Strada Real Madrid nr 4",
                         "Bloc Cupa Romaniei",
                         "307773"),
-                new UserAccount("Mihnea",
-                        "Mondialu",
-                        "mihneamondialu@gmail.com",
-                        "/src/image99",
-                        "0734896777"),
+                account2,
                 "FC BARCELONA"
         );
 
@@ -103,8 +120,10 @@ public class TestDataCreator {
 
     public static void createCategoriesBaseData(EntityManager em){
 
-        Categories.category2 = createCategory(em, "Cereale", "image09");
-        Categories.category1 = createCategory(em, "Fructe", "image0008");
+        Categories.category2 = createCategory(em, "Fruits", "/images/fruits.svg");
+        Categories.category1 = createCategory(em, "Vegetables", "/images/vegetables.svg");
+
+        createCategory(em, "Dairy", "/images/dairy.svg");
     }
 
     public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
