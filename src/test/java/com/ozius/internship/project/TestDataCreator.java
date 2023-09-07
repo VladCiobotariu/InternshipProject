@@ -2,6 +2,7 @@ package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Review;
@@ -9,6 +10,10 @@ import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer3;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product2;
 
 public class TestDataCreator {
 
@@ -56,7 +61,7 @@ public class TestDataCreator {
                 "none",
                 "+40770157915");
         account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
-        createBuyer(em, account3);
+        buyer3 = createBuyer(em, account3);
 
     }
 
@@ -136,9 +141,9 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        Products.product1 = createProduct(em, "orez", "pentru fiert", "src/image4", 12.7f, Categories.category1, Sellers.seller1);
-        Products.product2 = createProduct(em, "grau", "pentru paine", "src/image20", 8.2f, Categories.category1, Sellers.seller1);
-        Products.product3 = createProduct(em, "mar", "pentru glucoza", "src/image77", 5f, Categories.category2, Sellers.seller2);
+        product1 = createProduct(em, "Grapes", "for sugar", "/images/grapes.png", 12.7f, Categories.category2, Sellers.seller1);
+        Products.product2 = createProduct(em, "Kiwi", "for sugar", "/images/kiwi.png", 8.2f, Categories.category2, Sellers.seller1);
+        Products.product3 = createProduct(em, "Apple", "pentru glucoza", "/images/apple.png", 5f, Categories.category2, Sellers.seller2);
     }
 
     public static void createAddresses(){
@@ -164,9 +169,35 @@ public class TestDataCreator {
         return seller.addReview(buyer, description, rating, product);
     }
 
+    private static Cart createCart(EntityManager em, Buyer buyer){
+        Cart cart = new Cart(buyer);
+        em.persist(cart);
+
+        return cart;
+    }
+
+    private static void addItemToCart(EntityManager em, Cart cart, Product product, float quantity){
+        Cart cartMerged = em.merge(cart);
+        cartMerged.addOrUpdateItem(product, quantity);
+    }
+
+    public static void createCartBaseData(EntityManager em){
+        Cart cart = createCart(em, buyer3);
+
+        addItemToCart(em, cart, product1, 2.2F);
+        addItemToCart(em, cart, Products.product2, 5.9F);
+    }
+
+    public static void createFavoritesBaseData(EntityManager em){
+        Buyer buyer = em.merge(buyer3);
+        buyer.addFavorite(product1);
+        buyer.addFavorite(product2);
+    }
+
     public static class Buyers{
         public static Buyer buyer1;
         public static Buyer buyer2;
+        public static Buyer buyer3;
     }
 
     public static class Sellers{

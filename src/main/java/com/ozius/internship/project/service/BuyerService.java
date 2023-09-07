@@ -5,6 +5,8 @@ import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.CartRepository;
 import com.ozius.internship.project.repository.UserAccountRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +15,8 @@ import java.util.Set;
 @Service
 public class BuyerService {
 
+    @PersistenceContext
+    private EntityManager em;
     private final BuyerRepository buyerRepository;
     private final CartRepository cartRepository;
     private final UserAccountRepository userAccountRepository;
@@ -40,5 +44,12 @@ public class BuyerService {
         long userId = userAccountRepository.findByEmail(email).getId();
 
         return buyerRepository.findBuyerByAccount_Id(userId).getFavoriteProducts();
+    }
+
+    @Transactional
+    public void removeFavoriteByProductId(String email, long productId){
+        long userId = userAccountRepository.findByEmail(email).getId();
+        Product product = em.find(Product.class, productId);
+        buyerRepository.findBuyerByAccount_Id(userId).removeFavorite(product);
     }
 }
