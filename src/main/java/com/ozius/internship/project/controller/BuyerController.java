@@ -27,6 +27,10 @@ public class BuyerController {
     public Stream<CartItemDTO> retrieveCartItemsByUserEmail(Principal principal){
         String loggedUserName = principal.getName();
 
+        if(buyerService.getFavoritesByUserEmail(loggedUserName).isEmpty()){
+            return Stream.empty();
+        }
+
         return buyerService.getCartItemsByUserEmail(loggedUserName).stream().map(cartItem -> modelMapper.map(cartItem, CartItemDTO.class));
     }
 
