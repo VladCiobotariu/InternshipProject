@@ -372,7 +372,7 @@ export default function Header() {
                                                     }
                                                     className="block font-semibold text-gray-900 dark:text-inherit">
                                                     Log out
-                                                    <span aria-hidden="true">&rarr;</span>
+                                                    <span className="absolute inset-0" />
                                                 </button>
                                             </div>
                                         </div>

@@ -7,64 +7,26 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 
 import com.nimbusds.jose.proc.SecurityContext;
 import com.ozius.internship.project.security.user.DatabaseUserDetailsService;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.web.SecurityFilterChain;
-
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
 
 @Configuration
-@EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
 public class JwtSecurityConfiguration {
 
     private final DatabaseUserDetailsService databaseUserDetailsService;
+    private final RSAKey rsaKey;    //TODO how to get rid of warning
 
-    public JwtSecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService) {
+    public JwtSecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService, RSAKey rsaKey) {
         this.databaseUserDetailsService = databaseUserDetailsService;
-    }
-
-    //TODO move bean into separate class
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/authenticate").permitAll()
-                .requestMatchers("/register-client").permitAll()
-                .requestMatchers("/users/{email}").permitAll()
-                .requestMatchers("/images/**").permitAll()
-                .requestMatchers("/categories/**").permitAll()
-                .requestMatchers("/products/**").permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(PathRequest.toH2Console()).permitAll()
-                .anyRequest().authenticated());
-
-        http.sessionManagement(
-                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        );
-
-        http.httpBasic().disable();
-        http.csrf().disable();
-        http.headers().frameOptions().sameOrigin();
-        http.oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(new FusedClaimConverter())));
-
-        return http.build();
+        this.rsaKey = rsaKey;
     }
 
     @Bean
@@ -79,26 +41,6 @@ public class JwtSecurityConfiguration {
     public BCryptPasswordEncoder passwordEncoder(){
 
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public KeyPair keyPair(){
-        KeyPairGenerator keyPairGenerator;
-        try {
-            keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-        keyPairGenerator.initialize(2048);
-        return keyPairGenerator.generateKeyPair();
-    }
-
-    @Bean
-    public RSAKey rsaKey(KeyPair keyPair){
-        return new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
-                .privateKey(keyPair.getPrivate())
-                .keyID(UUID.randomUUID().toString())
-                .build();
     }
 
     @Bean
@@ -119,6 +61,5 @@ public class JwtSecurityConfiguration {
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource){
         return new NimbusJwtEncoder(jwkSource);
     }
-
 }
 
