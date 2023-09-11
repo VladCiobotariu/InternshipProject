@@ -27,9 +27,7 @@ public abstract class QueryBuilder {
         return this;
     }
 
-    protected QueryBuilder setParameter(String paramName, Object paramValue){
+    protected void setParameter(String paramName, Object paramValue){
         params.put(paramName, paramValue);
-
-        return this;
     }
 }

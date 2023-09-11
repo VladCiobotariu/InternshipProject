@@ -1,14 +1,13 @@
 package com.ozius.internship.project.queries;
 
-import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.service.queries.ProductSearchQuery;
+import com.ozius.internship.project.service.queries.ProductBaseDto;
+import com.ozius.internship.project.service.queries.ProductSearchQueryArrayBased;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -18,13 +17,10 @@ import static com.ozius.internship.project.TestDataCreator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductQueryTest extends QueryBaseTest{
+public class ProductQueryArrayBasedTest extends QueryBaseTest{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Override
     public void createTestData(EntityManager em) {
@@ -78,8 +74,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_category_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Fruits")
                     .getResultList();
         });
@@ -94,8 +90,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_city_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCity("Timisoara")
                     .getResultList();
         });
@@ -111,8 +107,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_priceFrom_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(8.2F)
                     .getResultList();
         });
@@ -127,8 +123,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_priceTo_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceTo(8.2F)
                     .getResultList();
         });
@@ -145,8 +141,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_priceTo_and_priceFrom_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(6F)
                     .withPriceTo(10F)
                     .getResultList();
@@ -161,8 +157,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_priceTo_and_priceFrom_withEqualPrice_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(8.2F)
                     .withPriceTo(12.7F)
                     .getResultList();
@@ -178,8 +174,8 @@ public class ProductQueryTest extends QueryBaseTest{
     void test_jpa_category_and_city_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .getResultList();
@@ -205,8 +201,8 @@ public class ProductQueryTest extends QueryBaseTest{
         });
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .withPriceFrom(2F)

@@ -15,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
+
+//TODO JpaBaseTest
 @SpringBootTest(classes = ProjectApplicationTest.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles({SpringProfiles.DEV, SpringProfiles.EMBEDDED_DB_H2})
