@@ -6,4 +6,5 @@ import lombok.Data;
 public class SellerDTO {
     private long id;
     private String alias;
+    private String city;
 }
