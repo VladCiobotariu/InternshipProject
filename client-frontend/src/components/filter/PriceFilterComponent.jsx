@@ -1,87 +1,34 @@
 import React, { useState } from 'react';
 
-const PriceFilterComponent = () => {
-    const [minPrice, setMinPrice] = useState(1);
-    const [maxPrice, setMaxPrice] = useState(100);
-    const [minThumb, setMinThumb] = useState(0);
-    const [maxThumb, setMaxThumb] = useState(0);
-    const min = 0;
-    const max = 101;
-
-    const minTrigger = (event) => {
-        const newMinPrice = Math.min(parseInt(event.target.value), maxPrice - 500);
-        const newMinThumb = ((newMinPrice - min) / (max - min)) * 100;
-        setMinPrice(newMinPrice);
-        setMinThumb(newMinThumb);
-    };
-
-    const maxTrigger = (event) => {
-        const newMaxPrice = Math.max(parseInt(event.target.value), minPrice + 500);
-        const newMaxThumb = 100 - ((newMaxPrice - min) / (max - min)) * 100;
-        setMaxPrice(newMaxPrice);
-        setMaxThumb(newMaxThumb);
-    };
+const PriceFilterComponent = ({onClickInside}) => {
 
     return (
-        <div>
-            <div className="w-56 rounded border border-zinc-300 bg-white">
+        <div onClick={onClickInside}>
+            <div className="w-80 rounded border border-zinc-300 bg-white">
                 <div className="px-2 pt-2 pb-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
-                    <div className="mt-10 flex justify-center items-center">
-                        <div className="relative max-w-xl w-full">
-                            <div>
-                                <input
-                                    type="range"
-                                    step="100"
-                                    min={min}
-                                    max={max}
-                                    onChange={minTrigger}
-                                    value={minPrice}
-                                    className="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
-                                />
-
-                                <input
-                                    type="range"
-                                    step="100"
-                                    min={min}
-                                    max={max}
-                                    onChange={maxTrigger}
-                                    value={maxPrice}
-                                    className="absolute pointer-events-none appearance-none z-20 h-2 w-full opacity-0 cursor-pointer"
-                                />
-
-                                <div className="relative z-10 h-2">
-                                    <div className="absolute z-10 left-0 right-0 bottom-0 top-0 rounded-md bg-gray-200"></div>
-                                    <div
-                                        className="absolute z-20 top-0 bottom-0 rounded-md bg-green-300"
-                                        style={{ right: maxThumb + '%', left: minThumb + '%' }}
-                                    ></div>
-                                    <div className="absolute z-30 w-6 h-6 top-0 left-0 bg-green-300 rounded-full -mt-2 -ml-1" style={{ left: minThumb + '%' }}></div>
-                                    <div className="absolute z-30 w-6 h-6 top-0 right-0 bg-green-300 rounded-full -mt-2 -mr-3" style={{ right: maxThumb + '%' }}></div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-between items-center py-5">
-                                <div>
-                                    <input
-                                        type="text"
-                                        maxLength="5"
-                                        onChange={minTrigger}
-                                        value={minPrice}
-                                        className="px-3 py-2 border border-gray-200 rounded w-24 text-center"
-                                    />
-                                </div>
-                                <div>
-                                    <input
-                                        type="text"
-                                        maxLength="5"
-                                        onChange={maxTrigger}
-                                        value={maxPrice}
-                                        className="px-3 py-2 border border-gray-200 rounded w-24 text-center"
-                                    />
-                                </div>
-                            </div>
+                    <div className="flex justify-between items-center gap-10">
+                        <div>
+                            <label htmlFor="priceFrom"
+                                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                Price From
+                            </label>
+                            <input type="text" id="priceFrom"
+                                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   placeholder="from.." />
+                        </div>
+                        <div>
+                            <label htmlFor="priceTo"
+                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                            Price From
+                        </label>
+                        <input type="text" id="priceTo"
+                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                               placeholder="to.." />
                         </div>
                     </div>
+                    <button type="button"
+                            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Save
+                    </button>
                 </div>
             </div>
         </div>

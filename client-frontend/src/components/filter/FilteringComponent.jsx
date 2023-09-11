@@ -25,7 +25,7 @@ const FilteringComponent = () => {
                         isOpen={openFilter === 'Price'}
                         onClick={() => handleFilterClick('Price')}
                     >
-                        <PriceFilterComponent />
+                        <PriceFilterComponent onClickInside={(e) => e.stopPropagation()} />
                     </FilterAndSortingItem>
 
                     <FilterAndSortingItem
@@ -33,7 +33,7 @@ const FilteringComponent = () => {
                         isOpen={openFilter === 'City'}
                         onClick={() => handleFilterClick('City')}
                     >
-                        <CityFilterComponent />
+                        <CityFilterComponent onClickInside={(e) => e.stopPropagation()}/>
                     </FilterAndSortingItem>
 
                     <FilterAndSortingItem
@@ -41,7 +41,7 @@ const FilteringComponent = () => {
                         isOpen={openFilter === 'Category'}
                         onClick={() => handleFilterClick('Category')}
                     >
-                        <CategoryFilterComponent />
+                        <CategoryFilterComponent onClickInside={(e) => e.stopPropagation()}/>
                     </FilterAndSortingItem>
 
                     <FilterAndSortingItem
@@ -49,7 +49,7 @@ const FilteringComponent = () => {
                         isOpen={openFilter === 'Sort'}
                         onClick={() => handleFilterClick('Sort')}
                     >
-                        <SortFilterComponent />
+                        <SortFilterComponent onClickInside={(e) => e.stopPropagation()}/>
                     </FilterAndSortingItem>
                 </div>
             </div>

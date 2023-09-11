@@ -4,8 +4,9 @@ const FilterAndSortingItem = ({ label, children, isOpen, onClick}) => {
 
     return (
         <div className="relative">
-            <details className="group" onClick={() => onClick()}>
-                <summary
+
+            <div className="group" onClick={onClick}>
+                <div
                     className="flex cursor-pointer items-center gap-2 border-b border-zinc-300 pb-1 text-zinc-800 transition hover:border-zinc-600 dark:text-white"
                 >
                     <span className="text-xl font-medium">
@@ -27,12 +28,12 @@ const FilterAndSortingItem = ({ label, children, isOpen, onClick}) => {
                             />
                         </svg>
                     </span>
-                </summary>
-
-                <div className="z-50 group-open:absolute group-open:top-auto  ltr:group-open:start-0">
-                    {isOpen && <div className="z-50 absolute top-10">{children}</div>}
                 </div>
-            </details>
+
+                {isOpen && <div className="z-50 group-open:absolute group-open:top-auto  ltr:group-open:start-0">
+                    <div className="z-50 absolute top-10 mt-5">{children}</div>
+                </div>}
+            </div>
         </div>
     );
 };

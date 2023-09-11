@@ -7,10 +7,8 @@ const SearchComponent = ({ data, handleDisplayedChange }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [suggestionIndex, setSuggestionIndex] = useState(0);
     const [suggestionsActive, setSuggestionsActive] = useState(false);
-    const [value, setValue] = useState("");
     const handleChange = (e) => {
         const query = e.target.value.toLowerCase();
-        setValue(query);
         if (query.length > 1) {
 
             const filterSuggestions = data.filter(
@@ -25,7 +23,7 @@ const SearchComponent = ({ data, handleDisplayedChange }) => {
 
     const handleClick = (e) => {
         setSuggestions([]);
-        setValue(e.target.innerText);
+        setSuggestions([]);
         setSuggestionsActive(false);
     };
 
@@ -46,7 +44,6 @@ const SearchComponent = ({ data, handleDisplayedChange }) => {
         }
         // ENTER
         else if (e.keyCode === 13) {
-            setValue(suggestions[suggestionIndex]);
             setSuggestionIndex(0);
             setSuggestionsActive(false);
         }
@@ -84,7 +81,7 @@ const SearchComponent = ({ data, handleDisplayedChange }) => {
                     <span className="sr-only">Search</span>
                 </button>
             </div>
-            {suggestionsActive && <Suggestions suggestions={suggestions} suggestionIndex={suggestionIndex} handleClick={handleClick} />}
+            {suggestionsActive && <Suggestions suggestions={suggestions} handleClick={handleClick} />}
         </div>
     )
 }
