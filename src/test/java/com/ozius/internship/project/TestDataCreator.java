@@ -2,6 +2,7 @@ package com.ozius.internship.project;
 
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Review;
@@ -56,7 +57,7 @@ public class TestDataCreator {
                 "none",
                 "+40770157915");
         account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
-        createBuyer(em, account3);
+        Buyers.buyer3 = createBuyer(em, account3);
 
     }
 
@@ -112,7 +113,7 @@ public class TestDataCreator {
 
     }
 
-    private static Category createCategory(EntityManager em, String name, String image) {
+    public static Category createCategory(EntityManager em, String name, String image) {
         Category category = new Category(name, image);
         em.persist(category);
         return category;
@@ -174,9 +175,35 @@ public class TestDataCreator {
         return seller.addReview(buyer, description, rating, product);
     }
 
+    private static Cart createCart(EntityManager em, Buyer buyer){
+        Cart cart = new Cart(buyer);
+        em.persist(cart);
+
+        return cart;
+    }
+
+    private static void addItemToCart(EntityManager em, Cart cart, Product product, float quantity){
+        Cart cartMerged = em.merge(cart);
+        cartMerged.addOrUpdateItem(product, quantity);
+    }
+
+    public static void createCartBaseData(EntityManager em){
+        Cart cart = createCart(em, Buyers.buyer3);
+
+        addItemToCart(em, cart, Products.product1, 2.2F);
+        addItemToCart(em, cart, Products.product2, 5.9F);
+    }
+
+    public static void createFavoritesBaseData(EntityManager em){
+        Buyer buyer = em.merge(Buyers.buyer3);
+        buyer.addFavorite(Products.product1);
+        buyer.addFavorite(Products.product2);
+    }
+
     public static class Buyers{
         public static Buyer buyer1;
         public static Buyer buyer2;
+        public static Buyer buyer3;
     }
 
     public static class Sellers{

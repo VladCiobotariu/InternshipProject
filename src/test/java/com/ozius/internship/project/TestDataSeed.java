@@ -31,6 +31,9 @@ public class TestDataSeed {
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
 
+            TestDataCreator.createCartBaseData(em);
+            TestDataCreator.createFavoritesBaseData(em);
+
         });
     }
 
