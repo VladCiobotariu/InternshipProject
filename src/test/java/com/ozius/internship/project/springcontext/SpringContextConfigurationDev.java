@@ -19,6 +19,7 @@ import java.util.UUID;
 @Profile(SpringProfiles.DEV)
 public class SpringContextConfigurationDev {
 
+    //TODO implement value
     private static final String KEY_STORE = "keystore.p12";
     private static final String KEY_STORE_TYPE = "PKCS12";
     private static final String KEY_STORE_PASSWORD = "somepass";

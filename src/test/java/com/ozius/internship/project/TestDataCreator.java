@@ -113,7 +113,7 @@ public class TestDataCreator {
 
     }
 
-    private static Category createCategory(EntityManager em, String name, String image) {
+    public static Category createCategory(EntityManager em, String name, String image) {
         Category category = new Category(name, image);
         em.persist(category);
         return category;

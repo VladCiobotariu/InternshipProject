@@ -4,6 +4,9 @@ import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.service.ProductService;
+import com.ozius.internship.project.service.queries.ProductSearchQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,9 +25,10 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 @RestController
 public class ProductController {
 
+    @PersistenceContext
+    private EntityManager em;
     private final ProductService productService;
     private final ProductRepository productRepository;
-
     private final ModelMapper modelMapper;
 
     public ProductController(ProductService productService, ProductRepository productRepository, ModelMapper modelMapper) {
@@ -53,6 +57,21 @@ public class ProductController {
                 .map(product -> modelMapper.map(product, ProductDTO.class))
                 .collect(Collectors.toList());
         return new ApiPaginationResponse<>(page, itemsPerPage, totalElements, productsDTO);
+    }
+
+    @GetMapping("/products-test")
+    public List<ProductDTO> getProducts(@RequestParam(name = "category", required = false) String category,
+                                        @RequestParam(name = "city", required = false) String city,
+                                        @RequestParam(name = "priceFrom", required = false) Float priceFrom,
+                                        @RequestParam(name = "priceTo", required = false) Float priceTo){
+
+        return new ProductSearchQuery(modelMapper, em)
+                .withCategory(category)
+                .withCity(city)
+                .withPriceFrom(priceFrom)
+                .withPriceTo(priceTo)
+                .getResultList();
+
     }
 
 }
