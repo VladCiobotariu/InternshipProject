@@ -217,4 +217,23 @@ public class ProductQueryArrayBasedTest extends JpaBaseEntity {
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Ananas")));
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Carrot")));
     }
+
+    @Test
+    void test_jpa_category_and_rest_empty_query_test(){
+
+        //---Act
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
+                    .withCategory("Vegetables")
+                    .withCity(null)
+                    .withPriceFrom(null)
+                    .withPriceTo(null)
+                    .getResultList();
+        });
+
+        //---Assert
+        assertThat(products.size()).isEqualTo(2);
+        assertTrue(products.stream().anyMatch(item->item.getName().equals("Mango")));
+        assertTrue(products.stream().anyMatch(item->item.getName().equals("Pear")));
+    }
 }
