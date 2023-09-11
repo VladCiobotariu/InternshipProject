@@ -1,10 +1,11 @@
 package com.ozius.internship.project.queries;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.service.queries.ProductBaseDto;
+import com.ozius.internship.project.dto.ProductBaseDto;
 import com.ozius.internship.project.service.queries.ProductSearchQueryJpaDto;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ import static com.ozius.internship.project.TestDataCreator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductQueryJpaDtoTest extends QueryBaseTest{
+public class ProductQueryJpaDtoTest extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;

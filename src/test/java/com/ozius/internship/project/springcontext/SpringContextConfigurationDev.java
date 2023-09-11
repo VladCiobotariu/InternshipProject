@@ -4,6 +4,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.ozius.internship.project.SpringProfiles;
 import com.ozius.internship.project.infra.images.service.LocalDiskImageHandlingService;
 import com.ozius.internship.project.infra.images.service.ImageService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,11 +20,14 @@ import java.util.UUID;
 @Profile(SpringProfiles.DEV)
 public class SpringContextConfigurationDev {
 
-    //TODO implement value
-    private static final String KEY_STORE = "keystore.p12";
-    private static final String KEY_STORE_TYPE = "PKCS12";
-    private static final String KEY_STORE_PASSWORD = "somepass";
-    private static final String KEY_STORE_ALIAS = "somealias";
+    @Value("${keystore.filename}")
+    private String KEY_STORE;
+    @Value("${keystore.type}")
+    private String KEY_STORE_TYPE;
+    @Value("${keystore.password}")
+    private String KEY_STORE_PASSWORD;
+    @Value("${keystore.alias}")
+    private String KEY_STORE_ALIAS;
 
     @Bean
     public ImageService imageService() {

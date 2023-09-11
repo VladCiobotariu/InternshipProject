@@ -1,11 +1,12 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CategoryEntityTest extends EntityBaseTest {
+public class CategoryEntityTest extends JpaBaseEntity {
 
     @Override
     public void createTestData(EntityManager em) {

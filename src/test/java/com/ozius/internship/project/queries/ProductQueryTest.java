@@ -1,5 +1,6 @@
 package com.ozius.internship.project.queries;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
@@ -18,7 +19,7 @@ import static com.ozius.internship.project.TestDataCreator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductQueryTest extends QueryBaseTest{
+public class ProductQueryTest extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -219,5 +220,24 @@ public class ProductQueryTest extends QueryBaseTest{
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Mango")));
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Ananas")));
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Carrot")));
+    }
+
+    @Test
+    void test_jpa_category_and_rest_empty_query_test(){
+
+        //---Act
+        List<ProductDTO> products = doTransaction(em -> {
+            return new ProductSearchQuery(modelMapper,em)
+                    .withCategory("Vegetables")
+                    .withCity(null)
+                    .withPriceFrom(null)
+                    .withPriceTo(null)
+                    .getResultList();
+        });
+
+        //---Assert
+        assertThat(products.size()).isEqualTo(2);
+        assertTrue(products.stream().anyMatch(item->item.getName().equals("Mango")));
+        assertTrue(products.stream().anyMatch(item->item.getName().equals("Pear")));
     }
 }
