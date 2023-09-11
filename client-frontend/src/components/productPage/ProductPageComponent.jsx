@@ -66,7 +66,6 @@ function ProductCollection() {
 
     return (
         <div>
-
             {totalNumberProducts === 0 ? (<NoProductMessageComponent />) :
             (
                 <section>
