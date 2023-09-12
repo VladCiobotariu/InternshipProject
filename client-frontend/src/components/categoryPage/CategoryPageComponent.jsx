@@ -9,7 +9,7 @@ import SelectComponent from "../pagination/SelectComponent";
 const CategoryPageComponent = () => {
 
     const [displayedCategories, setDisplayedCategories] = useState([]);
-    const [itemsPerPage, setItemsPerPage] = useState(6);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalNumberCategories, setTotalNumberCategories] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const numberColumns = 4;

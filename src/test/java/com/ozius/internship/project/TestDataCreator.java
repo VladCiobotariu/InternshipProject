@@ -129,7 +129,6 @@ public class TestDataCreator {
         Categories.category6 = createCategory(em, "Sweets", "/images/sweets.svg");
         Categories.category7 = createCategory(em, "Oil", "/images/oil.svg");
         Categories.category8 = createCategory(em, "Tea", "/images/tea.svg");
-        Categories.category9 = createCategory(em, "Juices", "/images/juice.svg");
     }
 
     public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
@@ -142,14 +141,14 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        Products.product1 = createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpeg", 12.7f, Categories.category1, Sellers.seller1);
-        Products.product2 = createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.png", 8.2f, Categories.category1, Sellers.seller1);
-        Products.product3 = createProduct(em, "Kiwi", "This is a kiwi! It is a fruit!", "mages/kiwi.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product4 = createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product5 = createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.png", 5f, Categories.category1, Sellers.seller1);
-        Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.png", 5f, Categories.category1, Sellers.seller1);
-        Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.png", 5f, Categories.category1, Sellers.seller1);
-        Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/orange.png", 5f, Categories.category2, Sellers.seller1);
+        Products.product1 = createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpg", 12.7f, Categories.category1, Sellers.seller1);
+        Products.product2 = createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.jpg", 8.2f, Categories.category1, Sellers.seller1);
+        Products.product3 = createProduct(em, "Cherry", "This are cherries! They are a fruit!", "/images/cherry.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product4 = createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpeg", 5f, Categories.category1, Sellers.seller1);
+        Products.product5 = createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.jpg", 5f, Categories.category1, Sellers.seller1);
+        Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/potato.jpeg", 5f, Categories.category2, Sellers.seller1);
     }
 
     public static void createAddresses(){

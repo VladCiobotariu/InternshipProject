@@ -6,7 +6,7 @@ import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.service.queries.ProductSearchQuery;
+import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -80,7 +80,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCategory("Fruits")
                     .getResultList();
         });
@@ -96,7 +96,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCity("Timisoara")
                     .getResultList();
         });
@@ -113,7 +113,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withPriceFrom(8.2F)
                     .getResultList();
         });
@@ -129,7 +129,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withPriceTo(8.2F)
                     .getResultList();
         });
@@ -147,7 +147,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withPriceFrom(6F)
                     .withPriceTo(10F)
                     .getResultList();
@@ -163,7 +163,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withPriceFrom(8.2F)
                     .withPriceTo(12.7F)
                     .getResultList();
@@ -180,7 +180,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .getResultList();
@@ -207,7 +207,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .withPriceFrom(2F)
@@ -227,7 +227,7 @@ public class ProductQueryTest extends JpaBaseEntity {
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCategory("Vegetables")
                     .withCity(null)
                     .withPriceFrom(null)
