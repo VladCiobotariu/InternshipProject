@@ -104,6 +104,10 @@ public class Seller extends BaseEntity {
         return legalAddress;
     }
 
+    public String getCity() {
+        return legalAddress.getCity();
+    }
+
     public UserAccount getAccount() {
         return account;
     }

@@ -2,6 +2,7 @@ package com.ozius.internship.project.service.queries;
 
 import java.util.HashMap;
 import java.util.Map;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 public abstract class QueryBuilder {
 
@@ -16,6 +17,9 @@ public abstract class QueryBuilder {
     }
 
     public QueryBuilder and(String condition, String paramName, Object paramValue){
+        if(isEmpty(paramValue)) {
+            return this;
+        }
         if(haveAddedAnyConditions){
             queryBuilder.append(String.format(" and %s", condition));
         } else {

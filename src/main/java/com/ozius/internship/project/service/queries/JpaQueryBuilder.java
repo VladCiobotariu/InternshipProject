@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public abstract class JpaQueryBuilder<E,R> extends QueryBuilder {
 
-    private final EntityManager em;
-    private final Class<E> queryResultClassType;
+    protected final EntityManager em;
+    protected final Class<E> queryResultClassType;
 
 
     public JpaQueryBuilder(String query, EntityManager em, Class<E> queryResultClassType) {
@@ -19,12 +19,21 @@ public abstract class JpaQueryBuilder<E,R> extends QueryBuilder {
     }
 
     public List<R> getResultList(){
+        TypedQuery<E> query = buildQuery();
+
+        return getTransformResultList(query);
+    }
+
+    protected TypedQuery<E> buildQuery() {
         TypedQuery<E> query = em.createQuery(queryBuilder.toString(), queryResultClassType);
 
         for (String paramName : params.keySet()) {
             query.setParameter(paramName, params.get(paramName));
         }
+        return query;
+    }
 
+    protected List<R> getTransformResultList(TypedQuery<E> query) {
         ResultTransformer<E,R> resultTransformer = getTransformer();
 
         List<E> records = query.getResultList();
