@@ -253,7 +253,7 @@ export default function Header() {
 
                                                 <div
                                                     key={item.id}
-                                                    className="relative flex items-center gap-x-2 rounded-lg text-sm leading-6"
+                                                    className="relative flex items-center justify-between gap-x-2 rounded-lg text-sm leading-6"
                                                 >
                                                     <Link to={`/${item.seller.alias}/products/${item.name}`}
                                                         className="flex items-center gap-x-6 hover:bg-gray-50 dark:hover:bg-zinc-900 rounded-lg p-2">

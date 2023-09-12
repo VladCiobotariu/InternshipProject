@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.entity.exception.IllegalDuplicateName;
 import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductEntityTest extends EntityBaseTest {
+public class ProductEntityTest extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;

@@ -62,4 +62,16 @@ public class EntityFinder {
             return null;
         }
     }
+
+    public Category getCategoryByName(String name){
+        return em.createQuery("select c from Category c where c.name = :categoryName", Category.class)
+                .setParameter("categoryName", name)
+                .getSingleResult();
+    }
+
+    public Seller getSellerByAlias(String alias){
+        return em.createQuery("select s from Seller s where s.alias = :aliasName", Seller.class)
+                .setParameter("aliasName", alias)
+                .getSingleResult();
+    }
 }

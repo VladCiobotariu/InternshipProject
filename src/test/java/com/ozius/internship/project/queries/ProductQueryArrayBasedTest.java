@@ -1,15 +1,14 @@
 package com.ozius.internship.project.queries;
 
 import com.ozius.internship.project.JpaBaseEntity;
-import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
+import com.ozius.internship.project.dto.ProductBaseDto;
+import com.ozius.internship.project.service.queries.ProductSearchQueryArrayBased;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,13 +18,10 @@ import static com.ozius.internship.project.TestDataCreator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductQueryTest extends JpaBaseEntity {
+public class ProductQueryArrayBasedTest extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Override
     public void createTestData(EntityManager em) {
@@ -79,8 +75,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_category_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Fruits")
                     .getResultList();
         });
@@ -95,8 +91,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_city_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCity("Timisoara")
                     .getResultList();
         });
@@ -112,8 +108,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_priceFrom_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(8.2F)
                     .getResultList();
         });
@@ -128,8 +124,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_priceTo_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceTo(8.2F)
                     .getResultList();
         });
@@ -146,8 +142,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_priceTo_and_priceFrom_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(6F)
                     .withPriceTo(10F)
                     .getResultList();
@@ -162,8 +158,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_priceTo_and_priceFrom_withEqualPrice_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withPriceFrom(8.2F)
                     .withPriceTo(12.7F)
                     .getResultList();
@@ -179,8 +175,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_category_and_city_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .getResultList();
@@ -206,8 +202,8 @@ public class ProductQueryTest extends JpaBaseEntity {
         });
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Vegetables")
                     .withCity("Timisoara")
                     .withPriceFrom(2F)
@@ -226,8 +222,8 @@ public class ProductQueryTest extends JpaBaseEntity {
     void test_jpa_category_and_rest_empty_query_test(){
 
         //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
+        List<ProductBaseDto> products = doTransaction(em -> {
+            return new ProductSearchQueryArrayBased(em)
                     .withCategory("Vegetables")
                     .withCity(null)
                     .withPriceFrom(null)
@@ -239,26 +235,5 @@ public class ProductQueryTest extends JpaBaseEntity {
         assertThat(products.size()).isEqualTo(2);
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Mango")));
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Pear")));
-    }
-
-    @Test
-    void test_jpa_category_and_rest_empty_order_by_price_query_test(){
-
-        //---Act
-        List<ProductDTO> products = doTransaction(em -> {
-            return new ProductPaginationSearchQuery(modelMapper,em)
-                    .withCategory(null)
-                    .withCity(null)
-                    .withPriceFrom(null)
-                    .withPriceTo(null)
-                    .orderByCondition("price-desc")
-                    .orderByCondition("name-asc")
-                    .getPagingResultList(30,0);
-        });
-
-        //---Assert
-        System.out.println(products);
-//        assertThat(products.size()).isEqualTo(5);
-//        assertThat(products.stream().findFirst().orElseThrow().getName()).isEqualTo("Apple");
     }
 }

@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
@@ -27,7 +28,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class OrderEntityTests extends EntityBaseTest{
+public class OrderEntityTests extends JpaBaseEntity {
 
     private JpaRepository<Order, Long> orderRepository;
     @Autowired

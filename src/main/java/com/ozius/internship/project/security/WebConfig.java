@@ -37,6 +37,7 @@ public class WebConfig {
                 .requestMatchers("/images/**").permitAll()
                 .requestMatchers("/categories/**").permitAll()
                 .requestMatchers("/products/**").permitAll()
+                .requestMatchers("/products-test").permitAll()
                 .requestMatchers("/error").permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
