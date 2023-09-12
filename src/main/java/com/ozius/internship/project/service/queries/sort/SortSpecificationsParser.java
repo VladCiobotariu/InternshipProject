@@ -15,7 +15,7 @@ public class SortSpecificationsParser {
     public static SortSpecifications parse(String sortText) {
 
         SortSpecifications sortSpecifications = new SortSpecifications();
-        List<String> criteriaList = new ArrayList<>(List.of(sortText.split("\\|")));
+        List<String> criteriaList = new ArrayList<>(List.of(sortText.split("_")));
 
         for(String criterion : criteriaList) {
             List<String> parts = new ArrayList<>(List.of(criterion.split("-")));

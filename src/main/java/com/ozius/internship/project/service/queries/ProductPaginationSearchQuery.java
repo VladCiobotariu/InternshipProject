@@ -21,7 +21,7 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
         this.modelMapper = modelMapper;
 
         mapCriteriaToPropertyPath("productPrice", "p.price");
-        mapCriteriaToPropertyPath("productName", "p.price");
+        mapCriteriaToPropertyPath("productName", "p.name");
 //        mapCriteriaToPropertyPath("categoryName", "p.category.name");
 //        mapCriteriaToPropertyPath("cityName", "p.seller.legalAddress.city");
 //        mapCriteriaToPropertyPath("priceFrom", "p.price");
