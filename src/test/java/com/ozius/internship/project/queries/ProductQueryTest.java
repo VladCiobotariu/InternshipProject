@@ -240,4 +240,25 @@ public class ProductQueryTest extends JpaBaseEntity {
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Mango")));
         assertTrue(products.stream().anyMatch(item->item.getName().equals("Pear")));
     }
+
+    @Test
+    void test_jpa_category_and_rest_empty_order_by_price_query_test(){
+
+        //---Act
+        List<ProductDTO> products = doTransaction(em -> {
+            return new ProductPaginationSearchQuery(modelMapper,em)
+                    .withCategory(null)
+                    .withCity(null)
+                    .withPriceFrom(null)
+                    .withPriceTo(null)
+                    .orderByCondition("price-desc")
+                    .orderByCondition("name-asc")
+                    .getPagingResultList(30,0);
+        });
+
+        //---Assert
+        System.out.println(products);
+//        assertThat(products.size()).isEqualTo(5);
+//        assertThat(products.stream().findFirst().orElseThrow().getName()).isEqualTo("Apple");
+    }
 }

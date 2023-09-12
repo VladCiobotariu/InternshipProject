@@ -11,6 +11,7 @@ public abstract class QueryBuilder {
     protected final Map<String, Object> params;
 
     private boolean haveAddedAnyConditions = false;
+    private boolean haveAnyOrderConditions = false;
 
     public QueryBuilder(String query) {
         this.queryBuilder = new StringBuilder(query);
@@ -29,6 +30,16 @@ public abstract class QueryBuilder {
         }
         setParameter(paramName, paramValue);
 
+        return this;
+    }
+
+    public QueryBuilder orderBy(String orderCondition, OrderCriteria orderCriteria) {
+        if(haveAnyOrderConditions) {
+            queryBuilder.append(String.format(" , %s %s", orderCondition, orderCriteria));
+        } else {
+            queryBuilder.append(String.format(" order by %s %s", orderCondition, orderCriteria));
+            haveAnyOrderConditions = true;
+        }
         return this;
     }
 
