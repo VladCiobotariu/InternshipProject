@@ -4,6 +4,8 @@ import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.service.ProductService;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
+import com.ozius.internship.project.service.queries.sort.SortSpecifications;
+import com.ozius.internship.project.service.queries.sort.SortSpecificationsParser;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,25 +35,11 @@ public class ProductController {
     @GetMapping("/products")
     public ApiPaginationResponse<List<ProductDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
                                                                        @RequestParam(name = "page", defaultValue = "1") int page,
-                                                                       @RequestParam(name = "categoryName", required = false) String categoryName,
-                                                                       @RequestParam(name = "city", required = false) String city,
-                                                                       @RequestParam(name = "priceFrom", required = false) Float priceFrom,
-                                                                       @RequestParam(name = "priceTo", required = false) Float priceTo,
                                                                        @RequestParam(name = "sort", required = false) String sort) {
 
-        String newCatName;
-        // set categoryName first letter to uppercase
-        if(isNotEmpty(categoryName)) {
-            newCatName = categoryName.substring(0, 1).toUpperCase() + categoryName.substring(1);
-        } else {
-            newCatName = null;
-        }
+
         ProductPaginationSearchQuery query = new ProductPaginationSearchQuery(modelMapper, entityManager)
-                .withCategory(newCatName)
-                .withCity(city)
-                .withPriceFrom(priceFrom)
-                .withPriceTo(priceTo)
-                .orderByCondition(sort);
+                .orderBy(sort);
 
         List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
 

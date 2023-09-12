@@ -6,18 +6,18 @@ import java.util.List;
 
 public class SortSpecifications {
 
-    private final List<SortCriteria> sortCriterias;
+    private final List<SortCriteria> sortCriteria;
 
     public SortSpecifications() {
-        this.sortCriterias = new ArrayList<>();
+        this.sortCriteria = new ArrayList<>();
     }
 
-    public List<SortCriteria> getSortCriterias() {
-        return Collections.unmodifiableList(sortCriterias);
+    public List<SortCriteria> getSortCriteria() {
+        return Collections.unmodifiableList(sortCriteria);
     }
 
     public void addSortCriteria(SortCriteria criteria) {
-        this.sortCriterias.add(criteria);
+        this.sortCriteria.add(criteria);
     }
 
 }
