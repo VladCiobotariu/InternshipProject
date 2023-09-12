@@ -5,7 +5,7 @@ import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.service.queries.ProductSearchQuery;
+import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class ProductQueryTest extends QueryBaseTest{
 
         //---Act
         List<ProductDTO> products = doTransaction(em -> {
-            return new ProductSearchQuery(modelMapper,em)
+            return new ProductPaginationSearchQuery(modelMapper,em)
                     .withCategory("Fruits")
                     .getResultList();
         });

@@ -51,7 +51,6 @@ public class ProductController {
                 .withPriceFrom(priceFrom)
                 .withPriceTo(priceTo);
 
-
         List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
 
         return new ApiPaginationResponse<>(page, itemsPerPage, productsDTO.size(), productsDTO);

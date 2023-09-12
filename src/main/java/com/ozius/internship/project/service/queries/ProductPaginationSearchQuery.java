@@ -10,7 +10,7 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
     private final ModelMapper modelMapper;
 
     public ProductPaginationSearchQuery(ModelMapper modelMapper, EntityManager em) {
-        super("select p from Product p ",em, Product.class);
+        super("select p from Product p ", em, Product.class);
         this.modelMapper = modelMapper;
     }
 
