@@ -36,7 +36,8 @@ public class ProductController {
                                                                        @RequestParam(name = "categoryName", required = false) String categoryName,
                                                                        @RequestParam(name = "city", required = false) String city,
                                                                        @RequestParam(name = "priceFrom", required = false) Float priceFrom,
-                                                                       @RequestParam(name = "priceTo", required = false) Float priceTo) {
+                                                                       @RequestParam(name = "priceTo", required = false) Float priceTo,
+                                                                       @RequestParam(name = "sort", required = false) String sort) {
 
         String newCatName;
         // set categoryName first letter to uppercase
@@ -49,7 +50,8 @@ public class ProductController {
                 .withCategory(newCatName)
                 .withCity(city)
                 .withPriceFrom(priceFrom)
-                .withPriceTo(priceTo);
+                .withPriceTo(priceTo)
+                .orderByCondition(sort);
 
         List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
 
