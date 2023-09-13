@@ -1,5 +1,6 @@
 package com.ozius.internship.project.controller;
 
+import com.ozius.internship.project.dto.CartDTO;
 import com.ozius.internship.project.dto.CartItemDTO;
 import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.service.BuyerService;
@@ -23,14 +24,10 @@ public class BuyerController {
 
     @GetMapping("/my-cart")
     @PreAuthorize("hasRole('CLIENT')")
-    public Stream<CartItemDTO> retrieveCartItemsByUserEmail(Principal principal){
+    public CartDTO retrieveCartItemsByUserEmail(Principal principal){
         String loggedUserName = principal.getName();
 
-        if(buyerService.getCartItemsByUserEmail(loggedUserName).isEmpty()){
-            return Stream.empty();
-        }
-
-        return buyerService.getCartItemsByUserEmail(loggedUserName).stream().map(cartItem -> modelMapper.map(cartItem, CartItemDTO.class));
+        return modelMapper.map(buyerService.getCartItemsByUserEmail(loggedUserName), CartDTO.class);
     }
 
     @GetMapping("/my-favorites")

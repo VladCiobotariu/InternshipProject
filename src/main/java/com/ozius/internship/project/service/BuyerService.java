@@ -1,6 +1,8 @@
 package com.ozius.internship.project.service;
 
+import com.ozius.internship.project.dto.CartDTO;
 import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.cart.CartItem;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.CartRepository;
@@ -28,7 +30,7 @@ public class BuyerService {
     }
 
     @Transactional
-    public Set<CartItem> getCartItemsByUserEmail(String email){
+    public Cart getCartItemsByUserEmail(String email){
         long userId = userAccountRepository.findByEmail(email).getId();
         long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
 
@@ -36,7 +38,7 @@ public class BuyerService {
             return null;
         }
 
-        return cartRepository.findCartByBuyer_Id(buyerId).getCartItems();
+        return cartRepository.findCartByBuyer_Id(buyerId);
     }
 
     @Transactional

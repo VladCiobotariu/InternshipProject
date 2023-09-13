@@ -8,6 +8,8 @@ import com.ozius.internship.project.entity.exception.NotFoundException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +33,7 @@ public class Cart extends BaseEntity {
             "FOREIGN KEY (" + CartItem.Columns.CART_ID + ") REFERENCES " + Cart.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
     private Set<CartItem> cartItems;
 
-    @Column(name = Columns.TOTAL_PRICE, nullable = false)
+    @Column(name = Columns.TOTAL_PRICE, nullable = false, scale = 2)
     private double totalCartPrice;
 
     public Cart() {
@@ -60,10 +62,12 @@ public class Cart extends BaseEntity {
         return cartItem.getQuantity() * cartItem.getProduct().getPrice();
     }
 
+    //TODO modify Entities to big decimal instead of double
     public double calculateTotalPrice() {
-        return cartItems.stream()
+        double sum = cartItems.stream()
                 .mapToDouble(this::calculateItemPrice)
                 .sum();
+        return BigDecimal.valueOf(sum).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     private CartItem getCartItemByProduct(Product product) {
