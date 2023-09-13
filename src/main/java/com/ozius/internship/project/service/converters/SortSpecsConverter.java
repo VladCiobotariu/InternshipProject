@@ -20,6 +20,7 @@ public class SortSpecsConverter implements Converter<String, SortSpecs> {
 
     private final ObjectMapper objectMapper;
 
+
     public SortSpecsConverter(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
