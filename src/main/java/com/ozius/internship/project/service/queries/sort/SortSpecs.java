@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SortSpecifications {
+public class SortSpecs {
 
     private final List<SortCriteria> sortCriteria;
 
-    public SortSpecifications() {
+    public SortSpecs() {
         this.sortCriteria = new ArrayList<>();
     }
 

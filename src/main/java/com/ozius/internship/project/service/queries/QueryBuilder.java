@@ -1,10 +1,10 @@
 package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.service.queries.filter.FilterCriteria;
-import com.ozius.internship.project.service.queries.filter.FilterSpecifications;
+import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortCriteria;
 import com.ozius.internship.project.service.queries.sort.SortOrder;
-import com.ozius.internship.project.service.queries.sort.SortSpecifications;
+import com.ozius.internship.project.service.queries.sort.SortSpecs;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +56,8 @@ public abstract class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder applySortSpecs(SortSpecifications sortSpecifications) {
-        for (SortCriteria sortCriterion : sortSpecifications.getSortCriteria()) {
+    public QueryBuilder applySortSpecs(SortSpecs sortSpecs) {
+        for (SortCriteria sortCriterion : sortSpecs.getSortCriteria()) {
             String propertyPath = criteriaToPropertyPathMappings.get(sortCriterion.getCriteria());
 
             if(propertyPath == null) {
@@ -69,22 +69,28 @@ public abstract class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder applyFilterSpecs(FilterSpecifications filterSpecifications) {
+    public QueryBuilder applyFilterSpecs(FilterSpecs filterSpecs) {
         int paramIndex = 0;
-        for (FilterCriteria filterCriterion : filterSpecifications.getFilterCriteria()) {
+        String condition;
+        for (FilterCriteria filterCriterion : filterSpecs.getFilterCriteria()) {
             String propertyPath = criteriaToPropertyPathMappings.get(filterCriterion.getCriteria());
+            String sqlOperator = filterCriterion.getOperation().getSqlOperator();
 
             if(propertyPath == null) {
                 throw new IllegalArgumentException("Unmapped criteria " + filterCriterion.getCriteria());
             }
             String paramName = String.format("%s%s", filterCriterion.getCriteria(), paramIndex++);
 
-            String condition = String.format("%s %s :%s", propertyPath, filterCriterion.getOperation().getSqlOperator(), paramName);
+            if(sqlOperator.equals("like")) {
+                condition = String.format("%s %s :%%%s%%", propertyPath, sqlOperator, paramName);
+            } else {
+                condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
+            }
 
             and(condition, paramName, filterCriterion.getValue());
 
         }
-        return null;
+        return this;
     }
 
 

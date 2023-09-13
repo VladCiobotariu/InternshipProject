@@ -2,8 +2,8 @@ package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.service.queries.sort.SortSpecifications;
-import com.ozius.internship.project.service.queries.sort.SortSpecificationsParser;
+import com.ozius.internship.project.service.queries.filter.FilterSpecs;
+import com.ozius.internship.project.service.queries.sort.SortSpecs;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 
@@ -35,10 +35,16 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
         return new ModelMapperBasedResultTransformer<>(modelMapper, ProductDTO.class);
     }
 
-    public ProductPaginationSearchQuery orderBy(String sort) {
-        if(isNotEmpty(sort)) {
-            SortSpecifications sortSpecifications = SortSpecificationsParser.parse(sort);
-            applySortSpecs(sortSpecifications);
+    public ProductPaginationSearchQuery orderBy(SortSpecs sortSpecs) {
+        if(isNotEmpty(sortSpecs)) {
+            applySortSpecs(sortSpecs);
+        }
+        return this;
+    }
+
+    public ProductPaginationSearchQuery filterBy(FilterSpecs filterSpecs) {
+        if(isNotEmpty(filterSpecs)) {
+            applyFilterSpecs(filterSpecs);
         }
         return this;
     }

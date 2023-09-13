@@ -1,11 +1,12 @@
 package com.ozius.internship.project.service.queries.filter;
 
 public enum Operation {
-    EQUALS("="),
-    GREATER_THAN(">"),
-    GREATER_OR_EQUALS_THAN(">="),
-    LESS_THAN("<"),
-    LESS_OR_EQUALS_THAN("<=");
+    EQ("="),
+    GT(">"),
+    GTE(">="),
+    LT("<"),
+    LTE("<="),
+    LIKE("like");
 
     private String sqlOperator;
 

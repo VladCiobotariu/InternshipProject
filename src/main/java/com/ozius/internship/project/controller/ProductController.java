@@ -4,8 +4,8 @@ import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.service.ProductService;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
-import com.ozius.internship.project.service.queries.sort.SortSpecifications;
-import com.ozius.internship.project.service.queries.sort.SortSpecificationsParser;
+import com.ozius.internship.project.service.queries.filter.FilterSpecs;
+import com.ozius.internship.project.service.queries.sort.SortSpecs;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.util.MultiValueMap;
@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @RestController
 public class ProductController {
@@ -36,12 +34,14 @@ public class ProductController {
     @GetMapping("/products")
     public ApiPaginationResponse<List<ProductDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
                                                                        @RequestParam(name = "page", defaultValue = "1") int page,
-                                                                       @RequestParam(name = "sort", required = false) String sort,
-                                                                       @RequestParam MultiValueMap<String, String> filter) {
+                                                                       @RequestParam(name = "sort", required = false) SortSpecs sortSpecs,
+                                                                       @RequestParam(name ="filter", required = false) FilterSpecs filterSpecs) {
 
 
         ProductPaginationSearchQuery query = new ProductPaginationSearchQuery(modelMapper, entityManager)
-                .orderBy(sort);
+                .orderBy(sortSpecs)
+                .filterBy(filterSpecs);
+
 
         List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
 

@@ -85,10 +85,11 @@ public class Cart extends BaseEntity {
         }
 
         if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity); //addItem()
         } else {
+
             CartItem cartItem = new CartItem(quantity, product);
-            this.cartItems.add(cartItem);
+            this.cartItems.add(cartItem); // updateItem
         }
         this.totalCartPrice = calculateTotalPrice();
     }
