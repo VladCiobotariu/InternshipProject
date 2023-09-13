@@ -8,6 +8,7 @@ import com.ozius.internship.project.service.queries.sort.SortSpecifications;
 import com.ozius.internship.project.service.queries.sort.SortSpecificationsParser;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +36,8 @@ public class ProductController {
     @GetMapping("/products")
     public ApiPaginationResponse<List<ProductDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
                                                                        @RequestParam(name = "page", defaultValue = "1") int page,
-                                                                       @RequestParam(name = "sort", required = false) String sort) {
+                                                                       @RequestParam(name = "sort", required = false) String sort,
+                                                                       @RequestParam MultiValueMap<String, String> filter) {
 
 
         ProductPaginationSearchQuery query = new ProductPaginationSearchQuery(modelMapper, entityManager)

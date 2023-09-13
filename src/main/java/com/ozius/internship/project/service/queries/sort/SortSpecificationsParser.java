@@ -9,13 +9,13 @@ public class SortSpecificationsParser {
 
     /***
      *
-     * @param sortText - sort text to be parsed, in format: price-asc|name-asc|price-desc
+     * @param sortText - sort text to be parsed, in format: price-asc,name-asc,price-desc
      */
 
     public static SortSpecifications parse(String sortText) {
 
         SortSpecifications sortSpecifications = new SortSpecifications();
-        List<String> criteriaList = new ArrayList<>(List.of(sortText.split("_")));
+        List<String> criteriaList = new ArrayList<>(List.of(sortText.split(",")));
 
         for(String criterion : criteriaList) {
             List<String> parts = new ArrayList<>(List.of(criterion.split("-")));

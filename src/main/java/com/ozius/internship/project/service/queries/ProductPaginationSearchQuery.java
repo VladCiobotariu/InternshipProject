@@ -7,9 +7,6 @@ import com.ozius.internship.project.service.queries.sort.SortSpecificationsParse
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
 public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,ProductDTO> {
@@ -22,10 +19,10 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
 
         mapCriteriaToPropertyPath("productPrice", "p.price");
         mapCriteriaToPropertyPath("productName", "p.name");
-//        mapCriteriaToPropertyPath("categoryName", "p.category.name");
-//        mapCriteriaToPropertyPath("cityName", "p.seller.legalAddress.city");
-//        mapCriteriaToPropertyPath("priceFrom", "p.price");
-//        mapCriteriaToPropertyPath("priceTo", "p.price");
+        mapCriteriaToPropertyPath("categoryName", "p.category.name");
+        mapCriteriaToPropertyPath("cityName", "p.seller.legalAddress.city");
+        mapCriteriaToPropertyPath("priceFrom", "p.price");
+        mapCriteriaToPropertyPath("priceTo", "p.price");
     }
 
     @Override

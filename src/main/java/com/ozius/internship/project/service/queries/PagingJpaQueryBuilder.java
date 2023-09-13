@@ -12,7 +12,7 @@ public abstract class PagingJpaQueryBuilder<E, R> extends JpaQueryBuilder<E,R> {
     }
 
     public List<R> getPagingResultList(int itemsPerPage, int page){
-        orderBy(orderByDefault(), SortOrder.DESC);
+        orderBy(orderByDefault(), SortOrder.ASC);
 
         TypedQuery<E> query = buildQuery()
                 .setFirstResult(page * itemsPerPage)
