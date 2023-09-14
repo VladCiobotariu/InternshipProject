@@ -74,24 +74,27 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
         valueParts
                 .forEach(item -> {
+                    Object value;
                     if (isParsable(item)) {
-                        Object value;
-                        if (item.contains(".")) {
-                            value = Double.parseDouble(valueString);
-                        } else {
-                            value = Integer.parseInt(item);
-                        }
-                        listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
+                        value = parseNumber(item);
                     } else {
-                        listFilterCriteria.add(
-                                new FilterCriteria(
-                                        criteria,
-                                        operation,
-                                        databaseStringConventions.getCriteriaToFormatInDataBase().get(criteria).applyFormat(item)
-                                ));
+                        value = formatString(criteria, item);
                     }
+                    listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
                 });
 
         return listFilterCriteria;
+    }
+
+    private String formatString(String criteria, String value){
+        return databaseStringConventions.getCriteriaToFormatInDataBase().get(criteria).applyFormat(value);
+    }
+
+    private Object parseNumber(String number){
+        if (number.contains(".")) {
+            return Double.parseDouble(number);
+        } else {
+            return Integer.parseInt(number);
+        }
     }
 }
