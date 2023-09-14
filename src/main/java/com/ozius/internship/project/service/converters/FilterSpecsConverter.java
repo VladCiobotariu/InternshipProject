@@ -80,16 +80,21 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
             if(valueString.contains("|")) { // string
                 List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
                 for (String valuePart : valueParts) {
-                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valuePart));
+                    String valuePartCapitalized = capitalizeFirstLetter(valuePart);
+                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valuePartCapitalized));
                 }
             }
             else {
-                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueString));
+                String valueCapitalized = capitalizeFirstLetter(valueString);
+                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueCapitalized));
             }
         }
 
         return listFilterCriteria;
+    }
 
+    private String capitalizeFirstLetter(String value) {
+        return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
 }

@@ -54,7 +54,7 @@ public class SortSpecsConverter implements Converter<String, SortSpecs> {
             throw new IllegalArgumentException("Invalid format of sort value " + sortValue);
         }
 
-        if(parts.get(1).equals("asc") || parts.get(1).equals("desc")) {
+        if(!parts.get(1).equals("asc") && !parts.get(1).equals("desc")) {
             throw new IllegalArgumentException("Invalid format of sort order " + parts.get(1));
         }
 

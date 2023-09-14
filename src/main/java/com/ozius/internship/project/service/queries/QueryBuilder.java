@@ -7,7 +7,6 @@ import com.ozius.internship.project.service.queries.sort.SortOrder;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,11 +50,10 @@ public class QueryBuilder {
         if(haveAddedAnyConditions){
             sqlQueryBuilder.append(String.format(" and %s", condition));
         } else {
-
             if(appendWhere) {
-                sqlQueryBuilder.append(String.format(" where ", condition));
+                sqlQueryBuilder.append(" where ");
             }
-            sqlQueryBuilder.append(String.format(" %s", condition));
+            sqlQueryBuilder.append(condition);
             haveAddedAnyConditions = true;
         }
         return this;
@@ -74,12 +72,13 @@ public class QueryBuilder {
             return this;
         }
         if(haveAddedAnyConditions){
-            sqlQueryBuilder.append(String.format(" and %s", condition));
+            sqlQueryBuilder.append(String.format(" or %s", condition));
         } else {
             if(appendWhere) {
-                sqlQueryBuilder.append(String.format(" where ", condition));
+                // todo - ask if we are gonna go here
+                sqlQueryBuilder.append(" where ");
             }
-            sqlQueryBuilder.append(String.format(" %s", condition));
+            sqlQueryBuilder.append(condition);
             haveAddedAnyConditions = true;
         }
         setParameter(paramName, paramValue);
@@ -134,7 +133,7 @@ public class QueryBuilder {
      * productName like '12'
      * categoryName = 'fructe'
      * categoryName = legume'
-     * => where p.name = 'rosii' or p.name like '%mere%' and p.categoryName = 'fructe' or p.categoryName = 'legume'
+     * => where p.name = ('rosii' or p.name like '%mere%') and (p.categoryName = 'fructe' or p.categoryName = 'legume')
      *
      * @param filterSpecs
      * @return
@@ -142,13 +141,17 @@ public class QueryBuilder {
 
     public QueryBuilder applyFilterSpecs(FilterSpecs filterSpecs) {
         int paramIndex = 0;
-
         Map<String, Set<FilterCriteria>> filterCriteriaByFilterName = filterSpecs.getFilterCriteria().stream()
                 .collect(Collectors.groupingBy(FilterCriteria::getCriteria, Collectors.toSet()));
+        // we'll construct a map like {categoryName : {{catName, like, rosii}, {catname, eq, mere}}
 
+        return buildOrCondition(filterCriteriaByFilterName, paramIndex);
+    }
+
+    private QueryBuilder buildOrCondition(Map<String, Set<FilterCriteria>> filterCriteriaByFilterName, int paramIndex) {
         for(Map.Entry<String, Set<FilterCriteria>> entry : filterCriteriaByFilterName.entrySet() ) {
             String filterName = entry.getKey();
-            List<FilterCriteria> filterCriteriaForFilter = (List<FilterCriteria>) entry.getValue();
+            Set<FilterCriteria> filterCriteriaForFilter = entry.getValue();
 
             /***
              * Builds condition for a certain filter and set of criterias
@@ -156,28 +159,46 @@ public class QueryBuilder {
              * (filter1 = val1 or filter1 like val2 or filter1=val3)
              *
              * example:
-             * filter 1 = val1 --- for a single filter criteria --- TO DO!, now we would have (filter 1 = val1)
+             * filter 1 = val1 --- for a single filter criteria
              */
-            QueryBuilder filterConditionBuilder = new QueryBuilder("(", false);
-            for (FilterCriteria filterCriterion : filterCriteriaForFilter) {
-                String propertyPath = criteriaToPropertyPathMappings.get(filterName);
-                String sqlOperator = filterCriterion.getOperation().getSqlOperator();
 
-                if(propertyPath == null) {
-                    throw new IllegalArgumentException("Unmapped criteria " + filterName);
-                }
+            QueryBuilder filterConditionBuilder = setStartOrQuery(filterCriteriaForFilter.size()) ;
 
-                String paramName = String.format("%s%s", filterName, paramIndex++);
-                String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
+            addOrConditionsToBuilder(filterCriteriaForFilter, filterName, paramIndex, filterConditionBuilder);
 
-                filterConditionBuilder.or(condition, paramName, filterName);
-
-            }
-            filterConditionBuilder.append(") ");
+            filterConditionBuilder = setEndOrQuery(filterCriteriaForFilter.size(), filterConditionBuilder);
 
             and(filterConditionBuilder);
         }
         return this;
+    }
+
+    private void addOrConditionsToBuilder(Set<FilterCriteria> filterCriteriaForFilter, String filterName, int paramIndex, QueryBuilder filterConditionBuilder) {
+        for (FilterCriteria filterCriterion : filterCriteriaForFilter) {
+
+            String propertyPath = criteriaToPropertyPathMappings.get(filterName); // get p.categoryName
+            String sqlOperator = filterCriterion.getOperation().getSqlOperator(); // get operator (=/like)
+
+            if(propertyPath == null) {
+                throw new IllegalArgumentException("Unmapped criteria " + filterName);
+            }
+
+            String paramName = String.format("%s%s", filterName, paramIndex++);
+            String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
+
+            filterConditionBuilder.or(condition, paramName, filterCriterion.getValue());
+            // todo - ask why haveAddedAnyConditions becomes false when u get out of or
+        }
+    }
+
+    private QueryBuilder setStartOrQuery(int filterCriteriaFilterSize) {
+        String openingBracket = (filterCriteriaFilterSize > 1) ? "(" : "";
+        return new QueryBuilder(openingBracket, false);
+    }
+
+    private QueryBuilder setEndOrQuery(int filterCriteriaFilterSize, QueryBuilder filterConditionBuilder) {
+        String closingBracket = (filterCriteriaFilterSize > 1) ? ") " : "";
+        return filterConditionBuilder.append(closingBracket);
     }
 
     protected void setParameter(String paramName, Object paramValue){
