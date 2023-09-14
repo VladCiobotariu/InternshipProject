@@ -3,7 +3,7 @@ package com.ozius.internship.project.service.converters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.ozius.internship.project.service.queries.filter.DatabaseFormat;
+import com.ozius.internship.project.service.queries.filter.DatabaseStringConventions;
 import com.ozius.internship.project.service.queries.filter.FilterCriteria;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.filter.Operation;
@@ -11,9 +11,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -23,14 +21,11 @@ import static org.apache.commons.lang3.math.NumberUtils.isParsable;
 public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
     private final ObjectMapper objectMapper;
-    private final Map<String, DatabaseFormat> criteriaToFormatInDataBase= new HashMap<>();
+    private final DatabaseStringConventions databaseStringConventions;
 
-    public FilterSpecsConverter(ObjectMapper objectMapper) {
+    public FilterSpecsConverter(ObjectMapper objectMapper, DatabaseStringConventions databaseStringConventions) {
         this.objectMapper = objectMapper;
-
-        mapCriteriaToFormatInDataBase("productName", DatabaseFormat.FIRST_LETTER_UPPER_CASE);
-        mapCriteriaToFormatInDataBase("categoryName", DatabaseFormat.FIRST_LETTER_UPPER_CASE);
-        mapCriteriaToFormatInDataBase("cityName", DatabaseFormat.FIRST_LETTER_UPPER_CASE);
+        this.databaseStringConventions = databaseStringConventions;
     }
 
     @Override
@@ -92,16 +87,11 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
                                 new FilterCriteria(
                                         criteria,
                                         operation,
-                                        criteriaToFormatInDataBase.get(criteria).applyFormat(item)
+                                        databaseStringConventions.getCriteriaToFormatInDataBase().get(criteria).applyFormat(item)
                                 ));
                     }
                 });
 
         return listFilterCriteria;
     }
-
-    protected void mapCriteriaToFormatInDataBase(String criteria, DatabaseFormat databaseFormat) {
-        criteriaToFormatInDataBase.put(criteria, databaseFormat);
-    }
-
 }
