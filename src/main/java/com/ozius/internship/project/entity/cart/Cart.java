@@ -3,9 +3,7 @@ package com.ozius.internship.project.entity.cart;
 import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
-import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -58,7 +56,7 @@ public class Cart extends BaseEntity {
         return totalCartPrice;
     }
 
-    public float calculateItemPrice(CartItem cartItem) {
+    private float calculateItemPrice(CartItem cartItem) {
         return cartItem.getQuantity() * cartItem.getProduct().getPrice();
     }
 
@@ -81,11 +79,8 @@ public class Cart extends BaseEntity {
 
         CartItem existingCartItem = getCartItemByProduct(product);
 
-        if(quantity == 0) {
-            throw new IllegalQuantityException("Quantity cannot be 0!");
-        }
-        if(quantity < 0) {
-            throw new IllegalQuantityException("Quantity cannot be less than 0!");
+        if(existingCartItem!=null && existingCartItem.getQuantity()+quantity == 0F) {
+            removeFromCart(product);
         }
 
         if (existingCartItem != null) {

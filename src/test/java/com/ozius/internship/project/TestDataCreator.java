@@ -189,8 +189,8 @@ public class TestDataCreator {
     public static void createCartBaseData(EntityManager em){
         Cart cart = createCart(em, Buyers.buyer3);
 
-        addItemToCart(em, cart, Products.product1, 2.2F);
-        addItemToCart(em, cart, Products.product2, 5.9F);
+        addItemToCart(em, cart, Products.product1, 2F);
+        addItemToCart(em, cart, Products.product2, 5F);
     }
 
     public static void createFavoritesBaseData(EntityManager em){
@@ -230,7 +230,6 @@ public class TestDataCreator {
         public static Category category6;
         public static Category category7;
         public static Category category8;
-        public static Category category9;
     }
 
     public static class Addresses{

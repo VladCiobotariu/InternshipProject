@@ -1,26 +1,29 @@
-function QuantityInput({inputQuantity}){
+function QuantityInput({quantity, functionToBeCalled}){
+
     return(
         <div>
             <label htmlFor="Quantity" className="sr-only"> Quantity </label>
 
             <div className="flex items-center border border-gray-200 rounded">
                 <button
+                    onClick={()=>functionToBeCalled(-1)}
                     type="button"
-                    className="dark:text-white w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 dark:hover:bg-white"
+                    className="dark:text-white dark:hover:text-black hover:text-white w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
                 >
                     -
                 </button>
 
-                <input
-                    type="number"
-                    id="Quantity"
-                    value={inputQuantity}
-                    className="dark:bg-[#192235] h-10 w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none">
-                </input>
+                <div
+                    id="quantity"
+                    className="flex items-center justify-center dark:bg-[#192235] h-10 w-16 border-transparent text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none">
+                    {quantity}
+                </div>
 
                 <button
+                    onClick={()=>functionToBeCalled(1)}
                     type="button"
-                    className="dark:text-white w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 dark:hover:bg-white"
+                    className="dark:text-white dark:hover:text-black hover:text-white
+                     w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
                 >
                     +
                 </button>
