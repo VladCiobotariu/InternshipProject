@@ -1,6 +1,5 @@
 package com.ozius.internship.project.service.queries.filter;
 
-import com.ozius.internship.project.service.queries.filter.DatabaseFormat;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
