@@ -85,7 +85,7 @@ export default function Header() {
     function getCartItemsList(){
         getCartItems()
             .then(
-                (response) => setNumberOfCartItems(response.data.length)
+                (response) => setNumberOfCartItems(response.data.cartItems.length)
             )
             .catch(
                 (err) => {

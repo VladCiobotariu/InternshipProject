@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.entity.cart.CartItem;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.CartRepository;
 import com.ozius.internship.project.repository.UserAccountRepository;
@@ -28,7 +28,7 @@ public class BuyerService {
     }
 
     @Transactional
-    public Set<CartItem> getCartItemsByUserEmail(String email){
+    public Cart getCartItemsByUserEmail(String email){
         long userId = userAccountRepository.findByEmail(email).getId();
         long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
 
@@ -36,7 +36,7 @@ public class BuyerService {
             return null;
         }
 
-        return cartRepository.findCartByBuyer_Id(buyerId).getCartItems();
+        return cartRepository.findCartByBuyer_Id(buyerId);
     }
 
     @Transactional
@@ -51,5 +51,25 @@ public class BuyerService {
         long userId = userAccountRepository.findByEmail(email).getId();
         Product product = em.find(Product.class, productId);
         buyerRepository.findBuyerByAccount_Id(userId).removeFavorite(product);
+    }
+
+    @Transactional
+    public void removeCartItemByProductId(String email, long productId){
+        long userId = userAccountRepository.findByEmail(email).getId();
+        long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
+
+        Product product = em.find(Product.class, productId);
+
+        cartRepository.findCartByBuyer_Id(buyerId).removeFromCart(product);
+    }
+
+    @Transactional
+    public void updateCartItemByProductId(String email, long productId, float quantity){
+        long userId = userAccountRepository.findByEmail(email).getId();
+        long buyerId = buyerRepository.findBuyerByAccount_Id(userId).getId();
+
+        Product product = em.find(Product.class, productId);
+
+        cartRepository.findCartByBuyer_Id(buyerId).addOrUpdateItem(product, quantity);
     }
 }
