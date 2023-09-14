@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Filter;
 import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -44,14 +43,16 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
         filterValues.stream()
                 .map(this::parseFilterCriteria)
+                .flatMap(List::stream)
                 .forEach(filterSpecs::addFilterCriteria);
 
         return filterSpecs;
     }
 
-    public FilterCriteria parseFilterCriteria(String filterValue) {
-        List<String> parts = new ArrayList<>(List.of(filterValue.split(Pattern.quote("[") + "|" + Pattern.quote("]"))));
+    public List<FilterCriteria> parseFilterCriteria(String filterValue) {
+        List<FilterCriteria> listFilterCriteria = new ArrayList<>();
 
+        List<String> parts = new ArrayList<>(List.of(filterValue.split(Pattern.quote("[") + "|" + Pattern.quote("]"))));
         if(parts.size() != 3) {
             throw new IllegalArgumentException("Invalid format of filter value " + filterValue);
         }
@@ -66,18 +67,28 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
             throw new IllegalArgumentException("This operation does not exist: " + operationString);
         }
 
-        Object value;
         try {
+            Object value;
             if (valueString.contains(".")) {
-                value = Double.parseDouble(valueString);
+                value = Double.parseDouble(valueString); // 2.5
             } else {
-                value = Integer.parseInt(valueString);
+                value = Integer.parseInt(valueString); // 2
             }
+            listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
+
         } catch (NumberFormatException e) {
-            value = valueString;
+            if(valueString.contains("|")) { // string
+                List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
+                for (String valuePart : valueParts) {
+                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valuePart));
+                }
+            }
+            else {
+                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueString));
+            }
         }
 
-        return new FilterCriteria(criteria, operation, value);
+        return listFilterCriteria;
 
     }
 

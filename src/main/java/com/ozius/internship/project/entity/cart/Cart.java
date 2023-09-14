@@ -5,7 +5,6 @@ import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
-import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
 
 import java.util.Collections;
@@ -85,11 +84,11 @@ public class Cart extends BaseEntity {
         }
 
         if (existingCartItem != null) {
-            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity); //addItem()
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
         } else {
 
             CartItem cartItem = new CartItem(quantity, product);
-            this.cartItems.add(cartItem); // updateItem
+            this.cartItems.add(cartItem);
         }
         this.totalCartPrice = calculateTotalPrice();
     }

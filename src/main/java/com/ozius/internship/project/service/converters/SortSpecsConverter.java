@@ -1,7 +1,6 @@
 package com.ozius.internship.project.service.converters;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.ozius.internship.project.service.queries.sort.SortCriteria;
@@ -55,10 +54,12 @@ public class SortSpecsConverter implements Converter<String, SortSpecs> {
             throw new IllegalArgumentException("Invalid format of sort value " + sortValue);
         }
 
+        if(parts.get(1).equals("asc") || parts.get(1).equals("desc")) {
+            throw new IllegalArgumentException("Invalid format of sort order " + parts.get(1));
+        }
+
         String criteria = parts.get(0);
         SortOrder sortOrder = SortOrder.valueOf(parts.get(1).toUpperCase());
-
-        // todo handle asc desc
 
         return new SortCriteria(criteria, sortOrder);
     }
