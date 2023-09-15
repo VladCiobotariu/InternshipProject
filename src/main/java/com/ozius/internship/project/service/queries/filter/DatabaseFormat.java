@@ -16,6 +16,5 @@ public enum DatabaseFormat {
         } else {
             return value;
         }
-
     }
 }

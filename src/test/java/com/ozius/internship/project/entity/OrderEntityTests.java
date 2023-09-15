@@ -607,4 +607,11 @@ public class OrderEntityTests extends JpaBaseEntity {
 
         assertThat(orders.size()).isEqualTo(2);
     }
+
+    @Test
+    void search_by_status(){
+        emb.createQuery("select o from Order o where o.orderStatus = :orderStatus", Order.class)
+                .setParameter("orderStatus", OrderStatus.SUBMITTED)
+                .getResultList();
+    }
 }
