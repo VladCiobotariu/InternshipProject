@@ -1,15 +1,32 @@
 import { api } from '../ApiClient'
 
-export const getAllProducts = () => {
-    return api.get("/products")
-}
+export const getProductsApi = (page, itemsPerPage, sortSpecs, filterSpecs) => {
 
-export const getAllProductsPageable = (page, itemsPerPage) => {
-    return api.get(`/products`, {params: { page: page, itemsPerPage: itemsPerPage }})
+    return api.get(`/products`, {
+        params: {
+            page: page,
+            itemsPerPage: itemsPerPage,
+            sort: JSON.stringify(sortSpecs),
+            filter: JSON.stringify(filterSpecs)
+        }
+    });
 }
-
-// TODO - check that if you dont pass categoryName than all products would be retrieved,
-// if yes, than rename this to getAllProductsPageable and delete the request above
-export const getAllProductsByCategoryNamePageable = (categoryName, page, itemsPerPage) => {
-    return api.get(`/products`, {params: { categoryName: categoryName, page: page, itemsPerPage: itemsPerPage }})
-}
+// export const getProductsApi = (page, itemsPerPage, sortSpecs, filterSpecs) => {
+//
+//     return api.get(`/products`, {
+//         paramsSerializer: function({page,itemsPerPage,sortSpecs, filterSpecs}) {
+//
+//             let encodedFilterSpecs = encodeURIComponent(filterSpecs);
+//             let encodedSortSpecs = encodeURIComponent(sortSpecs);
+//             let result = {
+//                 page: page,
+//                 itemsPerPage: itemsPerPage,
+//                 sort: encodedSortSpecs,
+//                 filterSpecs: encodedFilterSpecs
+//             }
+//
+//             return result;
+//         }
+//
+//     });
+// }

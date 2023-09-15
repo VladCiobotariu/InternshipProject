@@ -70,26 +70,27 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
         try {
             Object value;
             if (valueString.contains(".")) {
-                value = Double.parseDouble(valueString); // 2.5
+                value = Double.parseDouble(valueString);
             } else {
-                value = Integer.parseInt(valueString); // 2
+                value = Integer.parseInt(valueString);
             }
             listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
 
         } catch (NumberFormatException e) {
-            if(valueString.contains("|")) { // string
+            if(valueString.contains("|")) {
                 List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
                 for (String valuePart : valueParts) {
-                    String valuePartCapitalized = capitalizeFirstLetter(valuePart);
-                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valuePartCapitalized));
+                    String valueCapitalized = capitalizeFirstLetter(valuePart);
+                    String valueHandleLikeCondition = changeValueIfConditionContainsLike(valueCapitalized, operationString);
+                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valueHandleLikeCondition));
                 }
             }
             else {
                 String valueCapitalized = capitalizeFirstLetter(valueString);
-                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueCapitalized));
+                String valueHandleLikeCondition = changeValueIfConditionContainsLike(valueCapitalized, operationString);
+                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueHandleLikeCondition));
             }
         }
-
         return listFilterCriteria;
     }
 
@@ -97,4 +98,10 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
         return value.substring(0, 1).toUpperCase() + value.substring(1);
     }
 
+    private String changeValueIfConditionContainsLike(String value, String operationString) {
+        if(operationString.equals("like")) {
+            return String.format("%s%%", value);
+        }
+        return value;
+    }
 }

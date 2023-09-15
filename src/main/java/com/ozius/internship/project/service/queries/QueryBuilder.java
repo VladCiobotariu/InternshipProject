@@ -143,7 +143,6 @@ public class QueryBuilder {
         int paramIndex = 0;
         Map<String, Set<FilterCriteria>> filterCriteriaByFilterName = filterSpecs.getFilterCriteria().stream()
                 .collect(Collectors.groupingBy(FilterCriteria::getCriteria, Collectors.toSet()));
-        // we'll construct a map like {categoryName : {{catName, like, rosii}, {catname, eq, mere}}
 
         return buildOrCondition(filterCriteriaByFilterName, paramIndex);
     }
@@ -184,6 +183,7 @@ public class QueryBuilder {
             }
 
             String paramName = String.format("%s%s", filterName, paramIndex++);
+
             String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
 
             filterConditionBuilder.or(condition, paramName, filterCriterion.getValue());

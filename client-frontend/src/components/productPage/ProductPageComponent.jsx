@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import ProductComponent from "./ProductComponent";
-import {getAllProductsByCategoryNamePageable} from "../../security/api/ProductApi";
+import {getProductsApi} from "../../security/api/ProductApi";
 import NoProductMessageComponent from "./NoProductMessageComponent";
 import SearchComponent from '../search/SearchComponent';
 import FilteringComponent from "../filter/FilteringComponent";
@@ -11,56 +11,58 @@ function ProductCollection() {
     const { categoryName } = useParams();
 
     const [displayedProducts, setDisplayedProducts] = useState([]);
-    const [copyDisplayedProducts, setCopyDisplayedProducts] = useState([]);
-    const [dataForSearch, setDataForSearch] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalNumberProducts, setTotalNumberProducts] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [sortSpecs, setSortSpecs] = useState([]);
 
-    const getProductsWithItemsPerPage = (newItemsPerPage, page) => {
+    const [productSearchFilter, setProductSearchFilter] = useState(null);
+    const [productCategoryFilter, setProductCategoryFilter] = useState(null);
+    const [productCityFilter, setProductCityFilter] = useState(null);
+
+    const getProducts = (newItemsPerPage, page, sortSpecs, filterSpecs) => {
         setItemsPerPage(newItemsPerPage);
-
-        getAllProductsByCategoryNamePageable(categoryName, page, newItemsPerPage)
+        getProductsApi(page, newItemsPerPage, sortSpecs, filterSpecs)
             .then((res) => {
                 setDisplayedProducts(res.data.data);
-                setCopyDisplayedProducts(res.data.data);
                 setTotalNumberProducts(res.data.numberOfElements);
             })
             .catch((err) => console.log(err))
     }
 
     useEffect(() => {
-        getProductsWithItemsPerPage(itemsPerPage, currentPage);
-
-    }, [currentPage, itemsPerPage, categoryName]);
-
-    const handleDataForSearch = (displayedProducts) => {
-        const names = displayedProducts.map(prod => prod.name);
-        setDataForSearch(names);
-    }
-
-    useEffect(() => {
-        handleDataForSearch(displayedProducts);
-    }, [displayedProducts]);
+        const filterSpecs = buildFilterSpecs();
+        getProducts(itemsPerPage, currentPage, sortSpecs, filterSpecs);
+    }, [productSearchFilter, productCategoryFilter, currentPage, itemsPerPage, sortSpecs]);
 
     const handleItemsPerPageChange = (event) => {
         const newItemsPerPage = parseInt(event.target.value);
         setCurrentPage(1);
-        getProductsWithItemsPerPage(newItemsPerPage, 1);
+        getProducts(newItemsPerPage, 1);
     }
 
-    const handleDisplayedChange = (e) => {
-        const field = e.target.value;
-        if(field === "") {
-            setDisplayedProducts(copyDisplayedProducts);
+    const handleOnProductSearchChanged = (searchText) => {
+        if (searchText.length > 1) {
+            setProductSearchFilter(searchText); // ban
         } else {
-            let filteredSearch = [];
-            filteredSearch = displayedProducts.filter((prod) => {
-                return prod.name.toLowerCase().includes(field.toLowerCase());
-            });
-            setDisplayedProducts(filteredSearch);
+            setProductSearchFilter(null);
         }
+    }
+    const createFilterCriteria = (criteria, operation, value) => {
+        return `${criteria}[${operation}]${value}`;
+    }
+
+    const buildFilterSpecs = () => {
+        const filterSearchSpec = [];
+        if(productSearchFilter) {
+            filterSearchSpec.push(createFilterCriteria("productName", "like", productSearchFilter));
+        }
+        if(productCategoryFilter) {
+            filterSearchSpec.push(createFilterCriteria("categoryName", "eq", productCategoryFilter));
+        }
+
+        return filterSearchSpec;
     }
 
 
@@ -82,8 +84,8 @@ function ProductCollection() {
                                 <FilteringComponent />
                             </div>
                             <div>
-                                <SearchComponent data={dataForSearch}
-                                handleDisplayedChange={(e) => handleDisplayedChange(e)}/>
+                                <SearchComponent
+                                    onSearchText={handleOnProductSearchChanged}/>
                             </div>
                         </div>
 
