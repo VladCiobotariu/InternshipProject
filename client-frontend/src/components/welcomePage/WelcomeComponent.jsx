@@ -1,32 +1,8 @@
 import {Link} from "react-router-dom";
 import React from "react";
-import {api} from "../../security/ApiClient";
-import queryString from 'query-string';
-import qs from 'qs';
 
 export default function WelcomeComponent() {
 
-    const onClick = () => {
-        const array = ["productName[like]ban", "categoryName[eq]fruits"];
-        const secondArray = ["price-asc", "categoryName[eq]fruits"];
-        console.log(qs.stringify(array, {arrayFormat: 'brackets'}) + " qs");
-        console.log(queryString.stringify(array) + " query string");
-        console.log(encodeURIComponent(JSON.stringify(array)));
-        api.get("/products", {
-            params: {
-                filter: encodeURIComponent(JSON.stringify(array)),
-                sort: encodeURIComponent(JSON.stringify(secondArray))
-            },
-            paramsSerializer: function (params){
-                return params.filter;
-            }
-        }).then(r => console.log("request made"));
-
-    }
-
-
-    // http://localhost:8080/products?filter=["productName[like]ban"]
-    // http://localhost:8080/products?filter[]=productName[like]ban&filter[]=categoryName[eq]fruits
     return (
         <div className="bg-transparent dark:bg-transparent">
 
@@ -66,11 +42,6 @@ export default function WelcomeComponent() {
                         </div>
                     </div>
                 </div>
-
-                <button
-                onClick={onClick}>
-                    Click here
-                </button>
 
             </div>
         </div>

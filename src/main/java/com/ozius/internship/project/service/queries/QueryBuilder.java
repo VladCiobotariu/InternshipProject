@@ -75,7 +75,6 @@ public class QueryBuilder {
             sqlQueryBuilder.append(String.format(" or %s", condition));
         } else {
             if(appendWhere) {
-                // todo - ask if we are gonna go here
                 sqlQueryBuilder.append(" where ");
             }
             sqlQueryBuilder.append(condition);
@@ -187,7 +186,6 @@ public class QueryBuilder {
             String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
 
             filterConditionBuilder.or(condition, paramName, filterCriterion.getValue());
-            // todo - ask why haveAddedAnyConditions becomes false when u get out of or
         }
     }
 
