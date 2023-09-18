@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.ozius.internship.project.service.queries.filter.*;
 import com.ozius.internship.project.service.queries.filter.converter.FilterConfiguration;
 import com.ozius.internship.project.service.queries.filter.converter.FilterValueConverter;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -67,12 +66,10 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
         if (isEmpty(operationString)) {
             FilterConfiguration<?> configurationForFilter = filterConfigurationProvider.getConfigurationForFilter(criteria);
-
             operation = configurationForFilter.getDefaultOperation();
         } else {
             operation = Operation.valueOf(operationString.toUpperCase());
         }
-
 
         List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
         FilterValueConverter<?> converter = filterConfigurationProvider.getConfigurationForFilter(criteria).getFilterValueConverter();
