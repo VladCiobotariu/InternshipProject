@@ -86,6 +86,7 @@ public class Cart extends BaseEntity {
         if (existingCartItem != null) {
             existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
         } else {
+
             CartItem cartItem = new CartItem(quantity, product);
             this.cartItems.add(cartItem);
         }
