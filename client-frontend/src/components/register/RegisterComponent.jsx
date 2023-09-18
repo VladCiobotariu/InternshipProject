@@ -3,6 +3,8 @@ import {Link, useNavigate} from 'react-router-dom'
 import { useAuth } from '../../security/AuthContext'
 import {Field, Formik, Form} from "formik";
 import { passwordSchema } from "./passwordSchema";
+import TextInputWithError from "../input/TextInputWithError";
+import ErrorField from "../error/ErrorField";
 
 function RegisterComponent(){
 
@@ -46,200 +48,50 @@ function RegisterComponent(){
                     >
 
                         {({ errors, validateField }) => {
+
                             return (
                                 <Form className="space-y-2">
 
-                                    {!!errors.email && (
-                                        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                            <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                            </svg>
-                                            <span className="sr-only">Info</span>
-                                            <div>
-                                                <p className="font-medium">{errors.email}</p>
-                                            </div>
+                                    {Object.keys(errors).map((key, i) => (
+                                        <div key={i}>
+                                            <ErrorField errorName={errors[key]}/>
                                         </div>
-                                    )}
+                                    ))}
 
-                                    {!!errors.password && (
-                                        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                            <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                            </svg>
-                                            <span className="sr-only">Info</span>
-                                            <div>
-                                                <p className="font-medium">{errors.password}</p>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <TextInputWithError fieldName={'email'}
+                                                        errorName={errors.email}
+                                                        labelName={'Email address'}
+                                                        onBlur={()=>validateField('email')}/>
 
-                                    {!!errors.confirmPassword && (
-                                        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                            <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                            </svg>
-                                            <span className="sr-only">Info</span>
-                                            <div>
-                                                <p className="font-medium">{errors.confirmPassword}</p>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <TextInputWithError fieldName={'password'}
+                                                        errorName={errors.password}
+                                                        labelName={'Password'}
+                                                        onBlur={()=>validateField('password')}
+                                                        fieldType={"password"}/>
 
-                                    {!!(errors.firstName || errors.lastName) && (
-                                        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                            <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                            </svg>
-                                            <span className="sr-only">Info</span>
-                                            <div>
-                                                <p className="font-medium">Field required</p>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <TextInputWithError fieldName={'confirmPassword'}
+                                                        errorName={errors.confirmPassword}
+                                                        labelName={'Confirm Password'}
+                                                        onBlur={()=>validateField('confirmPassword')}
+                                                        fieldType={"password"}/>
 
-                                    {!!errors.telephone && (
-                                        <div className="flex items-center p-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                                            <svg className="flex-shrink-0 inline w-4 h-4 mr-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                                            </svg>
-                                            <span className="sr-only">Info</span>
-                                            <div>
-                                                <p className="font-medium">{errors.telephone}</p>
-                                            </div>
-                                        </div>
-                                    )}
+                                    <TextInputWithError fieldName={'firstName'}
+                                                        errorName={errors.firstName}
+                                                        labelName={'First Name'}
+                                                        onBlur={()=>validateField('firstName')}
+                                                        fieldType={"text"}/>
 
-                                    <div>
-                                        <label className={` ${errors.email ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            Email address
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="email"
-                                                className={` ${errors.email ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('email')
-                                                }}
-                                            >
-                                            </Field>
-                                        </div>
-                                    </div>
+                                    <TextInputWithError fieldName={'lastName'}
+                                                        errorName={errors.lastName}
+                                                        labelName={'Last Name'}
+                                                        onBlur={()=>validateField('lastName')}
+                                                        fieldType={"text"}/>
 
-                                    <div>
-                                        <label className={` ${errors.password ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            Password
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="password"
-                                                type="password"
-                                                className={` ${errors.password ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('password')
-                                                }}
-                                            ></Field>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className={` ${errors.confirmPassword ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            Confirm Password
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="confirmPassword"
-                                                type="password"
-                                                className={` ${errors.confirmPassword ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('confirmPassword')
-                                                }}
-                                            ></Field>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className={` ${errors.firstName ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            First Name
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="firstName"
-                                                type="text"
-                                                className={` ${errors.firstName ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('firstName')
-                                                }}
-                                            ></Field>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className={` ${errors.lastName ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            Last Name
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="lastName"
-                                                type="text"
-                                                className={` ${errors.lastName ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('lastName')
-                                                }}
-                                            ></Field>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className={` ${errors.telephone ? 'text-red-600':'text-inherit' } block text-sm font-medium leading-6`}>
-                                            Telephone
-                                        </label>
-                                        <div className="mt-2">
-                                            <Field
-                                                name="telephone"
-                                                type="tel"
-                                                className={` ${errors.telephone ? 'ring-red-500 dark:ring-red-500':'ring-gray-300 dark:ring-gray-800'} 
-                                                    dark:bg-[#192235] block w-full rounded-md 
-                                                    border-0 py-1.5 shadow-sm 
-                                                    ring-1 ring-inset
-                                                    placeholder:text-gray-400  
-                                                    focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
-                                                onBlur={()=>{
-                                                    validateField('telephone')
-                                                }}
-                                            ></Field>
-                                        </div>
-                                    </div>
+                                    <TextInputWithError fieldName={'telephone'}
+                                                        errorName={errors.telephone}
+                                                        labelName={'Telephone'}
+                                                        onBlur={()=>validateField('telephone')}
+                                                        fieldType={"tel"}/>
 
                                     <div>
                                         <label className="block text-sm font-medium leading-6">
@@ -274,6 +126,7 @@ function RegisterComponent(){
                             Sign in!
                         </Link>
                     </p>
+
                 </div>
             </div>
         </>

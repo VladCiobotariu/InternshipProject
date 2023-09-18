@@ -1,5 +1,5 @@
 import {baseURL} from "../../security/ApiClient";
-import QuantityInput from "./QuantityInput";
+import QuantityInput from "../input/QuantityInput";
 import React, {useState} from "react";
 import useBreakpoint from "../../hooks/useBreakpoint";
 import {modifyCartItemQuantity} from "../../security/api/BuyerApi";
@@ -41,7 +41,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem}){
             <div className="sm:flex sm:flex-col sm:justify-between">
                 <img src={`${baseURL}${item.product.imageName}`}
                      alt=""
-                     className="rounded-lg md:w-40 sm:h-20 sm:w-20 lg:w-44"
+                     className="rounded-lg md:w-40 sm:h-20 sm:w-20 w-44"
                 />
                 {breakpoint==='sm' &&
                     <div className="mt-4">

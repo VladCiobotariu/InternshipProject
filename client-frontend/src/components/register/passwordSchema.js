@@ -34,6 +34,6 @@ export const passwordSchema = object().shape({
             .required(),
         telephone: string()
             .phone("RO", 'Please enter valid RO number')
-            .required()
+            .required("Telephone Required")
     })
 ;

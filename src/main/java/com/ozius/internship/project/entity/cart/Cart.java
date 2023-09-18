@@ -17,6 +17,7 @@ import java.util.Set;
 public class Cart extends BaseEntity {
     public static final String TABLE_NAME = "cart";
 
+    //TODO column for shipping price?
     interface Columns {
         String BUYER_ID = "BUYER_ID";
         String TOTAL_PRICE = "TOTAL_PRICE";
