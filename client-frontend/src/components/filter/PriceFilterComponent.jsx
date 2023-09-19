@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
-const PriceFilterComponent = ({onClickInside, togglePriceFilter, handlePriceChanged }) => {
+const PriceFilterComponent = ({onClickInside, togglePriceFilter, handlePriceChanged, getPriceFrom, getPriceTo }) => {
 
     // todo - name RangeFilterComponent
-    const [priceFrom, setPriceFrom] = useState('');
-    const [priceTo, setPriceTo] = useState('');
+    const [priceFrom, setPriceFrom] = useState(getPriceFrom || '');
+    const [priceTo, setPriceTo] = useState(getPriceTo || '');
 
     const onPriceFromChanged = (e) => {
         setPriceFrom(e.target.value);

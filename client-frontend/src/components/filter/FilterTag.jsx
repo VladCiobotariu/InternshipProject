@@ -5,6 +5,8 @@ const FilterTag = ({filterName, value, removeFilter}) => {
     const customLabels = {
         priceTo: "Price To",
         priceFrom: "Price From",
+        cityName: "City",
+        categoryName: "Category"
     };
 
     return (

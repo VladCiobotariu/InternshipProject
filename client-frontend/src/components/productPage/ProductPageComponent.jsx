@@ -6,17 +6,9 @@ import SearchComponent from '../search/SearchComponent';
 import FilteringComponent from "../filter/FilteringComponent";
 import NoEntityMessageComponent from "../nonExistingEntities/NoEntityMessageComponent";
 
-// has values
-class FilterOptions {
-    priceFrom;
-    priceTo;
-    categoryName;
-    cityName;
-}
-
 function ProductPageComponent() {
 
-    const { categoryName } = useParams();
+    const {categoryName} = useParams();
 
     const [displayedProducts, setDisplayedProducts] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -27,8 +19,12 @@ function ProductPageComponent() {
     const [productCategoryFilter, setProductCategoryFilter] = useState(categoryName || null);
     const [productSort, setProductSort] = useState({criteria: '', orderSort: ''});
 
-    const [filterOptions, setFilterOptions] = useState({});
-
+    const [filterOptions, setFilterOptions] = useState({
+        priceFrom: null,
+        priceTo: null,
+        categoryName: [],
+        cityName: [],
+    });
 
     const getProducts = (newItemsPerPage, page, sortSpecs, filterSpecs) => {
         setItemsPerPage(newItemsPerPage);
@@ -69,21 +65,36 @@ function ProductPageComponent() {
         return `${criteria}-${orderSort}`;
     }
 
+    const createValueForFilterCriteria = (filterOption) => {
+        if (Array.isArray(filterOption)) {
+            if (filterOption.length > 1) {
+                return filterOption.join('|');
+            } else if (filterOption.length === 1) {
+                return filterOption[0];
+            } else {
+                return null;
+            }
+        } else {
+            return filterOption;
+        }
+    };
+
     const buildFilterSpecs = () => {
         const filterSearchSpec = [];
-        if(productSearchFilter) {
+        if (productSearchFilter) {
             filterSearchSpec.push(createFilterCriteria("productName", "like", productSearchFilter));
         }
-        if(productCategoryFilter) {
+        if (productCategoryFilter) {
             filterSearchSpec.push(createFilterCriteria("categoryName", "eq", productCategoryFilter));
         }
-        if(filterOptions.cityName) {
-            filterSearchSpec.push(createFilterCriteria("categoryName", "eq", filterOptions.cityName));
+        if(filterOptions.cityName.length !== 0) {
+            const value = createValueForFilterCriteria(filterOptions.cityName);
+            filterSearchSpec.push(createFilterCriteria("cityName", "eq", value));
         }
-        if(filterOptions.priceFrom) {
+        if (filterOptions.priceFrom) {
             filterSearchSpec.push(createFilterCriteria("priceFrom", "gte", filterOptions.priceFrom));
         }
-        if(filterOptions.priceTo) {
+        if (filterOptions.priceTo) {
             filterSearchSpec.push(createFilterCriteria("priceTo", "lte", filterOptions.priceTo));
         }
         return filterSearchSpec;
@@ -91,7 +102,7 @@ function ProductPageComponent() {
 
     const buildSortSpecs = () => {
         const sortSpecs = [];
-        if(productSort.criteria && productSort.orderSort) {
+        if (productSort.criteria && productSort.orderSort) {
             sortSpecs.push(createSortCriteria(productSort.criteria, productSort.orderSort));
         }
         return sortSpecs;
@@ -103,32 +114,31 @@ function ProductPageComponent() {
 
     return (
         <div>
-            {totalNumberProducts === 0 ? (<NoEntityMessageComponent
-                header="Products do not exist yet."
-                paragraph="Sorry, we could not find the products you are looking for."/>) :
-            (
-                <section>
-                    <div className="mx-auto mt-16 max-w-7xl px-10">
-                        <header>
-                            <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
-                                { categoryName ? `Check the ${categoryName}!` : 'All Products' }
-                            </h2>
-                        </header>
 
-                        <div className="flex justify-between mb-8">
-                            <div>
-                                <FilteringComponent
-                                    filterOptions={filterOptions}
-                                    onFilterChanged={handleOnFilterChanged}/>
-                            </div>
-                            <div>
-                                <SearchComponent
-                                    onSearchText={handleOnProductSearchChanged}/>
-                            </div>
+            <section>
+                <div className="mx-auto mt-16 max-w-7xl px-10">
+                    <header>
+                        <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
+                            {categoryName ? `Check the ${categoryName}!` : 'All Products'}
+                        </h2>
+                    </header>
+
+                    <div className="flex justify-between mb-8">
+                        <div>
+                            <FilteringComponent
+                                filterOptions={filterOptions}
+                                onFilterChanged={handleOnFilterChanged}
+                            />
                         </div>
+                        <div>
+                            <SearchComponent
+                                onSearchText={handleOnProductSearchChanged}/>
+                        </div>
+                    </div>
 
-
-
+                    {totalNumberProducts === 0 ? (<NoEntityMessageComponent
+                        header="Products do not exist yet."
+                        paragraph="Sorry, we could not find the products you are looking for."/>) : (
                         <ul className="mt-4 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
                             {displayedProducts.map((product) => (
                                 <ProductComponent
@@ -141,9 +151,10 @@ function ProductPageComponent() {
                                 />
                             ))}
                         </ul>
-                    </div>
-                </section>
-            )}
+                    )}
+                </div>
+            </section>
+
         </div>
     );
 }

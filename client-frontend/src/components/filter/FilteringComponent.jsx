@@ -11,9 +11,9 @@ const FilteringComponent = ({ filterOptions, onFilterChanged }) => {
     const [openFilter, setOpenFilter] = useState(null);
     const [filterTags, setFilterTags] = useState([]);
 
-    const togglePriceFilter = () => {
+    const toggleFilter = () => {
         setOpenFilter(null);
-    };
+    }
 
     const handleFilterClick = (filter) => {
         if (openFilter === filter) {
@@ -29,41 +29,69 @@ const FilteringComponent = ({ filterOptions, onFilterChanged }) => {
             .map(key => {
                 return new Tag(key, filterOptions[key], "ONE_VALUE");
             });
-
         setFilterTags(newFilterTags);
     }, [filterOptions]);
-    // onFilterAdded
 
-    const onFilterRemoved = (filterNameToRemove) => {
+
+    // for price, sort
+    const onFilterRemovedOneOption = (filterNameToRemove) => {
         const updatedFilterOptions = {...filterOptions};
         delete updatedFilterOptions[filterNameToRemove];
         onFilterChanged(updatedFilterOptions);
     }
 
+    // for category, city
+    const onFilterRemovedMultipleOptions = (filterNameToRemove, valueToRemove) => {
+        const updatedFilterOptions = { ...filterOptions };
+        if (Array.isArray(updatedFilterOptions[filterNameToRemove])) {
+            updatedFilterOptions[filterNameToRemove] = updatedFilterOptions[filterNameToRemove].filter(
+                (value) => value !== valueToRemove
+            );
+            onFilterChanged(updatedFilterOptions);
+        }
+    };
+
+    // price
     const handlePriceChanged = (priceFrom, priceTo) => {
         const newFilterOptions = {...filterOptions, "priceFrom": priceFrom, "priceTo": priceTo};
         onFilterChanged(newFilterOptions);
     }
 
-    // restul
+    // sort
     const handleFilterChanged = (filterName, filterValue) => {
         const newFilterOptions = {...filterOptions, [filterName]: filterValue};
         onFilterChanged(newFilterOptions);
     }
 
+    // price, category
+    const handleFilterMultipleOptionsChanged = (filterName, filterValues) => {
+        const newFilterOptions = { ...filterOptions };
+        if (Array.isArray(filterValues)) {
+            newFilterOptions[filterName] = [];
+            newFilterOptions[filterName] = filterValues;
+        } else {
+            newFilterOptions[filterName] = [...(newFilterOptions[filterName] || []), filterValues];
+        }
+        onFilterChanged(newFilterOptions);
+    };
+
+
     return (
         <div>
             <div className="flex items-center">
-                <div className="sm:hidden flex gap-4">
+                <div className="flex gap-4">
                     <FilterAndSortingItem
-                        // to do - name expandableItem
+                        // todo - name expandableItem
                         label="Price"
                         isOpen={openFilter === 'Price'}
                         onClick={() => handleFilterClick('Price')}
                     >
                         <PriceFilterComponent onClickInside={(e) => e.stopPropagation()}
                                               handlePriceChanged={handlePriceChanged}
-                                              togglePriceFilter={togglePriceFilter}/>
+                                              togglePriceFilter={toggleFilter}
+                                              getPriceFrom={filterOptions.priceFrom}
+                                              getPriceTo={filterOptions.priceTo}
+                        />
                     </FilterAndSortingItem>
 
                     <FilterAndSortingItem
@@ -71,7 +99,10 @@ const FilteringComponent = ({ filterOptions, onFilterChanged }) => {
                         isOpen={openFilter === 'City'}
                         onClick={() => handleFilterClick('City')}
                     >
-                        <CityFilterComponent onClickInside={(e) => e.stopPropagation()}/>
+                        <CityFilterComponent onClickInside={(e) => e.stopPropagation()}
+                                             handleCityChanged={handleFilterMultipleOptionsChanged}
+                                             toggleCityFilter={toggleFilter}
+                                             getCityNames={filterOptions.cityName}/>
                     </FilterAndSortingItem>
 
                     <FilterAndSortingItem
@@ -92,10 +123,11 @@ const FilteringComponent = ({ filterOptions, onFilterChanged }) => {
                 </div>
             </div>
 
-            <div>
+            <div className="max-h-full">
                 <FilteringHeader
                     filterTags={filterTags}
-                    removeFilter={onFilterRemoved}
+                    removeFilterOneOption={onFilterRemovedOneOption}
+                    removeFilterMultipleOptions={onFilterRemovedMultipleOptions}
                     />
             </div>
 
