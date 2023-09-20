@@ -1,17 +1,21 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.ProductDTO;
+import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.repository.SellerRepository;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
 import jakarta.persistence.EntityManager;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class ProductController {

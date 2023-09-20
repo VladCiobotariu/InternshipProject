@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
 import ProductComponent from "./ProductComponent";
 import {getProductsApi} from "../../security/api/ProductApi";
 import SearchComponent from '../search/SearchComponent';
@@ -10,38 +10,48 @@ function ProductPageComponent() {
 
     const {categoryName} = useParams();
 
-    const [displayedProducts, setDisplayedProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalNumberProducts, setTotalNumberProducts] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [productSearchFilter, setProductSearchFilter] = useState(null);
-    const [productCategoryFilter, setProductCategoryFilter] = useState(categoryName || null);
-    const [productSort, setProductSort] = useState({criteria: '', orderSort: ''});
+    const [productSearchFilter, setProductSearchFilter] = useState(null); // todo - make it to filterOptions
+    const [productSort, setProductSort] = useState({criteria: null, orderSort: null});
+
+    const [isFilterOptionDisplayed, setIsFilterOptionDisplayed] = useState(false);
+
+    const location = useLocation()
+    const navigate = useNavigate();
+    const queryParams = new URLSearchParams(location.search)
+
 
     const [filterOptions, setFilterOptions] = useState({
-        priceFrom: null,
-        priceTo: null,
-        categoryName: [],
-        cityName: [],
+        priceFrom: queryParams.get('priceFrom') ? parseInt(queryParams.get('priceFrom')) : null,
+        priceTo: queryParams.get('priceTo') ? parseInt(queryParams.get('priceTo')) : null,
+        categoryName: queryParams.get('categoryName') ? queryParams.get('categoryName').split('|') : [],
+        cityName: queryParams.get('cityName') ? queryParams.get('cityName').split('|') : [],
+        productName: null,
     });
 
     const getProducts = (newItemsPerPage, page, sortSpecs, filterSpecs) => {
         setItemsPerPage(newItemsPerPage);
         getProductsApi(page, newItemsPerPage, sortSpecs, filterSpecs)
             .then((res) => {
-                setDisplayedProducts(res.data.data);
+                setProducts(res.data.data);
                 setTotalNumberProducts(res.data.numberOfElements);
             })
             .catch((err) => console.log(err))
     }
 
+
     useEffect(() => {
-        setProductCategoryFilter(categoryName);
         const filterSpecs = buildFilterSpecs();
         const sortSpecs = buildSortSpecs();
+        setOrRemoveQueryParameters(filterOptions);
+        navigate({ search: queryParams.toString() });
+        setIsFilterOptionDisplayed(isFilterOptionsEmpty);
         getProducts(itemsPerPage, currentPage, sortSpecs, filterSpecs);
-    }, [productSearchFilter, productCategoryFilter, currentPage, itemsPerPage, categoryName, filterOptions]);
+    }, [productSearchFilter, productSort, filterOptions, currentPage, itemsPerPage, categoryName]);
 
     const handleItemsPerPageChange = (event) => {
         const newItemsPerPage = parseInt(event.target.value);
@@ -57,10 +67,13 @@ function ProductPageComponent() {
         }
     }
 
+    const handleSortChanged = (sortFilter) => {
+        setProductSort(sortFilter);
+    }
+
     const createFilterCriteria = (criteria, operation, value) => {
         return `${criteria}[${operation}]${value}`;
     }
-
     const createSortCriteria = (criteria, orderSort) => {
         return `${criteria}-${orderSort}`;
     }
@@ -84,10 +97,11 @@ function ProductPageComponent() {
         if (productSearchFilter) {
             filterSearchSpec.push(createFilterCriteria("productName", "like", productSearchFilter));
         }
-        if (productCategoryFilter) {
-            filterSearchSpec.push(createFilterCriteria("categoryName", "eq", productCategoryFilter));
+        if (filterOptions.categoryName.length) {
+            const value = createValueForFilterCriteria(filterOptions.categoryName);
+            filterSearchSpec.push(createFilterCriteria("categoryName", "eq", value));
         }
-        if(filterOptions.cityName.length !== 0) {
+        if(filterOptions.cityName.length) {
             const value = createValueForFilterCriteria(filterOptions.cityName);
             filterSearchSpec.push(createFilterCriteria("cityName", "eq", value));
         }
@@ -108,13 +122,42 @@ function ProductPageComponent() {
         return sortSpecs;
     }
 
+    const setOrRemoveQueryParameters = (filterOptions) => {
+        queryParams.forEach((value, key) => {
+            if (!(key in filterOptions)) { //
+                queryParams.delete(key);
+            }
+        });
+
+        for (const key in filterOptions) {
+            const value = filterOptions[key];
+            if (value !== null && value !== '' && (Array.isArray(value) ? value.length > 0 : true)) {
+                if (Array.isArray(value)) {
+                    queryParams.set(key, value.join('|'));
+                } else {
+                    queryParams.set(key, value);
+                }
+            } else {
+                queryParams.delete(key);
+            }
+        }
+    };
+
     const handleOnFilterChanged = (newFilterOptions) => {
         setFilterOptions(newFilterOptions);
     }
 
+    // todo - move this in filteringComponent
+    const isFilterOptionsEmpty = Object.values(filterOptions).every((value) => {
+        if (Array.isArray(value)) {
+            return value.length === 0;
+        }
+        return value === null || value.toString() === '';
+
+    });
+
     return (
         <div>
-
             <section>
                 <div className="mx-auto mt-16 max-w-7xl px-10">
                     <header>
@@ -128,6 +171,8 @@ function ProductPageComponent() {
                             <FilteringComponent
                                 filterOptions={filterOptions}
                                 onFilterChanged={handleOnFilterChanged}
+                                onSortChanged={handleSortChanged}
+                                isFilterOptionDisplayed={isFilterOptionDisplayed}
                             />
                         </div>
                         <div>
@@ -139,8 +184,8 @@ function ProductPageComponent() {
                     {totalNumberProducts === 0 ? (<NoEntityMessageComponent
                         header="Products do not exist yet."
                         paragraph="Sorry, we could not find the products you are looking for."/>) : (
-                        <ul className="mt-4 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
-                            {displayedProducts.map((product) => (
+                        <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
+                            {products.map((product) => (
                                 <ProductComponent
                                     key={product.id}
                                     name={product.name}

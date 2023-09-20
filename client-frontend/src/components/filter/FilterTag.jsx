@@ -12,7 +12,7 @@ const FilterTag = ({filterName, value, removeFilter}) => {
     return (
         <div>
             {value ? (
-                <div className="bg-red-100 rounded-xl px-10 inline-flex">
+                <div className="bg-red-100 rounded-xl py-2 px-3 inline-flex">
                     {customLabels[filterName] || filterName}: {value}
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"

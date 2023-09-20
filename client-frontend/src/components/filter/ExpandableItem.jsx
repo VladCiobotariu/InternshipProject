@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FilterAndSortingItem = ({ label, children, isOpen, onClick}) => {
+const ExpandableItem = ({ label, children, isOpen, onClick}) => {
 
     return (
         <div className="relative">
@@ -38,4 +38,4 @@ const FilterAndSortingItem = ({ label, children, isOpen, onClick}) => {
     );
 };
 
-export default FilterAndSortingItem;
+export default ExpandableItem;

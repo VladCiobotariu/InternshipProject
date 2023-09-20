@@ -1,27 +1,23 @@
 import React, {useState} from 'react';
 
-const CityFilterComponent = ({onClickInside, toggleCityFilter, handleCityChanged, getCityNames}) => {
+const CityFilterComponent = ({onClickInside, toggleFilter, list, handleListChanged, filterName, getElementsNames}) => {
 
-    const cityList = ["Timisoara", "Cluj-Napoca", "Baia Mare", "Bucuresti", "Iasi", "Arad"];
-
-    const [checkedCities, setCheckedCities] = useState(getCityNames || []);
-
-    console.log(checkedCities)
+    const [checkedElements, setCheckedElements] = useState(getElementsNames || []);
 
     const handleCheck = (e) => {
-        const city = e.target.value;
-        let updatedList = [...checkedCities];
-        if(e.target.checked && !checkedCities.i) {
-            updatedList = [...checkedCities, city];
+        const element = e.target.value;
+        let updatedList = [...checkedElements];
+        if(e.target.checked && !checkedElements.includes(element)) {
+            updatedList = [...checkedElements, element];
         } else {
-            updatedList = updatedList.filter((item) => item !== city);
+            updatedList = updatedList.filter((item) => item !== element);
         }
-        setCheckedCities(updatedList);
+        setCheckedElements(updatedList);
     }
 
     const handleClickOnSave = () => {
-        handleCityChanged("cityName", checkedCities);
-        toggleCityFilter();
+        handleListChanged(filterName, checkedElements);
+        toggleFilter();
     }
 
     return (
@@ -30,15 +26,15 @@ const CityFilterComponent = ({onClickInside, toggleCityFilter, handleCityChanged
                 <div className="px-2 pt-2 pb-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
                     <div className="checkList">
                         <div className="list-container flex flex-col gap-2">
-                            {cityList.map((item, index) => (
+                            {list.map((item, index) => (
                                 <div key={index}>
                                     <input value={item}
                                            type="checkbox"
-                                           checked={checkedCities.includes(item)}
+                                           checked={checkedElements.includes(item)}
                                            onChange={handleCheck}/>
                                     <span className="ml-5">{item}</span>
                                 </div>
-                                ))}
+                            ))}
                         </div>
 
                     </div>

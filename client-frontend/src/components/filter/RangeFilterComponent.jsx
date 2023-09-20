@@ -1,31 +1,30 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-const PriceFilterComponent = ({onClickInside, togglePriceFilter, handlePriceChanged, getPriceFrom, getPriceTo }) => {
+const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChanged, labelFrom, labelTo, getRangeFrom, getRangeTo }) => {
 
-    // todo - name RangeFilterComponent
-    const [priceFrom, setPriceFrom] = useState(getPriceFrom || '');
-    const [priceTo, setPriceTo] = useState(getPriceTo || '');
+    const [rangeFrom, setRangeFrom] = useState(getRangeFrom || '');
+    const [rangeTo, setRangeTo] = useState(getRangeTo || '');
 
-    const onPriceFromChanged = (e) => {
-        setPriceFrom(e.target.value);
+    const onRangeFromChanged = (e) => {
+        setRangeFrom(e.target.value);
     }
 
-    const onPriceToChanged = (e) => {
-        setPriceTo(e.target.value);
+    const onRangeToChanged = (e) => {
+        setRangeTo(e.target.value);
     }
 
-    const handleSavePrices = () => {
+    const handleSaveRanges = () => {
         // todo - display error message
-        if(priceFrom && priceTo) {
-            if (parseFloat(priceFrom) <= parseFloat(priceTo)) {
-                handlePriceChanged(priceFrom, priceTo);
-                togglePriceFilter();
+        if(rangeFrom && rangeTo) {
+            if (parseFloat(rangeFrom) <= parseFloat(rangeTo)) {
+                handleRangeChanged(rangeFrom, rangeTo);
+                toggleRangeFilter();
             } else {
                 console.log("bad credentials");
             }
-        } else if(parseFloat(priceFrom) || parseFloat(priceTo)) {
-            handlePriceChanged(priceFrom, priceTo);
-            togglePriceFilter();
+        } else if(parseFloat(rangeFrom) || parseFloat(rangeTo)) {
+            handleRangeChanged(rangeFrom, rangeTo);
+            toggleRangeFilter();
         }
         else {
             console.log("bad cred");
@@ -38,33 +37,33 @@ const PriceFilterComponent = ({onClickInside, togglePriceFilter, handlePriceChan
                 <div className="px-2 py-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
                     <div className="flex justify-between items-center gap-10">
                         <div>
-                            <label htmlFor="priceFrom"
+                            <label htmlFor={labelFrom}
                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Price From
+                                {labelFrom}
                             </label>
-                            <input type="text" id="priceFrom"
+                            <input type="text" id={labelFrom}
                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="from.."
-                                   value={priceFrom}
-                                   onChange={onPriceFromChanged}
+                                   value={rangeFrom}
+                                   onChange={onRangeFromChanged}
                             />
                         </div>
                         <div>
-                            <label htmlFor="priceTo"
+                            <label htmlFor={labelTo}
                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                                Price To
+                                {labelTo}
                             </label>
-                            <input type="text" id="priceTo"
+                            <input type="text" id={labelTo}
                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="to.."
-                                   value={priceTo}
-                                   onChange={onPriceToChanged}
+                                   value={rangeTo}
+                                   onChange={onRangeToChanged}
                             />
                         </div>
                     </div>
                     <button type="button"
                             className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-                            onClick={handleSavePrices}>
+                            onClick={handleSaveRanges}>
                         Save
                     </button>
                 </div>
@@ -73,4 +72,4 @@ const PriceFilterComponent = ({onClickInside, togglePriceFilter, handlePriceChan
     );
 };
 
-export default PriceFilterComponent;
+export default RangeFilterComponent;
