@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import ExpandableItem from './ExpandableItem';
 import SortFilterComponent from './SortFilterComponent';
-import FilteringHeader from "./FilteringHeader";
+import FilterTagContainer from "./FilterTagContainer";
 import Tag from './Tag';
 import RangeFilterComponent from "./RangeFilterComponent";
 import {getLocationsApi} from "../../security/api/LocationApi";
@@ -9,8 +9,9 @@ import MultipleChoicesFilterComponent from "./MultipleChoicesFilterComponent";
 import {getAllCategoryNames} from "../../security/api/CategoryApi";
 import useBreakpoint from "../../hooks/useBreakpoint";
 import FilteringSmallWindowSize from "./FilteringSmallWindowSize";
+import SearchComponent from "../search/SearchComponent";
 
-const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFilterOptionDisplayed}) => {
+const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged }) => {
 
     const [openFilter, setOpenFilter] = useState(null);
     const [filterTags, setFilterTags] = useState([]);
@@ -54,7 +55,8 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
 
     useEffect(() => {
         const newFilterTags = Object.keys(filterOptions)
-            .filter(key => !!filterOptions[key]) // get only not null elements
+            .filter(key => !!filterOptions[key])
+            .filter(key => key !== "productName")
             .map(key => {
                 return new Tag(key, filterOptions[key], "ONE_VALUE");
             });
@@ -66,7 +68,7 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
     const onFilterRemovedOneOption = (filterNameToRemove) => {
         const updatedFilterOptions = {...filterOptions};
         delete updatedFilterOptions[filterNameToRemove];
-        onFilterChanged(updatedFilterOptions, filterNameToRemove);
+        onFilterChanged(updatedFilterOptions);
     }
 
     // for category, city
@@ -76,9 +78,20 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
             updatedFilterOptions[filterNameToRemove] = updatedFilterOptions[filterNameToRemove].filter(
                 (value) => value !== valueToRemove
             );
-            onFilterChanged(updatedFilterOptions, filterNameToRemove);
+            onFilterChanged(updatedFilterOptions);
         }
     };
+
+    const removeAllTags = () => {
+        const newFilterOptions = {
+            priceFrom: null,
+            priceTo: null,
+            categoryName: [],
+            cityName: [],
+            productName: null,
+        };
+        onFilterChanged(newFilterOptions);
+    }
 
     // price
     const handlePriceChanged = (priceFrom, priceTo) => {
@@ -86,7 +99,7 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
         onFilterChanged(newFilterOptions);
     }
 
-    // sort
+    // productName
     const handleFilterChanged = (filterName, filterValue) => {
         const newFilterOptions = {...filterOptions, [filterName]: filterValue};
         onFilterChanged(newFilterOptions);
@@ -100,6 +113,18 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
         onFilterChanged(newFilterOptions);
     };
 
+    /**  false if displayed, true if not*/
+    const isFilterOptionsEmpty = Object.keys(filterOptions).every((key) => {
+        const value = filterOptions[key];
+        if(key==="productName" && value) {
+            return true;
+        }
+        if (Array.isArray(value)) {
+            return value.length === 0;
+        }
+        return value === null || value.toString() === '' || key === 'filterName';
+    });
+
 
     return (
         <div>
@@ -108,68 +133,78 @@ const FilteringComponent = ({filterOptions, onFilterChanged, onSortChanged, isFi
                     <FilteringSmallWindowSize/>
                 </div>
             ) : (
-                <div className="flex items-center ">
-                    <div className="flex gap-4 ">
-                        <ExpandableItem
-                            label="Price"
-                            isOpen={openFilter === 'Price'}
-                            onClick={() => handleFilterClick('Price')}
-                        >
-                            <RangeFilterComponent onClickInside={(e) => e.stopPropagation()}
-                                                  toggleRangeFilter={toggleFilter}
-                                                  handleRangeChanged={handlePriceChanged}
-                                                  labelFrom="Price From"
-                                                  labelTo="Price To"
-                                                  getRangeFrom={filterOptions.priceFrom}
-                                                  getRangeTo={filterOptions.priceTo}/>
-                        </ExpandableItem>
+                <div className="">
+                    <div className="flex justify-between ">
+                        <div className="inline-flex  gap-4">
+                            <ExpandableItem
+                                label="Price"
+                                isOpen={openFilter === 'Price'}
+                                onClick={() => handleFilterClick('Price')}
+                            >
+                                <RangeFilterComponent onClickInside={(e) => e.stopPropagation()}
+                                                      toggleRangeFilter={toggleFilter}
+                                                      handleRangeChanged={handlePriceChanged}
+                                                      labelFrom="Price From"
+                                                      labelTo="Price To"
+                                                      getRangeFrom={filterOptions.priceFrom}
+                                                      getRangeTo={filterOptions.priceTo}/>
+                            </ExpandableItem>
 
-                        <ExpandableItem
-                            label="City"
-                            isOpen={openFilter === 'City'}
-                            onClick={() => handleFilterClick('City')}
-                        >
-                            <MultipleChoicesFilterComponent
-                                onClickInside={(e) => e.stopPropagation()}
-                                toggleFilter={toggleFilter}
-                                handleListChanged={handleFilterMultipleOptionsChanged}
-                                list={cityOptions}
-                                filterName="cityName"
-                                getElementsNames={filterOptions.cityName}/>
-                        </ExpandableItem>
+                            <ExpandableItem
+                                label="City"
+                                isOpen={openFilter === 'City'}
+                                onClick={() => handleFilterClick('City')}
+                            >
+                                <MultipleChoicesFilterComponent
+                                    onClickInside={(e) => e.stopPropagation()}
+                                    toggleFilter={toggleFilter}
+                                    handleListChanged={handleFilterMultipleOptionsChanged}
+                                    list={cityOptions}
+                                    filterName="cityName"
+                                    getElementsNames={filterOptions.cityName}/>
+                            </ExpandableItem>
 
-                        <ExpandableItem
-                            label="Category"
-                            isOpen={openFilter === 'Category'}
-                            onClick={() => handleFilterClick('Category')}
-                        >
-                            <MultipleChoicesFilterComponent
-                                onClickInside={(e) => e.stopPropagation()}
-                                toggleFilter={toggleFilter}
-                                handleListChanged={handleFilterMultipleOptionsChanged}
-                                list={categoryOptions}
-                                filterName="categoryName"
-                                getElementsNames={filterOptions.categoryName}/>
-                        </ExpandableItem>
+                            <ExpandableItem
+                                label="Category"
+                                isOpen={openFilter === 'Category'}
+                                onClick={() => handleFilterClick('Category')}
+                            >
+                                <MultipleChoicesFilterComponent
+                                    onClickInside={(e) => e.stopPropagation()}
+                                    toggleFilter={toggleFilter}
+                                    handleListChanged={handleFilterMultipleOptionsChanged}
+                                    list={categoryOptions}
+                                    filterName="categoryName"
+                                    getElementsNames={filterOptions.categoryName}/>
+                            </ExpandableItem>
 
-                        <ExpandableItem
-                            label="Sort By"
-                            isOpen={openFilter === 'Sort'}
-                            onClick={() => handleFilterClick('Sort')}
-                        >
-                            <SortFilterComponent onClickInside={(e) => e.stopPropagation()}
-                                                 onSortChanged={onSortChanged}/>
-                        </ExpandableItem>
+                            <ExpandableItem
+                                label="Sort By"
+                                isOpen={openFilter === 'Sort'}
+                                onClick={() => handleFilterClick('Sort')}
+                            >
+                                <SortFilterComponent onClickInside={(e) => e.stopPropagation()}
+                                                     onSortChanged={onSortChanged}/>
+                            </ExpandableItem>
+                        </div>
+
+                        <div>
+                            <SearchComponent
+                                handleSearchChanged={handleFilterChanged}
+                                filterName="productName"/>
+                        </div>
                     </div>
+
                 </div>
             )}
 
-            {!isFilterOptionDisplayed &&
+            {!isFilterOptionsEmpty &&
                 <div className="">
-                    <FilteringHeader
+                    <FilterTagContainer
                         filterTags={filterTags}
                         removeFilterOneOption={onFilterRemovedOneOption}
                         removeFilterMultipleOptions={onFilterRemovedMultipleOptions}
+                        removeAllTags={removeAllTags}
                     />
                 </div>
             }

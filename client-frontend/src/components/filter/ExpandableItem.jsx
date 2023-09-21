@@ -7,7 +7,7 @@ const ExpandableItem = ({ label, children, isOpen, onClick}) => {
 
             <div className="group" onClick={onClick}>
                 <div
-                    className="flex cursor-pointer items-center gap-2 border-b border-zinc-300 pb-1 text-zinc-800 transition hover:border-zinc-600 dark:text-white"
+                    className="flex cursor-pointer items-center gap-2 border-b border-zinc-400 rounded-md  pb-1 text-zinc-800 transition hover:border-zinc-600 dark:text-white"
                 >
                     <span className="text-xl font-medium">
                         {label}

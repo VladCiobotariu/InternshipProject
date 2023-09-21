@@ -104,6 +104,14 @@ export default function Header() {
             )
     }
 
+    const createQueryParam = (categoryName) => {
+        const queryParams = new URLSearchParams()
+        queryParams.set("categoryName", categoryName);
+        const newSearch = queryParams.toString();
+        navigate(`/products?${newSearch}`);
+    }
+
+
     return (
         <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 md:px-8 lg:px-8 xl:px-8 2xl:px-8" aria-label="Global">
@@ -169,16 +177,16 @@ export default function Header() {
                                                 />
                                             </div>
                                             <div className="flex-auto">
-                                                <Link
+                                                <div
                                                     onClick={() => {
                                                         buttonRef.current?.click();
+                                                        createQueryParam(item.name);
                                                     }}
-                                                    to={`/products/categories/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                                                     className="block font-semibold text-inherit dark:text-inherit"
                                                 >
                                                     {item.name}
                                                     <span className="absolute inset-0" />
-                                                </Link>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -430,14 +438,16 @@ export default function Header() {
                                                 </Disclosure.Button>
                                                 <Disclosure.Panel className="mt-2 space-y-2 text-inherit dark:text-inherit">
                                                     {[...categories].map((item) => (
-                                                        <Link
-                                                            onClick={()=>setMobileMenuOpen(false)}
+                                                        <div
+                                                            onClick={() => {
+                                                                setMobileMenuOpen(false);
+                                                                createQueryParam(item.name);
+                                                            }}
                                                             key={item.name}
-                                                            to={`/products/categories/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
                                                             className="block rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
                                                         >
                                                             {item.name}
-                                                        </Link>
+                                                        </div>
                                                     ))}
                                                     {[...callsToAction].map((item) => (
                                                         <Link

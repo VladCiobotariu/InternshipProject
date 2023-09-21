@@ -32,7 +32,7 @@ const ProductComponent = ({name, imageName, price, categoryName, sellerAlias}) =
                             {name}
                         </h3>
 
-                        <p className="mt-1 text-lg  text-zinc-600">${price}</p>
+                        <p className="mt-1 text-lg  text-zinc-600">{price} RON</p>
                     </div>
                     <div>
                         <button type="button"

@@ -5,6 +5,8 @@ const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChan
     const [rangeFrom, setRangeFrom] = useState(getRangeFrom || '');
     const [rangeTo, setRangeTo] = useState(getRangeTo || '');
 
+    const [displayErrorMessage, setDisplayErrorMessage] = useState(false);
+
     const onRangeFromChanged = (e) => {
         setRangeFrom(e.target.value);
     }
@@ -14,35 +16,39 @@ const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChan
     }
 
     const handleSaveRanges = () => {
-        // todo - display error message
         if(rangeFrom && rangeTo) {
             if (parseFloat(rangeFrom) <= parseFloat(rangeTo)) {
                 handleRangeChanged(rangeFrom, rangeTo);
                 toggleRangeFilter();
+                setDisplayErrorMessage(false);
             } else {
-                console.log("bad credentials");
+                setDisplayErrorMessage(true);
             }
         } else if(parseFloat(rangeFrom) || parseFloat(rangeTo)) {
             handleRangeChanged(rangeFrom, rangeTo);
             toggleRangeFilter();
+            setDisplayErrorMessage(false);
         }
         else {
-            console.log("bad cred");
+            setDisplayErrorMessage(true);
         }
     }
 
+    // todo - add borders to buttons
+
     return (
         <div onClick={onClickInside}>
-            <div className="w-80 rounded border border-zinc-300 bg-white">
-                <div className="px-2 py-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
+            <div className="w-80 bg-white">
+                <div className="px-10 py-4 bg-white rounded-2xl border border-zinc-300 shadow-lg dark-mode:bg-zinc-700 flex-col">
+
                     <div className="flex justify-between items-center gap-10">
                         <div>
                             <label htmlFor={labelFrom}
-                                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                   className="block mb-2 text-sm font-md text-zinc-900">
                                 {labelFrom}
                             </label>
                             <input type="text" id={labelFrom}
-                                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full dark:bg-zinc-200 dark:border-zinc-300 dark:placeholder-zinc-400 dark:focus:ring-indigo-600 dark:focus:border-indigo-600"
                                    placeholder="from.."
                                    value={rangeFrom}
                                    onChange={onRangeFromChanged}
@@ -50,22 +56,31 @@ const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChan
                         </div>
                         <div>
                             <label htmlFor={labelTo}
-                                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                   className="block mb-2 text-sm font-md text-zinc-900">
                                 {labelTo}
                             </label>
                             <input type="text" id={labelTo}
-                                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                   className="bg-zinc-50 border border-zinc-300 text-zinc-900 text-sm rounded-lg focus:ring-indigo-600 focus:border-indigo-600 block w-full dark:bg-zinc-200 dark:border-zinc-300 dark:placeholder-zinc-400 dark:focus:ring-indigo-600 dark:focus:border-indigo-600"
                                    placeholder="to.."
                                    value={rangeTo}
                                    onChange={onRangeToChanged}
                             />
                         </div>
                     </div>
-                    <button type="button"
-                            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-                            onClick={handleSaveRanges}>
-                        Save
-                    </button>
+                    {displayErrorMessage &&
+                        <div
+                            className="p-1 mt-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                            role="alert">
+                            <span className="text-xs">Please enter the correct prices!</span>
+                        </div>
+                    }
+                    <div className="flex justify-start">
+                        <button type="button"
+                                className="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg  px-3 py-1.5 mt-2"
+                                onClick={handleSaveRanges}>
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,27 +22,30 @@ const CityFilterComponent = ({onClickInside, toggleFilter, list, handleListChang
 
     return (
         <div onClick={onClickInside}>
-            <div className="w-56 rounded border border-zinc-300 bg-white">
-                <div className="px-2 pt-2 pb-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
+            <div className="w-56 bg-white">
+                <div className="px-10 py-4 bg-white rounded-2xl border border-zinc-300 shadow-lg">
                     <div className="checkList">
                         <div className="list-container flex flex-col gap-2">
                             {list.map((item, index) => (
                                 <div key={index}>
                                     <input value={item}
+                                           className="rounded-2xl text-indigo-700 focus:ring-indigo-500 dark:focus:ring-indigo-600 focus:ring-2"
                                            type="checkbox"
                                            checked={checkedElements.includes(item)}
                                            onChange={handleCheck}/>
-                                    <span className="ml-5">{item}</span>
+                                    <span className="ml-5 text-zinc-800">{item}</span>
                                 </div>
                             ))}
                         </div>
 
                     </div>
-                    <button type="button"
-                            className="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
-                            onClick={handleClickOnSave}>
-                        Save
-                    </button>
+                    <div className="flex justify-start">
+                        <button type="button"
+                                className="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg  px-3 py-1 mt-3"
+                                onClick={handleClickOnSave}>
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

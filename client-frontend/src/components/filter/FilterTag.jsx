@@ -6,13 +6,14 @@ const FilterTag = ({filterName, value, removeFilter}) => {
         priceTo: "Price To",
         priceFrom: "Price From",
         cityName: "City",
-        categoryName: "Category"
+        categoryName: "Category",
+        productName: "Product"
     };
 
     return (
         <div>
             {value ? (
-                <div className="bg-red-100 rounded-xl py-2 px-3 inline-flex">
+                <div className="bg-zinc-100 border border-zinc-300 rounded-xl py-2 px-3 inline-flex text-zinc-800 hover:bg-zinc-200 hover:border-zinc-400">
                     {customLabels[filterName] || filterName}: {value}
 
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5"

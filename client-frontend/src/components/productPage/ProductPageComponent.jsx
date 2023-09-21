@@ -1,37 +1,35 @@
 import React, {useEffect, useState} from 'react';
-import {useLocation, useNavigate, useParams, useSearchParams} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import ProductComponent from "./ProductComponent";
 import {getProductsApi} from "../../security/api/ProductApi";
-import SearchComponent from '../search/SearchComponent';
 import FilteringComponent from "../filter/FilteringComponent";
 import NoEntityMessageComponent from "../nonExistingEntities/NoEntityMessageComponent";
 
-function ProductPageComponent() {
 
-    const {categoryName} = useParams();
+const buildFilterOptionsFromQueryParams = (queryParams) => {
+    return {
+        priceFrom: queryParams.get('priceFrom') ? parseInt(queryParams.get('priceFrom')) : null,
+        priceTo: queryParams.get('priceTo') ? parseInt(queryParams.get('priceTo')) : null,
+        categoryName: queryParams.get('categoryName') ? queryParams.getAll('categoryName') : [],
+        cityName: queryParams.get('cityName') ? queryParams.getAll('cityName') : [],
+        productName: queryParams.get('productName') ? queryParams.get('productName') : null
+    };
+}
+
+function ProductPageComponent() {
 
     const [products, setProducts] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [totalNumberProducts, setTotalNumberProducts] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [productSearchFilter, setProductSearchFilter] = useState(null); // todo - make it to filterOptions
     const [productSort, setProductSort] = useState({criteria: null, orderSort: null});
-
-    const [isFilterOptionDisplayed, setIsFilterOptionDisplayed] = useState(false);
 
     const location = useLocation()
     const navigate = useNavigate();
-    const queryParams = new URLSearchParams(location.search)
+    const [queryParams, setQueryParams] = useState(new URLSearchParams(location.search));
 
-
-    const [filterOptions, setFilterOptions] = useState({
-        priceFrom: queryParams.get('priceFrom') ? parseInt(queryParams.get('priceFrom')) : null,
-        priceTo: queryParams.get('priceTo') ? parseInt(queryParams.get('priceTo')) : null,
-        categoryName: queryParams.get('categoryName') ? queryParams.get('categoryName').split('|') : [],
-        cityName: queryParams.get('cityName') ? queryParams.get('cityName').split('|') : [],
-        productName: null,
-    });
+    const [filterOptions, setFilterOptions] = useState(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
 
     const getProducts = (newItemsPerPage, page, sortSpecs, filterSpecs) => {
         setItemsPerPage(newItemsPerPage);
@@ -48,10 +46,17 @@ function ProductPageComponent() {
         const filterSpecs = buildFilterSpecs();
         const sortSpecs = buildSortSpecs();
         setOrRemoveQueryParameters(filterOptions);
-        navigate({ search: queryParams.toString() });
-        setIsFilterOptionDisplayed(isFilterOptionsEmpty);
         getProducts(itemsPerPage, currentPage, sortSpecs, filterSpecs);
-    }, [productSearchFilter, productSort, filterOptions, currentPage, itemsPerPage, categoryName]);
+    }, [filterOptions, productSort, currentPage, itemsPerPage]);
+
+    useEffect(() => {
+        navigate({ search: queryParams.toString() });
+    }, [queryParams]);
+
+    useEffect(() => {
+        setFilterOptions(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
+    }, [location.search]);
+
 
     const handleItemsPerPageChange = (event) => {
         const newItemsPerPage = parseInt(event.target.value);
@@ -59,16 +64,11 @@ function ProductPageComponent() {
         getProducts(newItemsPerPage, 1);
     }
 
-    const handleOnProductSearchChanged = (searchText) => {
-        if (searchText.length > 1) {
-            setProductSearchFilter(searchText); // ban
-        } else {
-            setProductSearchFilter(null);
-        }
-    }
-
     const handleSortChanged = (sortFilter) => {
         setProductSort(sortFilter);
+    }
+    const handleOnFilterChanged = (newFilterOptions) => {
+        setFilterOptions(newFilterOptions);
     }
 
     const createFilterCriteria = (criteria, operation, value) => {
@@ -94,9 +94,6 @@ function ProductPageComponent() {
 
     const buildFilterSpecs = () => {
         const filterSearchSpec = [];
-        if (productSearchFilter) {
-            filterSearchSpec.push(createFilterCriteria("productName", "like", productSearchFilter));
-        }
         if (filterOptions.categoryName.length) {
             const value = createValueForFilterCriteria(filterOptions.categoryName);
             filterSearchSpec.push(createFilterCriteria("categoryName", "eq", value));
@@ -111,6 +108,9 @@ function ProductPageComponent() {
         if (filterOptions.priceTo) {
             filterSearchSpec.push(createFilterCriteria("priceTo", "lte", filterOptions.priceTo));
         }
+        if(filterOptions.productName) {
+            filterSearchSpec.push(createFilterCriteria("productName", "like", filterOptions.productName));
+        }
         return filterSearchSpec;
     }
 
@@ -123,38 +123,30 @@ function ProductPageComponent() {
     }
 
     const setOrRemoveQueryParameters = (filterOptions) => {
-        queryParams.forEach((value, key) => {
-            if (!(key in filterOptions)) { //
-                queryParams.delete(key);
-            }
-        });
+        const newQueryParams = new URLSearchParams();
 
-        for (const key in filterOptions) {
+        for (let key in filterOptions) {
             const value = filterOptions[key];
             if (value !== null && value !== '' && (Array.isArray(value) ? value.length > 0 : true)) {
-                if (Array.isArray(value)) {
-                    queryParams.set(key, value.join('|'));
-                } else {
-                    queryParams.set(key, value);
-                }
+                setSearchQueryParameters(key, value, newQueryParams);
             } else {
-                queryParams.delete(key);
+                newQueryParams.delete(key);
             }
         }
-    };
-
-    const handleOnFilterChanged = (newFilterOptions) => {
-        setFilterOptions(newFilterOptions);
+        setQueryParams(newQueryParams);
     }
 
-    // todo - move this in filteringComponent
-    const isFilterOptionsEmpty = Object.values(filterOptions).every((value) => {
-        if (Array.isArray(value)) {
-            return value.length === 0;
-        }
-        return value === null || value.toString() === '';
 
-    });
+    const setSearchQueryParameters = (key, value, newQueryParams) => {
+        if (Array.isArray(value)) {
+            for(let val in value) {
+                newQueryParams.append(key, value[val]);
+            }
+        } else {
+            newQueryParams.set(key, value);
+        }
+    }
+
 
     return (
         <div>
@@ -162,23 +154,19 @@ function ProductPageComponent() {
                 <div className="mx-auto mt-16 max-w-7xl px-10">
                     <header>
                         <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
-                            {categoryName ? `Check the ${categoryName}!` : 'All Products'}
+                            Check the products
                         </h2>
                     </header>
 
-                    <div className="flex justify-between mb-8">
+                    <div className="mb-8">
                         <div>
                             <FilteringComponent
                                 filterOptions={filterOptions}
                                 onFilterChanged={handleOnFilterChanged}
                                 onSortChanged={handleSortChanged}
-                                isFilterOptionDisplayed={isFilterOptionDisplayed}
                             />
                         </div>
-                        <div>
-                            <SearchComponent
-                                onSearchText={handleOnProductSearchChanged}/>
-                        </div>
+
                     </div>
 
                     {totalNumberProducts === 0 ? (<NoEntityMessageComponent
