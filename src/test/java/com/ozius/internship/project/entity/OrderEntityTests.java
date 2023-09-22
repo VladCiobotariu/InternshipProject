@@ -8,6 +8,8 @@ import com.ozius.internship.project.entity.exception.IllegalOrderState;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.order.OrderItem;
 import com.ozius.internship.project.entity.order.OrderStatus;
+import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -53,13 +55,13 @@ public class OrderEntityTests extends JpaBaseEntity {
             Seller sellerMerged = em.merge(seller1);
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
-            Order order = new Order(address, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             em.persist(order);
 
             return order;
         });
-        Address addedAddress = addedOrder.getAddress();
+        Address addedAddress = addedOrder.getShippingAddress();
 
         //----Assert
         Order persistedOrder = entityFinder.getTheOne(Order.class);
@@ -75,11 +77,13 @@ public class OrderEntityTests extends JpaBaseEntity {
         assertThat(persistedOrder.getBuyerEmail()).isEqualTo(addedBuyer.getAccount().getEmail());
         assertThat(persistedOrder.getSeller()).isEqualTo(addedSeller);
         assertThat(persistedOrder.getTelephone()).isEqualTo(addedBuyer.getAccount().getTelephone());
-        assertThat(persistedOrder.getAddress()).isEqualTo(addedAddress);
+        assertThat(persistedOrder.getShippingAddress()).isEqualTo(addedAddress);
         assertThat(persistedOrder.getSellerEmail()).isEqualTo(addedSeller.getAccount().getEmail());
         assertThat(persistedOrder.getSellerAlias()).isEqualTo(addedSeller.getAlias());
         assertThat(persistedOrder.getLegalDetails()).isEqualTo(addedSeller.getLegalDetails());
         assertThat(persistedOrder.getSellerType()).isEqualTo(addedSeller.getSellerType());
+        assertThat(persistedOrder.getBuyerFirstName()).isEqualTo(addedBuyer.getAccount().getFirstName());
+        assertThat(persistedOrder.getBuyerLastName()).isEqualTo(addedBuyer.getAccount().getLastName());
     }
 
     @Test
@@ -90,13 +94,13 @@ public class OrderEntityTests extends JpaBaseEntity {
 
             TestDataCreator.createAddresses();
 
-            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
-            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
+            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
+            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             order.addProduct(product1, 1f);
             order.addProduct(product2, 2f);
@@ -117,7 +121,7 @@ public class OrderEntityTests extends JpaBaseEntity {
         //----Arrange
         Product product = doTransaction(em -> {
             TestDataCreator.createAddresses();
-            return TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            return TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
         });
 
         //----Act
@@ -126,7 +130,7 @@ public class OrderEntityTests extends JpaBaseEntity {
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             OrderItem addedItem = order.addProduct(product, 2f);
 
@@ -152,12 +156,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Product productToUpdate = doTransaction(em -> {
             TestDataCreator.createAddresses();
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             order.addProduct(product, 2f);
 
@@ -169,7 +173,7 @@ public class OrderEntityTests extends JpaBaseEntity {
         //----Act
         doTransaction(em -> {
             Product productMerged = em.merge(productToUpdate);
-            productMerged.setPrice(50f);
+            productMerged.updateProduct(productMerged.getName(), productMerged.getDescription(), productMerged.getImageName(), 50f, productMerged.getCategory(), productMerged.getSeller(), productMerged.getUnitOfMeasure());
         });
 
         //----Assert
@@ -188,12 +192,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
             TestDataCreator.createAddresses();
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             order.addProduct(product, 2f);
 
@@ -219,12 +223,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -257,7 +261,7 @@ public class OrderEntityTests extends JpaBaseEntity {
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
 
             em.persist(order);
 
@@ -283,12 +287,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -314,12 +318,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -345,12 +349,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -377,12 +381,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -408,12 +412,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -440,12 +444,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         Order addedOrder = doTransaction(em -> {
 
             TestDataCreator.createAddresses();
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -478,9 +482,9 @@ public class OrderEntityTests extends JpaBaseEntity {
             Category categoryMerged = em.merge(category1);
 
             Product product = TestDataCreator.createProduct(em, "orez",
-                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged);
+                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged, UnitOfMeasure.KILOGRAM);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -497,7 +501,7 @@ public class OrderEntityTests extends JpaBaseEntity {
             Category categoryMerged = em.merge(category1);
 
             Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
-                    "src/image20", 8f, categoryMerged, sellerMerged);
+                    "src/image20", 8f, categoryMerged, sellerMerged, UnitOfMeasure.KILOGRAM);
 
             return assertThrows(IllegalOrderState.class, () -> orderMerged.addProduct(product, 2f));
         });
@@ -518,9 +522,9 @@ public class OrderEntityTests extends JpaBaseEntity {
             Category categoryMerged = em.merge(category1);
 
             Product product = TestDataCreator.createProduct(em, "orez",
-                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged);
+                    "pentru fiert", "src/image4", 12f, categoryMerged, sellerMerged, UnitOfMeasure.KILOGRAM);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -537,7 +541,7 @@ public class OrderEntityTests extends JpaBaseEntity {
             Category categoryMerged = em.merge(category1);
 
             Product product = TestDataCreator.createProduct(em, "grau", "pentru paine",
-                    "src/image20", 8f, categoryMerged, sellerMerged);
+                    "src/image20", 8f, categoryMerged, sellerMerged, UnitOfMeasure.KILOGRAM);
 
             return assertThrows(IllegalItemException.class, () -> orderMerged.addProduct(product, 2f));
         });
@@ -556,9 +560,9 @@ public class OrderEntityTests extends JpaBaseEntity {
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged, UnitOfMeasure.KILOGRAM);
 
-            Order order = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order.addProduct(product, 2f);
             em.persist(order);
 
@@ -591,10 +595,10 @@ public class OrderEntityTests extends JpaBaseEntity {
             Buyer buyerMerged = em.merge(buyer1);
             Seller sellerMerged = em.merge(seller1);
 
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, sellerMerged, UnitOfMeasure.KILOGRAM);
 
-            Order order1 = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
-            Order order2 = new Order(address1, buyerMerged, sellerMerged, buyer1.getAccount().getTelephone());
+            Order order1 = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
+            Order order2 = new Order(address1, buyerMerged, sellerMerged, buyerMerged.getAccount().getEmail(), buyerMerged.getAccount().getFirstName(), buyerMerged.getAccount().getLastName(), buyer1.getAccount().getTelephone());
             order1.addProduct(product, 2f);
             order2.addProduct(product, 2f);
             em.persist(order1);
@@ -606,5 +610,12 @@ public class OrderEntityTests extends JpaBaseEntity {
         List<Order> orders = entityFinder.findAll(Order.class);
 
         assertThat(orders.size()).isEqualTo(2);
+    }
+
+    @Test
+    void search_by_status(){
+        emb.createQuery("select o from Order o where o.orderStatus = :orderStatus", Order.class)
+                .setParameter("orderStatus", OrderStatus.SUBMITTED)
+                .getResultList();
     }
 }

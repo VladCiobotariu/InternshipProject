@@ -8,7 +8,7 @@ function QuantityInput({quantity, functionToBeCalled}){
                 <button
                     onClick={()=>functionToBeCalled(-1)}
                     type="button"
-                    className="dark:text-white dark:hover:text-black hover:text-white w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
+                    className="dark:text-white sm:bg-blue-500 dark:hover:text-black hover:text-white w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
                 >
                     -
                 </button>
@@ -22,7 +22,7 @@ function QuantityInput({quantity, functionToBeCalled}){
                 <button
                     onClick={()=>functionToBeCalled(1)}
                     type="button"
-                    className="dark:text-white dark:hover:text-black hover:text-white
+                    className="dark:text-white sm:bg-blue-500 dark:hover:text-black hover:text-white
                      w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
                 >
                     +

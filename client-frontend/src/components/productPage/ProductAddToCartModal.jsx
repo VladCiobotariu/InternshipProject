@@ -2,9 +2,9 @@ import React, {Fragment, useState, useRef, useEffect} from 'react'
 import {Dialog, Transition} from "@headlessui/react";
 import {getProductByNameApi} from "../../security/api/ProductApi";
 import {baseURL} from "../../security/ApiClient";
-import QuantityInput from "../cart/QuantityInput";
 import {useAuth} from "../../security/AuthContext";
 import {useNavigate} from "react-router-dom";
+import QuantityInput from "../input/QuantityInput";
 
 // product are - id, description, imageName, name, price, category.name, seller.alias
 const ProductAddToCartModal = ({toggleModal, isModalOpen, setIsModalOpen, productName}) => {

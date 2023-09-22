@@ -3,9 +3,9 @@ package com.ozius.internship.project.service.converters;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
-import com.ozius.internship.project.service.queries.filter.FilterCriteria;
-import com.ozius.internship.project.service.queries.filter.FilterSpecs;
-import com.ozius.internship.project.service.queries.filter.Operation;
+import com.ozius.internship.project.service.queries.filter.*;
+import com.ozius.internship.project.service.queries.filter.converter.FilterConfiguration;
+import com.ozius.internship.project.service.queries.filter.converter.FilterValueConverter;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -19,11 +19,12 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
     private final ObjectMapper objectMapper;
+    private final FilterConfigurationProvider filterConfigurationProvider;
 
-    public FilterSpecsConverter(ObjectMapper objectMapper) {
+    public FilterSpecsConverter(ObjectMapper objectMapper, FilterConfigurationProvider filterConfigurationProvider) {
         this.objectMapper = objectMapper;
+        this.filterConfigurationProvider = filterConfigurationProvider;
     }
-
 
     @Override
     public FilterSpecs convert(String source) {
@@ -38,7 +39,7 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
         }
     }
 
-    public FilterSpecs buildFilterSpec (List<String> filterValues) {
+    public FilterSpecs buildFilterSpec(List<String> filterValues) {
         FilterSpecs filterSpecs = new FilterSpecs();
 
         filterValues.stream()
@@ -51,9 +52,9 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
 
     public List<FilterCriteria> parseFilterCriteria(String filterValue) {
         List<FilterCriteria> listFilterCriteria = new ArrayList<>();
+        List<String> parts = List.of(filterValue.split(Pattern.quote("[") + "|" + Pattern.quote("]")));
 
-        List<String> parts = new ArrayList<>(List.of(filterValue.split(Pattern.quote("[") + "|" + Pattern.quote("]"))));
-        if(parts.size() != 3) {
+        if (parts.size() != 3) {
             throw new IllegalArgumentException("Invalid format of filter value " + filterValue);
         }
 
@@ -61,47 +62,25 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
         String operationString = parts.get(1);
         String valueString = parts.get(2);
 
-        Operation operation = Operation.valueOf(operationString.toUpperCase());
+        Operation operation;
 
-        if (isEmpty(operation)) {
-            throw new IllegalArgumentException("This operation does not exist: " + operationString);
+        if (isEmpty(operationString)) {
+            FilterConfiguration<?> configurationForFilter = filterConfigurationProvider.getConfigurationForFilter(criteria);
+            operation = configurationForFilter.getDefaultOperation();
+        } else {
+            operation = Operation.valueOf(operationString.toUpperCase());
         }
 
-        try {
-            Object value;
-            if (valueString.contains(".")) {
-                value = Double.parseDouble(valueString);
-            } else {
-                value = Integer.parseInt(valueString);
-            }
-            listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
+        List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
+        FilterValueConverter<?> converter = filterConfigurationProvider.getConfigurationForFilter(criteria).getFilterValueConverter();
 
-        } catch (NumberFormatException e) {
-            if(valueString.contains("|")) {
-                List<String> valueParts = new ArrayList<>(List.of(valueString.split("\\|")));
-                for (String valuePart : valueParts) {
-                    String valueCapitalized = capitalizeFirstLetter(valuePart);
-                    String valueHandleLikeCondition = changeValueIfConditionContainsLike(valueCapitalized, operationString);
-                    listFilterCriteria.add(new FilterCriteria(criteria, operation, valueHandleLikeCondition));
-                }
-            }
-            else {
-                String valueCapitalized = capitalizeFirstLetter(valueString);
-                String valueHandleLikeCondition = changeValueIfConditionContainsLike(valueCapitalized, operationString);
-                listFilterCriteria.add(new FilterCriteria(criteria, operation, valueHandleLikeCondition));
-            }
-        }
+        valueParts
+                .forEach(item -> {
+                    Object value;
+                    value = converter.convert(item);
+                    listFilterCriteria.add(new FilterCriteria(criteria, operation, value));
+                });
+
         return listFilterCriteria;
-    }
-
-    private String capitalizeFirstLetter(String value) {
-        return value.substring(0, 1).toUpperCase() + value.substring(1);
-    }
-
-    private String changeValueIfConditionContainsLike(String value, String operationString) {
-        if(operationString.equals("like")) {
-            return String.format("%s%%", value);
-        }
-        return value;
     }
 }

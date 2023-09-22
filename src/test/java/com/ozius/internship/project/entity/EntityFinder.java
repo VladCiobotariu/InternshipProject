@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;

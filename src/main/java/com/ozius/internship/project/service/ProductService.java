@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.repository.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,6 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.entity.Product;
-import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.service.ProductService;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;

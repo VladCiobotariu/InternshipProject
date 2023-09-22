@@ -3,6 +3,8 @@ import React from "react";
 
 export default function WelcomeComponent() {
 
+
+
     return (
         <div className="bg-transparent dark:bg-transparent">
 

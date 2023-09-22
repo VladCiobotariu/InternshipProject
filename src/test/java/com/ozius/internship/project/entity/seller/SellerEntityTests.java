@@ -5,6 +5,7 @@ import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.product.Product;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

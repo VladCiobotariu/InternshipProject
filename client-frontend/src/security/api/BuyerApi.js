@@ -32,3 +32,17 @@ export function removeFavorite(productId){
         }
     })
 }
+
+export function getBuyerAddresses(){
+
+}
+
+export function submitOrder(address, products, email){
+    return api.post('/order', {}, {
+        params:{
+            address,
+            products,
+            email
+        }
+    })
+}

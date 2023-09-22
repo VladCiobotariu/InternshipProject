@@ -3,7 +3,7 @@ package com.ozius.internship.project.entity.seller;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.JpaBaseEntity;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
 import jakarta.persistence.EntityManager;
