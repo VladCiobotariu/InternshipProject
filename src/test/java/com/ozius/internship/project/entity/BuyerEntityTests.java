@@ -1,10 +1,13 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.buyer.BuyerAddress;
 import com.ozius.internship.project.entity.exception.IllegalAddressException;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
+import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -23,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class BuyerEntityTests extends EntityBaseTest{
+public class BuyerEntityTests extends JpaBaseEntity {
 
     private JpaRepository<Buyer, Long> buyerRepository;
 
@@ -88,20 +91,23 @@ public class BuyerEntityTests extends EntityBaseTest{
        doTransaction(em -> {
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
             Buyer mergedBuyer = em.merge(buyer);
-            mergedBuyer.addAddress(address);
+            mergedBuyer.addAddress(address, mergedBuyer.getAccount().getFirstName(), mergedBuyer.getAccount().getLastName(), mergedBuyer.getAccount().getTelephone());
         });
 
         //----Assert
         Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
 
-        Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow().getAddress();
+        BuyerAddress persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow();
 
-        assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
-        assertThat(persistedAddress.getState()).isEqualTo("Timis");
-        assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
-        assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
-        assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
-        assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getAddress().getCountry()).isEqualTo("Romania");
+        assertThat(persistedAddress.getAddress().getState()).isEqualTo("Timis");
+        assertThat(persistedAddress.getAddress().getCity()).isEqualTo("Timisoara");
+        assertThat(persistedAddress.getAddress().getAddressLine1()).isEqualTo("Strada Macilor 10");
+        assertThat(persistedAddress.getAddress().getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
+        assertThat(persistedAddress.getAddress().getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getFirstName()).isEqualTo("Cosmina");
+        assertThat(persistedAddress.getLastName()).isEqualTo("Maria");
+        assertThat(persistedAddress.getTelephone()).isEqualTo("0735897635");
     }
 
     @Test
@@ -118,10 +124,10 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
             Buyer mergedBuyer = em.merge(buyer);
 
-            mergedBuyer.addAddress(address);
+            mergedBuyer.addAddress(address, mergedBuyer.getAccount().getFirstName(), mergedBuyer.getAccount().getLastName(), mergedBuyer.getAccount().getTelephone());
             em.flush();
 
-            return assertThrows(IllegalAddressException.class, ()-> mergedBuyer.addAddress(address));
+            return assertThrows(IllegalAddressException.class, ()-> mergedBuyer.addAddress(address, mergedBuyer.getAccount().getFirstName(), mergedBuyer.getAccount().getLastName(), mergedBuyer.getAccount().getTelephone()));
         });
 
         //----Assert
@@ -137,7 +143,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            buyerToAdd.addAddress(address);
+            buyerToAdd.addAddress(address, account.getFirstName(), account.getLastName(), account.getTelephone());
 
             return buyerToAdd;
         });
@@ -149,18 +155,21 @@ public class BuyerEntityTests extends EntityBaseTest{
             long addressId = mergedBuyer.getAddresses().stream().findFirst().orElseThrow().getId();
             Address address = new Address("Spain", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
-            mergedBuyer.updateAddress(address, addressId);
+            mergedBuyer.updateAddress(address, mergedBuyer.getAccount().getFirstName(), mergedBuyer.getAccount().getLastName(), mergedBuyer.getAccount().getTelephone(), addressId);
         });
 
         //----Assert
-        Address persistedAddress = entityFinder.getTheOne(Buyer.class).getAddresses().stream().findFirst().orElseThrow().getAddress();
+        BuyerAddress persistedAddress = entityFinder.getTheOne(Buyer.class).getAddresses().stream().findFirst().orElseThrow();
 
-        assertThat(persistedAddress.getCountry()).isEqualTo("Spain");
-        assertThat(persistedAddress.getState()).isEqualTo("Timis");
-        assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
-        assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
-        assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
-        assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getAddress().getCountry()).isEqualTo("Spain");
+        assertThat(persistedAddress.getAddress().getState()).isEqualTo("Timis");
+        assertThat(persistedAddress.getAddress().getCity()).isEqualTo("Timisoara");
+        assertThat(persistedAddress.getAddress().getAddressLine1()).isEqualTo("Strada Macilor 10");
+        assertThat(persistedAddress.getAddress().getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
+        assertThat(persistedAddress.getAddress().getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getFirstName()).isEqualTo("Cosmina");
+        assertThat(persistedAddress.getLastName()).isEqualTo("Maria");
+        assertThat(persistedAddress.getTelephone()).isEqualTo("0735897635");
     }
 
     @Test
@@ -173,7 +182,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            buyerToAdd.addAddress(address);
+            buyerToAdd.addAddress(address, account.getFirstName(), account.getLastName(), account.getTelephone());
 
             return buyerToAdd;
         });
@@ -182,7 +191,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         doTransaction(em -> {
             Buyer mergedBuyer = em.merge(buyer);
             mergedBuyer.getAccount().updateAccount(
-                    buyer.getAccount().getFirstName(),
+                    "Vara",
                     buyer.getAccount().getLastName(),
                     "cosminaa@gmail.com",
                     buyer.getAccount().getImageName(),
@@ -192,22 +201,25 @@ public class BuyerEntityTests extends EntityBaseTest{
 
         //----Assert
         Buyer persistedBuyer = entityFinder.getTheOne(Buyer.class);
-        Address persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow().getAddress();
+        BuyerAddress persistedAddress = persistedBuyer.getAddresses().stream().findFirst().orElseThrow();
 
         assertThat(persistedBuyer.getAccount().getEmail()).isEqualTo("cosminaa@gmail.com");
 
-        assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Cosmina");
+        assertThat(persistedBuyer.getAccount().getFirstName()).isEqualTo("Vara");
         assertThat(persistedBuyer.getAccount().getLastName()).isEqualTo("Maria");
         assertTrue(passwordEncoder.matches("1234", persistedBuyer.getAccount().getPasswordHash()));
         assertThat(persistedBuyer.getAccount().getImageName()).isEqualTo("/src/image2");
         assertThat(persistedBuyer.getAccount().getTelephone()).isEqualTo("0735897635");
 
-        assertThat(persistedAddress.getCountry()).isEqualTo("Romania");
-        assertThat(persistedAddress.getState()).isEqualTo("Timis");
-        assertThat(persistedAddress.getCity()).isEqualTo("Timisoara");
-        assertThat(persistedAddress.getAddressLine1()).isEqualTo("Strada Macilor 10");
-        assertThat(persistedAddress.getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
-        assertThat(persistedAddress.getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getAddress().getCountry()).isEqualTo("Romania");
+        assertThat(persistedAddress.getAddress().getState()).isEqualTo("Timis");
+        assertThat(persistedAddress.getAddress().getCity()).isEqualTo("Timisoara");
+        assertThat(persistedAddress.getAddress().getAddressLine1()).isEqualTo("Strada Macilor 10");
+        assertThat(persistedAddress.getAddress().getAddressLine2()).isEqualTo("Bloc 4, Scara F, ap 50");
+        assertThat(persistedAddress.getAddress().getZipCode()).isEqualTo("300091");
+        assertThat(persistedAddress.getFirstName()).isEqualTo("Cosmina");
+        assertThat(persistedAddress.getLastName()).isEqualTo("Maria");
+        assertThat(persistedAddress.getTelephone()).isEqualTo("0735897635");
     }
 
 
@@ -218,13 +230,13 @@ public class BuyerEntityTests extends EntityBaseTest{
         Buyer buyer = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            buyerToAdd.addAddress(address);
+            buyerToAdd.addAddress(address, account.getFirstName(), account.getLastName(), account.getTelephone());
             buyerToAdd.addFavorite(product);
 
             return buyerToAdd;
@@ -254,7 +266,7 @@ public class BuyerEntityTests extends EntityBaseTest{
             Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
 
             Buyer buyerToAdd = TestDataCreator.createBuyer(em, account);
-            buyerToAdd.addAddress(address);
+            buyerToAdd.addAddress(address, account.getFirstName(), account.getLastName(), account.getTelephone());
 
             return buyerToAdd;
         });
@@ -314,7 +326,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         Product productToAdd = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             TestDataCreator.createBuyer(em, account);
@@ -349,7 +361,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         Product productToAdd = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);
@@ -378,7 +390,7 @@ public class BuyerEntityTests extends EntityBaseTest{
         Product productToRemove = doTransaction(em -> {
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
-            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
+            Product product = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);
@@ -410,8 +422,8 @@ public class BuyerEntityTests extends EntityBaseTest{
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
 
-            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1);
-            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1);
+            Product product1 = TestDataCreator.createProduct(em, "orez", "pentru fiert", "src/image4", 12f, category1, seller1, UnitOfMeasure.KILOGRAM);
+            Product product2 = TestDataCreator.createProduct(em, "grau", "pentru paine", "src/image20", 8f, category1, seller1, UnitOfMeasure.KILOGRAM);
 
             UserAccount account = new UserAccount("Cosmina", "Maria", "cosminamaria@gmail.com", "/src/image2", "0735897635");
             Buyer addedBuyer = TestDataCreator.createBuyer(em, account);

@@ -2,8 +2,8 @@ package com.ozius.internship.project.entity.seller;
 
 import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.EntityBaseTest;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.JpaBaseEntity;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
 import jakarta.persistence.EntityManager;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SellerReviewEntityTests extends EntityBaseTest {
+public class SellerReviewEntityTests extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;

@@ -1,5 +1,7 @@
-package com.ozius.internship.project.entity;
+package com.ozius.internship.project.entity.product;
 
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.exception.IllegalPriceException;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.*;
@@ -16,7 +18,7 @@ public class Product extends BaseEntity {
         String PRICE = "PRICE";
         String CATEGORY_ID = "CATEGORY_ID";
         String SELLER_ID = "SELLER_ID";
-
+        String UNIT_OF_MEASURE = "UNIT_OF_MEASURE";
     }
 
     @Column(name = Columns.NAME, nullable = false)
@@ -31,6 +33,9 @@ public class Product extends BaseEntity {
     @Column(name = Columns.PRICE, nullable = false)
     private float price;
 
+    @Column(name = Columns.UNIT_OF_MEASURE, nullable = false)
+    private UnitOfMeasure unitOfMeasure;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = Columns.CATEGORY_ID, nullable = false)
     private Category category;
@@ -42,7 +47,7 @@ public class Product extends BaseEntity {
     protected Product() {
     }
 
-    public Product(String name, String description, String imageName, float price, Category category, Seller seller) {
+    public Product(String name, String description, String imageName, float price, Category category, Seller seller, UnitOfMeasure unitOfMeasure) {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
@@ -52,6 +57,7 @@ public class Product extends BaseEntity {
         this.price = price;
         this.category = category;
         this.seller = seller;
+        this.unitOfMeasure = unitOfMeasure;
     }
 
     public String getName() {
@@ -78,11 +84,11 @@ public class Product extends BaseEntity {
         return seller;
     }
 
-    public void setPrice(float price) {
-        this.price = price;
+    public UnitOfMeasure getUnitOfMeasure() {
+        return unitOfMeasure;
     }
 
-    public void updateProduct(String name, String description, String imageName, float price, Category category, Seller seller) {
+    public void updateProduct(String name, String description, String imageName, float price, Category category, Seller seller, UnitOfMeasure unitOfMeasure) {
         this.name = name;
         this.description = description;
         this.imageName = imageName;
@@ -92,6 +98,7 @@ public class Product extends BaseEntity {
         this.price = price;
         this.category = category;
         this.seller = seller;
+        this.unitOfMeasure = unitOfMeasure;
     }
 
     @Override

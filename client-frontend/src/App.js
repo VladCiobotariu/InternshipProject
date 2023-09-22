@@ -13,7 +13,7 @@ import Favorites from "./components/favorites/Favorites";
 import CartComponent from "./components/cart/CartComponent";
 import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
 import ProductPageComponent from './components/productPage/ProductPageComponent'
-
+import CheckoutComponent from "./components/checkout/CheckoutComponent";
 
 function AuthenticatedRoute({children}){
 
@@ -42,7 +42,9 @@ function NotAuthenticatedRoute({children}){
 }
 
 function App() {
-  return (
+
+
+    return (
       <div className="bg-white dark:bg-inherit">
           <AuthProvider>
               <BrowserRouter>
@@ -73,11 +75,9 @@ function App() {
                       <Route path='/products/categories' element={<CategoryPageComponent/>}/>
                       <Route path='/products/categories/:categoryName' element={<ProductPageComponent/>}/>
 
-                      <Route path='/account/cart' element={
-                          <AuthenticatedRoute>
-                              <CartComponent/>
-                          </AuthenticatedRoute>
-                      }/>
+                      <Route path='/account/cart' element={<CartComponent/>}/>
+
+                      <Route path='/checkout' element={<CheckoutComponent/>}/>
                   </Routes>
 
                   <AuthVerify/>

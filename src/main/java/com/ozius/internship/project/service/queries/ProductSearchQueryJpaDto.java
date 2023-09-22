@@ -1,12 +1,13 @@
 package com.ozius.internship.project.service.queries;
 
+import com.ozius.internship.project.dto.ProductBaseDto;
 import jakarta.persistence.EntityManager;
 
 public class ProductSearchQueryJpaDto extends JpaDtoBasedQueryBuilder<ProductBaseDto> {
 
 
     public ProductSearchQueryJpaDto(EntityManager em) {
-        super("select new com.ozius.internship.project.service.queries.ProductBaseDto(p.name, p.description) from Product p ",em , ProductBaseDto.class);
+        super("select new com.ozius.internship.project.dto.ProductBaseDto(p.name, p.description) from Product p ",em , ProductBaseDto.class);
     }
 
     public ProductSearchQueryJpaDto withCategory(String category){

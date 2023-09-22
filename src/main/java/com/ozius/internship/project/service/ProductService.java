@@ -1,13 +1,11 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductService {

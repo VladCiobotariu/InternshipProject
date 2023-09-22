@@ -1,5 +1,6 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -61,5 +62,17 @@ public class EntityFinder {
         } catch (NoResultException ex) {
             return null;
         }
+    }
+
+    public Category getCategoryByName(String name){
+        return em.createQuery("select c from Category c where c.name = :categoryName", Category.class)
+                .setParameter("categoryName", name)
+                .getSingleResult();
+    }
+
+    public Seller getSellerByAlias(String alias){
+        return em.createQuery("select s from Seller s where s.alias = :aliasName", Seller.class)
+                .setParameter("aliasName", alias)
+                .getSingleResult();
     }
 }

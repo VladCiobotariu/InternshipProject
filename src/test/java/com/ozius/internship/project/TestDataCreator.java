@@ -4,6 +4,8 @@ import com.ozius.internship.project.entity.*;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.order.Order;
+import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.entity.seller.Seller;
@@ -59,6 +61,12 @@ public class TestDataCreator {
         account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
         Buyers.buyer3 = createBuyer(em, account3);
 
+    }
+
+    public static void createBuyerAddressBaseData(EntityManager em){
+        Buyer mergedBuyer = em.merge(Buyers.buyer3);
+        Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+        mergedBuyer.addAddress(address, "Vlad", "Cristi", "+40356424801");
     }
 
     public static Seller createSellerFarmer(EntityManager em, Address address, UserAccount account, String alias){
@@ -131,9 +139,9 @@ public class TestDataCreator {
         Categories.category8 = createCategory(em, "Tea", "/images/tea.svg");
     }
 
-    public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller){
+    public static Product createProduct(EntityManager em, String name, String description, String image, float price, Category category , Seller seller, UnitOfMeasure unitOfMeasure){
 
-        Product product = new Product(name, description, image, price, category, seller);
+        Product product = new Product(name, description, image, price, category, seller, unitOfMeasure);
         em.persist(product);
 
         return product;
@@ -141,14 +149,14 @@ public class TestDataCreator {
 
     public static void createProductsBaseData(EntityManager em){
 
-        Products.product1 = createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpg", 12.7f, Categories.category1, Sellers.seller1);
-        Products.product2 = createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.jpg", 8.2f, Categories.category1, Sellers.seller1);
-        Products.product3 = createProduct(em, "Cherry", "This are cherries! They are a fruit!", "/images/cherry.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product4 = createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpeg", 5f, Categories.category1, Sellers.seller1);
-        Products.product5 = createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.jpg", 5f, Categories.category1, Sellers.seller1);
-        Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/potato.jpeg", 5f, Categories.category2, Sellers.seller1);
+        Products.product1 = createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpg", 12.7f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product2 = createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.jpg", 8.2f, Categories.category1, Sellers.seller1, UnitOfMeasure.GRAM);
+        Products.product3 = createProduct(em, "Cherry", "This are cherries! They are a fruit!", "/images/cherry.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.ONE_UNIT);
+        Products.product4 = createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpeg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product5 = createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/potato.jpeg", 5f, Categories.category2, Sellers.seller1, UnitOfMeasure.KILOGRAM);
     }
 
     public static void createAddresses(){
@@ -161,6 +169,9 @@ public class TestDataCreator {
                 address,
                 buyer,
                 seller,
+                buyer.getAccount().getEmail(),
+                buyer.getAccount().getFirstName(),
+                buyer.getAccount().getLastName(),
                 buyer.getAccount().getTelephone());
 
         em.persist(order);
@@ -189,8 +200,8 @@ public class TestDataCreator {
     public static void createCartBaseData(EntityManager em){
         Cart cart = createCart(em, Buyers.buyer3);
 
-        addItemToCart(em, cart, Products.product1, 2.2F);
-        addItemToCart(em, cart, Products.product2, 5.9F);
+        addItemToCart(em, cart, Products.product1, 2F);
+        addItemToCart(em, cart, Products.product2, 5F);
     }
 
     public static void createFavoritesBaseData(EntityManager em){
@@ -230,7 +241,6 @@ public class TestDataCreator {
         public static Category category6;
         public static Category category7;
         public static Category category8;
-        public static Category category9;
     }
 
     public static class Addresses{

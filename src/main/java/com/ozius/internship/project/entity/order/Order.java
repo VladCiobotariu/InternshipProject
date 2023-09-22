@@ -1,9 +1,11 @@
 package com.ozius.internship.project.entity.order;
 
-import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalOrderState;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.LegalDetails;
 import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.entity.seller.SellerType;
@@ -22,6 +24,8 @@ public class Order extends BaseEntity {
 
     interface Columns {
         String BUYER_EMAIL = "BUYER_EMAIL";
+        String BUYER_FIRST_NAME = "BUYER_FIRST_NAME";
+        String BUYER_LAST_NAME = "BUYER_LAST_NAME";
         String SELLER_ID = "SELLER_ID";
         String BUYER_ID = "BUYER_ID";
         String TELEPHONE = "TELEPHONE";
@@ -58,7 +62,7 @@ public class Order extends BaseEntity {
             @AttributeOverride(name = "addressLine2", column = @Column(name = Columns.ADDRESS_LINE_2)),
             @AttributeOverride(name = "zipCode", column = @Column(name = Columns.ZIP_CODE, length = 6, nullable = false))
     })
-    private Address address;
+    private Address shippingAddress;
 
     @ManyToOne
     @JoinColumn(name = Columns.BUYER_ID, foreignKey = @ForeignKey(foreignKeyDefinition = "FOREIGN KEY (" + Columns.BUYER_ID + ") REFERENCES " + Buyer.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE SET NULL"))
@@ -97,6 +101,12 @@ public class Order extends BaseEntity {
     @Column(name = Columns.BUYER_EMAIL, nullable = false)
     private String buyerEmail;
 
+    @Column(name = Columns.BUYER_FIRST_NAME, nullable = false)
+    private String buyerFirstName;
+
+    @Column(name = Columns.BUYER_LAST_NAME, nullable = false)
+    private String buyerLastName;
+
     @Column(name = Columns.ORDER_DATE, nullable = false)
     private LocalDateTime orderDate;
 
@@ -109,10 +119,13 @@ public class Order extends BaseEntity {
     protected Order() {
     }
 
-    public Order(Address address, Buyer buyer, Seller seller, String telephone) {
+    public Order(Address shippingAddress, Buyer buyer, Seller seller, String buyerEmail, String buyerFirstName, String buyerLastName, String buyerTelephone) {
         this.orderStatus = OrderStatus.DRAFT;
 
-        this.address = address;
+        this.shippingAddress = shippingAddress;
+
+        this.buyerFirstName = buyerFirstName;
+        this.buyerLastName = buyerLastName;
 
         this.buyer = buyer;
         this.seller = seller;
@@ -123,10 +136,11 @@ public class Order extends BaseEntity {
         this.sellerAlias = seller.getAlias();
         this.legalDetails = seller.getLegalDetails();
         this.sellerType = seller.getSellerType();
-        this.buyerEmail = buyer.getAccount().getEmail();
+
+        this.buyerEmail = buyerEmail;
         this.orderDate = LocalDateTime.now();
 
-        this.telephone = telephone;
+        this.telephone = buyerTelephone;
 
         this.totalPrice = 0f;
     }
@@ -166,8 +180,8 @@ public class Order extends BaseEntity {
         return orderStatus;
     }
 
-    public Address getAddress() {
-        return address;
+    public Address getShippingAddress() {
+        return shippingAddress;
     }
 
     public Buyer getBuyer() {
@@ -214,6 +228,14 @@ public class Order extends BaseEntity {
         return sellerType;
     }
 
+    public String getBuyerFirstName() {
+        return buyerFirstName;
+    }
+
+    public String getBuyerLastName() {
+        return buyerLastName;
+    }
+
     public void submit() {
         if (this.orderStatus != OrderStatus.DRAFT) {
             throw new IllegalOrderState("order state can only be draft if you want to submit");
@@ -241,13 +263,17 @@ public class Order extends BaseEntity {
     public String toString() {
         return "Order{" +
                 "orderStatus=" + orderStatus +
-                ", address=" + address +
+                ", address=" + shippingAddress +
+                ", buyer=" + buyer +
+                ", seller=" + seller +
                 ", sellerEmail='" + sellerEmail + '\'' +
                 ", sellerAlias='" + sellerAlias + '\'' +
-                ", sellerType='" + sellerType + '\'' +
                 ", legalDetails=" + legalDetails +
+                ", sellerType=" + sellerType +
                 ", orderItems=" + orderItems +
                 ", buyerEmail='" + buyerEmail + '\'' +
+                ", buyerFirstName='" + buyerFirstName + '\'' +
+                ", buyerLastName='" + buyerLastName + '\'' +
                 ", orderDate=" + orderDate +
                 ", telephone='" + telephone + '\'' +
                 ", totalPrice=" + totalPrice +

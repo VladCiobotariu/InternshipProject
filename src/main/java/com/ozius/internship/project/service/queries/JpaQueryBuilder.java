@@ -25,7 +25,7 @@ public abstract class JpaQueryBuilder<E,R> extends QueryBuilder {
     }
 
     protected TypedQuery<E> buildQuery() {
-        TypedQuery<E> query = em.createQuery(queryBuilder.toString(), queryResultClassType);
+        TypedQuery<E> query = em.createQuery(sqlQueryBuilder.toString(), queryResultClassType);
 
         for (String paramName : params.keySet()) {
             query.setParameter(paramName, params.get(paramName));

@@ -1,11 +1,12 @@
 package com.ozius.internship.project.service.queries;
 
+import com.ozius.internship.project.dto.ProductBaseDto;
 import jakarta.persistence.EntityManager;
 
 public class ProductSearchQueryArrayBased extends JpaQueryBuilder<Object[], ProductBaseDto> {
 
     public ProductSearchQueryArrayBased(EntityManager em) {
-        super("select p.name, p.description from product p ",em, Object[].class);
+        super("select p.name, p.description from Product p ",em, Object[].class);
     }
 
     @Override

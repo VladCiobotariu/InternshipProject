@@ -85,7 +85,7 @@ export default function Header() {
     function getCartItemsList(){
         getCartItems()
             .then(
-                (response) => setNumberOfCartItems(response.data.length)
+                (response) => setNumberOfCartItems(response.data.cartItems.length)
             )
             .catch(
                 (err) => {
@@ -209,10 +209,8 @@ export default function Header() {
 
                     {isAuthenticated &&
                         <Popover className="relative mr-6">
-                            <Popover.Button onClick={()=> navigate('/account/favorites')}
+                            <Popover.Button
                                             className="inline-flex items-center gap-x-0 text-sm font-semibold leading-6 text-gray-900 dark:text-inherit"
-                                            onMouseEnter={() => setIsShowing(true)}
-                                            onMouseLeave={() => setIsShowing(false)}
                             >
                                 <HeartIcon strokeWidth="2" className="h-6 w-6 text-gray-900 dark:text-inherit" aria-disabled="true"/>
                                 {numberOfFavorites!==0 &&
@@ -225,6 +223,7 @@ export default function Header() {
                                     </div>
                                 }
                             </Popover.Button>
+
                             {numberOfFavorites!==0 &&
                                 <Transition
                                     as={Fragment}
@@ -234,13 +233,6 @@ export default function Header() {
                                     leave="transition ease-in duration-150"
                                     leaveFrom="opacity-100 translate-y-0"
                                     leaveTo="opacity-0 translate-y-1"
-                                    show={isShowing}
-                                    onMouseEnter={() => setIsShowing(true)}
-                                    onMouseLeave={() => {
-                                        setTimeout(() => {
-                                            setIsShowing(false)
-                                        }, 600)
-                                    }}
                                 >
 
                                     <Popover.Panel className="
@@ -253,7 +245,7 @@ export default function Header() {
 
                                                 <div
                                                     key={item.id}
-                                                    className="relative flex items-center gap-x-2 rounded-lg text-sm leading-6"
+                                                    className="relative flex items-center justify-between gap-x-2 rounded-lg text-sm leading-6"
                                                 >
                                                     <Link to={`/${item.seller.alias}/products/${item.name}`}
                                                         className="flex items-center gap-x-6 hover:bg-gray-50 dark:hover:bg-zinc-900 rounded-lg p-2">

@@ -1,7 +1,5 @@
-package com.ozius.internship.project.queries;
+package com.ozius.internship.project;
 
-import com.ozius.internship.project.ProjectApplicationTest;
-import com.ozius.internship.project.SpringProfiles;
 import com.ozius.internship.project.entity.EntityFinder;
 import com.ozius.internship.project.infra.JpaCallback;
 import com.ozius.internship.project.infra.JpaCallbackVoid;
@@ -18,7 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(classes = ProjectApplicationTest.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @ActiveProfiles({SpringProfiles.DEV, SpringProfiles.EMBEDDED_DB_H2})
-public class QueryBaseTest {
+public class JpaBaseEntity {
 
     @PersistenceUnit
     private EntityManagerFactory emf;
@@ -56,5 +54,4 @@ public class QueryBaseTest {
     public <T> T doTransaction(JpaCallback<T> callback){
         return new JpaHelper(emf).doTransaction(callback);
     }
-
 }

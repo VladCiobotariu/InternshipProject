@@ -1,8 +1,10 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.TestDataCreator;
-import com.ozius.internship.project.entity.exception.IllegalDuplicateName;
 import com.ozius.internship.project.entity.exception.IllegalPriceException;
+import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import com.ozius.internship.project.entity.seller.Seller;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProductEntityTest extends EntityBaseTest {
+public class ProductEntityTest extends JpaBaseEntity {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,7 +34,7 @@ public class ProductEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
-            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
+            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller, UnitOfMeasure.KILOGRAM);
             em.persist(product);
         });
 
@@ -43,6 +45,7 @@ public class ProductEntityTest extends EntityBaseTest {
         assertThat(persistedProduct.getPrice()).isEqualTo(5);
         assertThat(persistedProduct.getCategory()).isEqualTo(category1);
         assertThat(persistedProduct.getSeller()).isEqualTo(seller2);
+        assertThat(persistedProduct.getUnitOfMeasure()).isEqualTo(UnitOfMeasure.KILOGRAM);
     }
 
     @Test
@@ -51,7 +54,7 @@ public class ProductEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
-            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
+            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller, UnitOfMeasure.KILOGRAM);
             em.persist(product);
         });
 
@@ -59,7 +62,7 @@ public class ProductEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Product pr = entityFinder.getTheOne(Product.class);
-            pr.updateProduct("vinete_schimbate", "vinete mari", pr.getImageName(), 6F, pr.getCategory(), pr.getSeller());
+            pr.updateProduct("vinete_schimbate", "vinete mari", pr.getImageName(), 6F, pr.getCategory(), pr.getSeller(), pr.getUnitOfMeasure());
         });
 
         //----Assert
@@ -79,7 +82,7 @@ public class ProductEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
-            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
+            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller, UnitOfMeasure.KILOGRAM);
             em.persist(product);
         });
 
@@ -102,7 +105,7 @@ public class ProductEntityTest extends EntityBaseTest {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
             return assertThrows(IllegalPriceException.class, () -> {
-                Product product = new Product("vinete", "descriereVinete", "/vinete", -2f, cat, seller);
+                Product product = new Product("vinete", "descriereVinete", "/vinete", -2f, cat, seller, UnitOfMeasure.KILOGRAM);
                 em.persist(product);
             });
         });
@@ -117,7 +120,7 @@ public class ProductEntityTest extends EntityBaseTest {
         doTransaction(em -> {
             Category cat = em.merge(category1);
             Seller seller = em.merge(seller2);
-            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller);
+            Product product = new Product("vinete", "descriereVinete", "/vinete", 5F, cat, seller, UnitOfMeasure.KILOGRAM);
             em.persist(product);
         });
 
@@ -125,9 +128,7 @@ public class ProductEntityTest extends EntityBaseTest {
         Exception exception = doTransaction(em -> {
             EntityFinder entityFinder = new EntityFinder(em);
             Product pr = entityFinder.getTheOne(Product.class);
-            return assertThrows(IllegalPriceException.class, () -> {
-                pr.updateProduct("vinete_schimbate", "vinete mari", pr.getImageName(), -1F, pr.getCategory(), pr.getSeller());
-            });
+            return assertThrows(IllegalPriceException.class, () -> pr.updateProduct("vinete_schimbate", "vinete mari", pr.getImageName(), -1F, pr.getCategory(), pr.getSeller(), pr.getUnitOfMeasure()));
         });
 
         //----Assert
