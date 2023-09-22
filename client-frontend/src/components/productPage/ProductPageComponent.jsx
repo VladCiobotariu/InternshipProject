@@ -4,7 +4,8 @@ import ProductComponent from "./ProductComponent";
 import {getProductsApi} from "../../security/api/ProductApi";
 import FilteringComponent from "../filter/FilteringComponent";
 import NoEntityMessageComponent from "../nonExistingEntities/NoEntityMessageComponent";
-import ProductAddToCartModal from "./ProductAddToCartModal";
+import ProductAddToCartModal from "../modals/ProductAddToCartModal";
+import BaseModal from "../modals/BaseModal";
 
 
 const buildFilterOptionsFromQueryParams = (queryParams) => {
@@ -199,12 +200,17 @@ function ProductPageComponent() {
 
             </section>
 
-            <ProductAddToCartModal
-                toggleModal={toggleModal}
+            <BaseModal
                 isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-                productName={productName}
-            />
+                toggleModal={() => toggleModal(productName)}>
+
+                <ProductAddToCartModal
+                    toggleModal={toggleModal}
+                    isModalOpen={isModalOpen}
+                    setIsModalOpen={setIsModalOpen}
+                    productName={productName}
+                />
+            </BaseModal>
 
         </div>
     );
