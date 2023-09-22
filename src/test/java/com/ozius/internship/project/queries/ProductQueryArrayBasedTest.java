@@ -4,6 +4,7 @@ import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import com.ozius.internship.project.entity.seller.Seller;
 import com.ozius.internship.project.dto.ProductBaseDto;
 import com.ozius.internship.project.service.queries.ProductSearchQueryArrayBased;
@@ -64,11 +65,11 @@ public class ProductQueryArrayBasedTest extends JpaBaseEntity {
                 "FC BARCELONA"
         );
 
-        createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpeg", 12.7f, category1, seller1);
-        createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.png", 8.2f, category2, seller2);
-        createProduct(em, "Kiwi", "This is a kiwi! It is a fruit!", "mages/kiwi.jpg", 5f, category1, seller1);
-        createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpg", 5f, category3, seller2);
-        createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.png", 5f, category2, seller1);
+        createProduct(em, "Apple", "This is an apple! It is a fruit!", "/images/apple.jpeg", 12.7f, category1, seller1, UnitOfMeasure.KILOGRAM);
+        createProduct(em, "Pear", "This is a pear! It is a fruit!", "/images/pear.png", 8.2f, category2, seller2, UnitOfMeasure.KILOGRAM);
+        createProduct(em, "Kiwi", "This is a kiwi! It is a fruit!", "mages/kiwi.jpg", 5f, category1, seller1, UnitOfMeasure.KILOGRAM);
+        createProduct(em, "Banana", "This is a banana! It is a fruit!", "/images/banana.jpg", 5f, category3, seller2, UnitOfMeasure.KILOGRAM);
+        createProduct(em, "Mango", "This is a mango! It is a fruit!", "/images/mango.png", 5f, category2, seller1, UnitOfMeasure.KILOGRAM);
     }
 
     @Test
@@ -195,10 +196,10 @@ public class ProductQueryArrayBasedTest extends JpaBaseEntity {
             Category category = entityFinder.getCategoryByName("Vegetables");
             Seller seller = entityFinder.getSellerByAlias("Mega Fresh SRL");
 
-            createProduct(em, "Ananas", "It is a fruit!", "/images/mango.png", 2.0f, category, seller);
-            createProduct(em, "Lemon", "It is a fruit!", "/images/mango.png", 1.9f, category, seller);
-            createProduct(em, "Carrot", "It is a fruit!", "/images/mango.png", 6.0f, category, seller);
-            createProduct(em, "Tomato", "It is a fruit!", "/images/mango.png", 6.1f, category, seller);
+            createProduct(em, "Ananas", "It is a fruit!", "/images/mango.png", 2.0f, category, seller, UnitOfMeasure.KILOGRAM);
+            createProduct(em, "Lemon", "It is a fruit!", "/images/mango.png", 1.9f, category, seller, UnitOfMeasure.KILOGRAM);
+            createProduct(em, "Carrot", "It is a fruit!", "/images/mango.png", 6.0f, category, seller, UnitOfMeasure.KILOGRAM);
+            createProduct(em, "Tomato", "It is a fruit!", "/images/mango.png", 6.1f, category, seller, UnitOfMeasure.KILOGRAM);
         });
 
         //---Act

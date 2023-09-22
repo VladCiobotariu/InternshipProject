@@ -2,7 +2,7 @@ package com.ozius.internship.project.entity.buyer;
 
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.exception.IllegalAddressException;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
@@ -74,11 +74,11 @@ public class Buyer extends BaseEntity {
         this.favoriteProducts.remove(product);
     }
 
-    public void addAddress(Address address){
+    public void addAddress(Address address, String firstName, String lastName, String telephone){
         if(this.addresses.stream().map(BuyerAddress::getAddress).anyMatch(item->item.equals(address))){
             throw new IllegalAddressException("this address already exists");
         }
-        BuyerAddress newBuyerAddress = new BuyerAddress(address);
+        BuyerAddress newBuyerAddress = new BuyerAddress(address, firstName, lastName, telephone);
         this.addresses.add(newBuyerAddress);
     }
 
@@ -87,14 +87,10 @@ public class Buyer extends BaseEntity {
         this.addresses.remove(addressToRemove);
     }
 
-    public void updateBuyer(String firstName, String lastName, String email, String image, String telephone){
-        this.account.updateAccount(firstName, lastName, email, image, telephone);
-    }
-
-    public void updateAddress(Address address, long id){
+    public void updateAddress(Address address, String firstName, String lastName, String telephone, long id){
         BuyerAddress addressToUpdate = this.addresses.stream().filter(item -> item.getId() == id).findFirst().orElseThrow();
 
-        addressToUpdate.updateAddress(address);
+        addressToUpdate.updateAddress(address, firstName, lastName, telephone);
     }
 
     @Override

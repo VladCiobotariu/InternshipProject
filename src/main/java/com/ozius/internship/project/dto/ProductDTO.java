@@ -1,5 +1,6 @@
 package com.ozius.internship.project.dto;
 
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import lombok.Data;
 
 @Data
@@ -11,5 +12,5 @@ public class ProductDTO {
     private float price;
     private CategoryDTO category;
     private SellerDTO seller;
-
+    private UnitOfMeasure unitOfMeasure;
 }

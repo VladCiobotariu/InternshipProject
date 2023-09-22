@@ -65,8 +65,8 @@ function Cart(){
             {cartItems.length!==0 &&
                 <div className="mx-auto max-w-5xl px-6 md:flex md:space-x-6 xl:px-0 lg:flex lg:space-x-6 xl:flex xl:space-x-8 2xl:flex 2xl:space-x-8">
                     <div className="rounded-lg md:w-2/3 lg:w-2/3 xl:w-2/3 2xl:w-2/3">
-                        {cartItems.map((item)=>(
-                            <CartItemCard key={item.id} item={item} getCartItemsList={getCartItemsList} handelDeleteCartItem={handelDeleteCartItem}/>
+                        {cartItems.sort((p1, p2) => (p1.id > p2.id) ? 1 : (p1.id < p2.id) ? -1 : 0).map((item)=>(
+                            <CartItemCard key={item.id} item={item} getCartItemsList={getCartItemsList} handelDeleteCartItem={handelDeleteCartItem} isModifiable={true}/>
                         ))}
                     </div>
                     <CartSummary cartTotalPrice={cartTotalPrice} shippingPrice={shippingPrice}/>

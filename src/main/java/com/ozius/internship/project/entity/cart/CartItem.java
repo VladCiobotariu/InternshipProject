@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.cart;
 
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import jakarta.persistence.*;
 
 @Entity
@@ -46,6 +46,7 @@ public class CartItem extends BaseEntity {
     @Override
     public String toString() {
         return "CartItem{" +
+                "id=" + getId() +
                 "quantity=" + quantity +
                 ", product=" + product.getName() +
                 '}';

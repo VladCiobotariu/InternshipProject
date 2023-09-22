@@ -1,7 +1,7 @@
 package com.ozius.internship.project.entity.order;
 
 import com.ozius.internship.project.entity.BaseEntity;
-import com.ozius.internship.project.entity.Product;
+import com.ozius.internship.project.entity.product.Product;
 import jakarta.persistence.*;
 
 @Entity

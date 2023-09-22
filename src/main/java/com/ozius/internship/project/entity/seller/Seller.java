@@ -6,6 +6,7 @@ import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
 
+import com.ozius.internship.project.entity.product.Product;
 import jakarta.persistence.*;
 
 import java.util.HashSet;

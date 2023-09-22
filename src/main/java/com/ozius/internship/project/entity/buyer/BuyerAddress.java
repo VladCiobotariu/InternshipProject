@@ -18,6 +18,9 @@ public class BuyerAddress extends BaseEntity {
         String ADDRESS_LINE_1 = "ADDRESS_LINE_1";
         String ADDRESS_LINE_2 = "ADDRESS_LINE_2";
         String ZIP_CODE = "ZIP_CODE";
+        String FIRST_NAME = "FIRST_NAME";
+        String LAST_NAME = "LAST_NAME";
+        String TELEPHONE = "TELEPHONE";
     }
 
     @Embedded
@@ -31,25 +34,55 @@ public class BuyerAddress extends BaseEntity {
     })
     private Address address;
 
+    @Column(name = Columns.FIRST_NAME, nullable = false)
+    private String firstName;
+
+    @Column(name = Columns.LAST_NAME, nullable = false)
+    private String lastName;
+
+    @Column(name = Columns.TELEPHONE, nullable = false)
+    private String telephone;
+
     protected BuyerAddress() {
     }
 
-    public BuyerAddress(Address address) {
+    public BuyerAddress(Address address, String firstName, String lastName, String telephone) {
         this.address = address;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.telephone = telephone;
     }
 
     public Address getAddress() {
         return address;
     }
 
-    void updateAddress(Address address) {
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    void updateAddress(Address address, String firstName, String lastName, String telephone) {
         this.address = address;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.telephone = telephone;
     }
 
     @Override
     public String toString() {
         return "BuyerAddress{" +
                 "address=" + address +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", telephone='" + telephone + '\'' +
                 '}';
     }
 }

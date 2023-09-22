@@ -15,7 +15,6 @@ import CategoryPageComponent from './components/categoryPage/CategoryPageCompone
 import ProductPageComponent from './components/productPage/ProductPageComponent'
 import CheckoutComponent from "./components/checkout/CheckoutComponent";
 
-
 function AuthenticatedRoute({children}){
 
     const auth = sessionStorage.getItem('isAuthenticated')
@@ -43,7 +42,9 @@ function NotAuthenticatedRoute({children}){
 }
 
 function App() {
-  return (
+
+
+    return (
       <div className="bg-white dark:bg-inherit">
           <AuthProvider>
               <BrowserRouter>

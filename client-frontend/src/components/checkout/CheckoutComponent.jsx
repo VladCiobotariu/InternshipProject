@@ -1,12 +1,10 @@
-import {getCartItems, removeCartItem} from "../../security/api/BuyerApi";
+import {getCartItems} from "../../security/api/BuyerApi";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../security/AuthContext";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import CartItemCard from "../cart/CartItemCard";
-import {checkoutSchema} from "./checkoutSchema"
-import {Field, Form, Formik} from "formik";
-import ErrorField from "../error/ErrorField";
-import TextInputWithError from "../input/TextInputWithError";
+import CheckoutForm from "./countries/CheckoutForm";
+import ShippingAddressesComponent from "./ShippingAddressesComponent";
 
 function CheckoutComponent(){
 
@@ -19,14 +17,6 @@ function CheckoutComponent(){
     const shippingPrice = 10
 
     function getCartItemsList() {
-
-        /**
-         * @param{{
-         *          cartItems:[],
-         *          totalCartPrice:float
-         *  }} data
-         */
-
         getCartItems()
             .then(
                 (response) => {
@@ -39,26 +29,7 @@ function CheckoutComponent(){
             )
     }
 
-    function handelDeleteCartItem(productId){
-        removeCartItem(productId)
-            .then(
-                async () => {
-                    getCartItemsList()
-                }
-            )
-            .catch(
-                (err) => console.log(err)
-            )
-    }
-
-    async function onSubmit(values){
-        // await processOrder(values.email, values.password, values.firstName, values.lastName, values.telephone, values.image)
-        //     .then(
-        //         ()=>navigate('/login')
-        //     )
-        //     .catch(
-        //         (error) => console.log(error.response.data)
-        //     )
+    function submitCheckoutForm(values){
         console.log(values)
     }
 
@@ -69,87 +40,29 @@ function CheckoutComponent(){
     }, [location, username]);
 
     return (
-        <div className="grid sm:mx-4 mx-6 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-2 lg:px-20 xl:px-32 2xl:px-40 mt-10">
+        <div className="sm:block flex justify-center mt-10 md:space-x-8 lg:space-x-8 xl:space-x-8 2xl:space-x-8 mx-8">
 
-            <div className="px-4 sm:mt-8 md:mt-8">
+            <div className="sm:mt-8 sm:w-full w-1/2 max-w-lg sm:mx-auto">
 
-                <p className="text-xl font-medium">Contact Information</p>
-                <div className="">
-                    <Formik
-                        initialValues={{
-                            email: "",
-                            firstName: "",
-                            lastName: "",
-                            addressLine1: "",
-                            addressLine2: "",
-                            city: "",
-                            country: "",
-                            state: "",
-                            postalCode: "",
-                            telephone: ""
-                        }}
-                        onSubmit={onSubmit}
-                        validationSchema={checkoutSchema}
-                        validateOnBlur={false}
-                        validateOnChange={false}
-                    >
-
-                        {({ errors, validateField }) => {
-
-                            return (
-                                <Form>
-
-                                    <div className='mt-4'>
-                                        <TextInputWithError fieldName={'email'}
-                                                            errorName={errors.email}
-                                                            labelName={'Email address'}
-                                                            onBlur={()=>validateField('email')}/>
-                                    </div>
-
-                                    <hr
-                                        className="my-4 h-0.5 border-t-0 bg-neutral-100 dark:bg-neutral-700 opacity-100 dark:opacity-50" />
-
-                                    <div className="space-y-2">
-
-                                        <div className="flex flex-row">
-                                            <TextInputWithError fieldName={'firstName'}
-                                                                errorName={errors.firstName}
-                                                                labelName={'First Name'}
-                                                                onBlur={()=>validateField('firstName')}
-                                                                fieldType={"text"}/>
-
-                                            <TextInputWithError fieldName={'lastName'}
-                                                                errorName={errors.lastName}
-                                                                labelName={'Last Name'}
-                                                                onBlur={()=>validateField('lastName')}
-                                                                fieldType={"text"}/>
-                                        </div>
-
-                                        <TextInputWithError fieldName={'telephone'}
-                                                            errorName={errors.telephone}
-                                                            labelName={'Telephone'}
-                                                            onBlur={()=>validateField('telephone')}
-                                                            fieldType={"tel"}/>
-                                    </div>
-
-                                </Form>
-                            );
-                        }}
-                    </Formik>
-                </div>
+                {!username &&
+                    <CheckoutForm submitCheckoutForm={submitCheckoutForm}/>
+                }
+                {!!username &&
+                    <ShippingAddressesComponent/>
+                }
 
             </div>
 
-            <div className="sm:mr-0">
+            <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10">
 
                 <p className="text-xl font-medium">Order Summary</p>
-                <div className="mt-4 px-2 ">
+                <div className="mt-4">
                     {cartItems.map((item)=>(
-                        <CartItemCard key={item.id} item={item} getCartItemsList={getCartItemsList} handelDeleteCartItem={handelDeleteCartItem}/>
+                        <CartItemCard key={item.id} item={item} getCartItemsList={getCartItemsList}/>
                     ))}
                 </div>
 
-                <div className="dark:text-white mt-6 rounded-lg bg-white dark:bg-[#192235] p-6 shadow-md">
+                <div className="dark:text-white mt-6 rounded-lg bg-white dark:bg-[#192235] p-6 shadow-md mb-14">
                     <div className="mb-2 flex justify-between">
                         <p>Subtotal</p>
                         <p>{cartTotalPrice} RON</p>
@@ -165,7 +78,7 @@ function CheckoutComponent(){
                             <p className="mb-1 text-lg font-bold">{cartTotalPrice + shippingPrice} RON</p>
                         </div>
                     </div>
-                    <button onClick={()=> null} className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place Order</button>
+                    <button form='my-form' type='submit' className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place Order</button>
                 </div>
 
             </div>
