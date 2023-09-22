@@ -1,27 +1,26 @@
 package com.ozius.internship.project.service;
 
+import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Product;
 import com.ozius.internship.project.repository.ProductRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ProductService {
 
-    public final ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper) {
         this.productRepository = productRepository;
+        this.modelMapper = modelMapper;
     }
 
 
-    public Page<Product> getProductsByCategoryName(String categoryName, int page, int itemsPerPage) {
-        Pageable pageable = PageRequest.of(page, itemsPerPage);
-        return productRepository.findByCategoryName(categoryName, pageable);
+    public ProductDTO getProductByName(String productName) {
+        Product product = productRepository.findByName(productName);
+        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        return productDTO;
     }
-
 }

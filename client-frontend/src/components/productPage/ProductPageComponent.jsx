@@ -4,6 +4,7 @@ import ProductComponent from "./ProductComponent";
 import {getProductsApi} from "../../security/api/ProductApi";
 import FilteringComponent from "../filter/FilteringComponent";
 import NoEntityMessageComponent from "../nonExistingEntities/NoEntityMessageComponent";
+import ProductAddToCartModal from "./ProductAddToCartModal";
 
 
 const buildFilterOptionsFromQueryParams = (queryParams) => {
@@ -17,6 +18,14 @@ const buildFilterOptionsFromQueryParams = (queryParams) => {
 }
 
 function ProductPageComponent() {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [productName, setProductName] = useState(null);
+
+    const toggleModal = (productName) => {;
+        setIsModalOpen(!isModalOpen);
+        setProductName(productName);
+    }
 
     const [products, setProducts] = useState([]);
     const [itemsPerPage, setItemsPerPage] = useState(8);
@@ -149,7 +158,7 @@ function ProductPageComponent() {
 
 
     return (
-        <div>
+        <div className="">
             <section>
                 <div className="mx-auto mt-16 max-w-7xl px-10">
                     <header>
@@ -174,19 +183,28 @@ function ProductPageComponent() {
                         paragraph="Sorry, we could not find the products you are looking for."/>) : (
                         <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
                             {products.map((product) => (
-                                <ProductComponent
-                                    key={product.id}
-                                    name={product.name}
-                                    imageName={product.imageName}
-                                    price={product.price}
-                                    categoryName={product.category.name}
-                                    sellerAlias={product.seller.alias}
-                                />
+                                <div key={product.id}>
+                                    <ProductComponent
+                                        key={product.id}
+                                        name={product.name}
+                                        imageName={product.imageName}
+                                        price={product.price}
+                                        toggleModal={() => toggleModal(product.name)}
+                                    />
+                                </div>
                             ))}
                         </ul>
                     )}
                 </div>
+
             </section>
+
+            <ProductAddToCartModal
+                toggleModal={toggleModal}
+                isModalOpen={isModalOpen}
+                setIsModalOpen={setIsModalOpen}
+                productName={productName}
+            />
 
         </div>
     );
