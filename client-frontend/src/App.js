@@ -1,19 +1,18 @@
-import './App.css';
+import './styles/App.css';
 import "@fontsource/roboto";
 
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
-import AuthProvider, { useAuth } from './security/AuthContext'
+import AuthProvider, { useAuth } from './auth/AuthContext'
 
-import Header from "./components/header/Header";
-import WelcomeComponent from "./components/welcomePage/WelcomeComponent";
-import LoginComponent from "./components/login/LoginComponent";
-import RegisterComponent from "./components/register/RegisterComponent";
-import {AuthVerify} from "./security/AuthVerify";
-import Favorites from "./components/favorites/Favorites";
-import CartComponent from "./components/cart/CartComponent";
-import CategoryPageComponent from './components/categoryPage/CategoryPageComponent'
-import ProductPageComponent from './components/productPage/ProductPageComponent'
-import CheckoutComponent from "./components/checkout/CheckoutComponent";
+import HeaderComponent from "./components/organisms/header/HeaderComponent";
+import WelcomePageComponent from "./components/organisms/WelcomePageComponent";
+import LoginPageComponent from "./components/organisms/LoginPageComponent";
+import RegisterPageComponent from "./components/organisms/RegisterPageComponent";
+import {AuthVerify} from "./auth/AuthVerify";
+import CartComponent from "./components/organisms/CartPageComponent";
+import CategoryPageComponent from './components/organisms/CategoryPageComponent'
+import ProductPageComponent from './components/organisms/ProductPageComponent'
+import CheckoutPageComponent from "./components/organisms/CheckoutPageComponent";
 
 function AuthenticatedRoute({children}){
 
@@ -49,27 +48,21 @@ function App() {
           <AuthProvider>
               <BrowserRouter>
 
-                  <Header/>
+                  <HeaderComponent/>
 
                   <Routes>
-                      <Route path='/' element={<WelcomeComponent/>}/>
-                      <Route path='' element={<WelcomeComponent/>}/>
+                      <Route path='/' element={<WelcomePageComponent/>}/>
+                      <Route path='' element={<WelcomePageComponent/>}/>
                       <Route path='/login' element={
                           <NotAuthenticatedRoute>
-                              <LoginComponent/>
+                              <LoginPageComponent/>
                           </NotAuthenticatedRoute>
                       }/>
 
                       <Route path='/register' element={
                           <NotAuthenticatedRoute>
-                              <RegisterComponent/>
+                              <RegisterPageComponent/>
                           </NotAuthenticatedRoute>
-                      }/>
-
-                      <Route path='/account/favorites' element={
-                          <AuthenticatedRoute>
-                            <Favorites/>
-                          </AuthenticatedRoute>
                       }/>
 
                       <Route path='/products/categories' element={<CategoryPageComponent/>}/>
@@ -83,7 +76,7 @@ function App() {
 
                       <Route path='/checkout' element={
                           <AuthenticatedRoute>
-                            <CheckoutComponent/>
+                            <CheckoutPageComponent/>
                           </AuthenticatedRoute>
                       }/>
                   </Routes>
