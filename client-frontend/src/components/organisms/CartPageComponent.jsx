@@ -11,6 +11,7 @@ function Cart(){
 
     const [cartItems, setCartItems] = useState([])
     const [cartTotalPrice, setCartTotalPrice] = useState(0)
+    const [isLoading, setIsLoading] = useState(true)
 
     const shippingPrice = 10
 
@@ -46,6 +47,7 @@ function Cart(){
             .then(
                 async () => {
                     getCartItemsList()
+                    setIsLoading(false)
                 }
             )
             .catch(
@@ -75,7 +77,7 @@ function Cart(){
                 </div>
             }
 
-            {cartItems.length===0 &&
+            {(cartItems.length===0 && !isLoading) &&
                 <ErrorComponent description="You don't have any items in Cart. Add Items in the shop:" solution="Shop now!" linkTo='/products'/>
             }
 
