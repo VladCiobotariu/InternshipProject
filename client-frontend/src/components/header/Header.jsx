@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState, useEffect } from 'react';
-import {Link, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { useAuth } from '../../security/AuthContext';
 import { getAllCategoriesApi } from "../../security/api/CategoryApi";
 import { baseURL } from "../../security/ApiClient";
@@ -48,6 +48,8 @@ export default function Header() {
 
     const location = useLocation()
     const buttonRef = useRef();
+
+    const navigate = useNavigate()
 
     const getCategoryList = () => {
         getAllCategoriesApi()
@@ -250,6 +252,16 @@ export default function Header() {
                                     >
                                         <div className="p-2">
                                             {favorites.map((item) => (
+
+                                                /**
+                                                 * @param {{
+                                                 *     seller:{
+                                                 *         alias
+                                                 *     },
+                                                 *     name,
+                                                 *     imageName
+                                                 * }} item
+                                                 */
 
                                                 <div
                                                     key={item.id}

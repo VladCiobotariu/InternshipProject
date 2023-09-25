@@ -12,7 +12,7 @@ export function removeCartItem(productId){
     })
 }
 
-export function modifyCartItemQuantity(productId, quantity){
+export function addOrUpdateCartItem(productId, quantity){
     return api.put('/my-cart',{}, {
         params:{
             productId,

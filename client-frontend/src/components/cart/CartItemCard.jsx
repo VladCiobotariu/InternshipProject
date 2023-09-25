@@ -2,7 +2,7 @@ import {baseURL} from "../../security/ApiClient";
 import QuantityInput from "../input/QuantityInput";
 import React, {useState} from "react";
 import useBreakpoint from "../../hooks/useBreakpoint";
-import {modifyCartItemQuantity} from "../../security/api/CartApi";
+import {addOrUpdateCartItem} from "../../security/api/CartApi";
 import {useTranslation} from "react-i18next";
 
 function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiable}){
@@ -30,7 +30,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
     const [quantity, setQuantity] = useState(item.quantity)
 
     function updateDataBaseQuantity(newQuantity){
-        modifyCartItemQuantity(item.product.id, newQuantity)
+        addOrUpdateCartItem(item.product.id, newQuantity)
             .then(
                 () => {
                     getCartItemsList()
