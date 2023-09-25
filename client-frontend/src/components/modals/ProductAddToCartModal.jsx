@@ -1,5 +1,4 @@
-import React, {Fragment, useState, useRef, useEffect} from 'react'
-import {Dialog, Transition} from "@headlessui/react";
+import React, {useState, useEffect} from 'react'
 import {getProductByNameApi} from "../../security/api/ProductApi";
 import {baseURL} from "../../security/ApiClient";
 import {useAuth} from "../../security/AuthContext";
@@ -57,7 +56,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
             {product &&
                 <div>
                     <div className="bg-white px-8 pb-4 pt-5">
-                        <div className="">
+                        <div>
                             <div className="flex flex-col">
                                 <div className="flex justify-between">
                                     <div>

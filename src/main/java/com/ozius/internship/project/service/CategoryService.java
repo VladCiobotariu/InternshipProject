@@ -18,15 +18,9 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-//    public List<Category> getCategories() {
-//        return categoryRepository.findAll();
-//    }
-
-    public Page<Category> getCategoriesByItemsPerPage(int page, int itemsPerPage) {
-        Pageable pageable = PageRequest.of(page, itemsPerPage);
-        return categoryRepository.findAll(pageable);
+    public List<Category> getCategories() {
+        return categoryRepository.findAll();
     }
-
 
     public Category createCategory(Category category) {
         categoryRepository.save(category);

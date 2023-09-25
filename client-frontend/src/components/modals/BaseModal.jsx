@@ -45,7 +45,6 @@ const BaseModal = ({children, isModalOpen, toggleModal}) => {
                     </div>
                 </Dialog>
             </Transition.Root>
-            )
 
         </div>
     )

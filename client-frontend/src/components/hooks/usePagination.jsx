@@ -11,6 +11,9 @@ const usePagination = ({totalCount, itemsPerPage, siblingCount = 1, currentPage}
 
     const paginationRange = useMemo(() => {
         const totalPageCount = Math.ceil(totalCount / itemsPerPage);
+        console.log(totalCount + " totalCount")
+        console.log(itemsPerPage + " itemsPerPage")
+        console.log(totalPageCount + " totalPageCount")
 
         // siblingCount + firstPage + lastPage + currentPage + 2*DOTS
         const totalPageNumbers = siblingCount + 5;
@@ -20,6 +23,8 @@ const usePagination = ({totalCount, itemsPerPage, siblingCount = 1, currentPage}
           paginationComponent, we return the range [1..totalPageCount]
         */
         if (totalPageNumbers >= totalPageCount) {
+            console.log("we got here");
+            console.log(range(1, totalPageCount))
             return range(1, totalPageCount);
         }
 

@@ -21,18 +21,11 @@ public class CategoryController {
         this.categoryRepository = categoryRepository;
     }
 
-//    @GetMapping("/categories")
-//    public List<Category> getCategories() {
-//        return categoryService.getCategories();
-//    }
-
     @GetMapping("/categories")
-    public ApiPaginationResponse<List<Category>> getCategoriesByItemsPerPage(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
-                                                                             @RequestParam(name = "page", defaultValue = "1") int page) {
-        Page<Category> categoryPage = categoryService.getCategoriesByItemsPerPage(page-1, itemsPerPage);
-        List<Category> categories = categoryPage.getContent();
-        int totalElements = (int) categoryPage.getTotalElements();
-        return new ApiPaginationResponse<>(page, itemsPerPage, totalElements, categories);
+    public ApiResponse<List<Category>> getCategories() {
+        int numberOfCategories = categoryService.getCategories().size();
+        List<Category> categories = categoryService.getCategories();
+        return new ApiResponse<>(numberOfCategories, categories);
     }
 
     @GetMapping("/categories/categoryNames")

@@ -156,6 +156,7 @@ public class TestDataCreator {
         Products.product6 = createProduct(em, "Peach", "This is a peach! It is a fruit!", "/images/peach.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
         Products.product7 = createProduct(em, "Orange", "This is an orange! It is a fruit!", "/images/orange.jpg", 5f, Categories.category1, Sellers.seller1, UnitOfMeasure.KILOGRAM);
         Products.product8 = createProduct(em, "Potato", "This is a potato! It is a vegetable!", "/images/potato.jpeg", 5f, Categories.category2, Sellers.seller1, UnitOfMeasure.KILOGRAM);
+        Products.product9 = createProduct(em, "Pepper", "This is a pepper! It is a vegetable!", "/images/pepper.jpg", 5f, Categories.category2, Sellers.seller1, UnitOfMeasure.KILOGRAM);
     }
 
     public static void createAddresses(){
@@ -232,6 +233,7 @@ public class TestDataCreator {
         public static Product product6;
         public static Product product7;
         public static Product product8;
+        public static Product product9;
     }
 
     public static class Categories{
