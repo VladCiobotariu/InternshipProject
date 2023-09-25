@@ -33,7 +33,7 @@ public class TestDataCreator {
         return buyer;
     }
 
-    public static void createBuyerBaseData(EntityManager em, PasswordEncoder passwordEncoder){
+    public static void createBuyerBaseData(EntityManager em, PasswordEncoder passwordEncoder) {
         UserAccount account1 = new UserAccount(
                 "Cosmina",
                 "Maria",
@@ -44,10 +44,10 @@ public class TestDataCreator {
         Buyers.buyer1 = createBuyer(em, account1);
 
         UserAccount account2 = new UserAccount(
-                "Marcel",
-                "Danila",
-                "marceldanila@gmail.com",
-                "/src/image90",
+                "Erika",
+                "Rusznak",
+                "erikarusznak@gmail.com",
+                "none",
                 "0777777635");
         account2.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
         Buyers.buyer2 = createBuyer(em, account2);
@@ -60,11 +60,10 @@ public class TestDataCreator {
                 "+40770157915");
         account3.setInitialPassword(passwordEncoder.encode("Ozius1234!"));
         Buyers.buyer3 = createBuyer(em, account3);
-
     }
 
     public static void createBuyerAddressBaseData(EntityManager em){
-        Buyer mergedBuyer = em.merge(Buyers.buyer3);
+        Buyer mergedBuyer = em.merge(Buyers.buyer2);
         Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
         mergedBuyer.addAddress(address, "Vlad", "Cristi", "+40356424801");
     }
@@ -199,9 +198,12 @@ public class TestDataCreator {
 
     public static void createCartBaseData(EntityManager em){
         Cart cart = createCart(em, Buyers.buyer3);
+        Cart cart2 = createCart(em, Buyers.buyer2);
 
         addItemToCart(em, cart, Products.product1, 2F);
         addItemToCart(em, cart, Products.product2, 5F);
+
+        addItemToCart(em, cart2, Products.product2, 5F);
     }
 
     public static void createFavoritesBaseData(EntityManager em){

@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react'
 import CategoryComponent from "./CategoryComponent";
 import {getAllCategoriesApi, getAllCategoriesByItemsPerPageAndPage} from "../../security/api/CategoryApi";
 import PaginationComponent from "../pagination/PaginationComponent";
-import NoCategoryMessageComponent from "./NoCategoryMessageComponent";
 import './CategoryPageComponent.css';
 import SelectComponent from "../pagination/SelectComponent";
+import NoEntityMessageComponent from "../nonExistingEntities/NoEntityMessageComponent";
 
 const CategoryPageComponent = () => {
 
@@ -50,7 +50,9 @@ const CategoryPageComponent = () => {
     return (
         <div>
 
-            {totalNumberCategories === 0 ? (<NoCategoryMessageComponent />) :
+            {totalNumberCategories === 0 ? (<NoEntityMessageComponent
+                                                header="Categories do not exist yet."
+                                                paragraph="Sorry, we could not find the categories you are looking for."/>) :
                 (
                     <div className="bg-gray-100">
                         <div className="justify-center">

@@ -1,20 +1,29 @@
 import React from 'react';
 
-const SortFilterComponent = ({onClickInside}) => {
+const SortFilterComponent = ({onSortChanged}) => {
+
+    const handleSortClick = (criteria, orderSort) => {
+        const newSort = { criteria, orderSort }
+        onSortChanged(newSort);
+    }
 
     return (
-        <div onClick={onClickInside}>
-            <div className="w-56 rounded border border-zinc-300 bg-white">
-                <div className="px-2 pt-2 pb-2 bg-white rounded-md shadow-lg dark-mode:bg-gray-700">
-                    <div className="flex flex-col hover-bg-black cursor-pointer font-thin gap-4">
-                        <div className="hover:bg-gray-200"
-                             onClick={() => null}>Price: ascending</div>
-                        <div className="hover:bg-gray-200"
-                             onClick={() => null}>Price: descending</div>
-                        <div className="hover:bg-gray-200"
-                             onClick={() => null}>Name: ascending</div>
-                        <div className="hover:bg-gray-200"
-                             onClick={() => null}>Name: descending</div>
+        <div>
+            <div className="w-56 bg-white">
+                <div className="text-center mx-auto bg-white rounded-2xl border border-zinc-300 shadow-lg">
+                    <div className="flex flex-col cursor-pointer font-thin text-zinc-800">
+                        <div className="hover:bg-indigo-100 py-2 border-b rounded-t-2xl"
+                             onClick={() => handleSortClick('productPrice', 'asc')}>Price: ascending
+                        </div>
+                        <div className="hover:bg-indigo-100 py-2 border-b"
+                             onClick={() => handleSortClick('productPrice', 'desc')}>Price: descending
+                        </div>
+                        <div className="hover:bg-indigo-100 py-2 border-b"
+                             onClick={() => handleSortClick('productName', 'asc')}>Name: ascending
+                        </div>
+                        <div className="hover:bg-indigo-100 py-2 border-b rounded-b-2xl"
+                             onClick={() => handleSortClick('productName', 'desc')}>Name: descending
+                        </div>
                     </div>
                 </div>
             </div>

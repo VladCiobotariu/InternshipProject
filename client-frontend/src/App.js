@@ -73,7 +73,7 @@ function App() {
                       }/>
 
                       <Route path='/products/categories' element={<CategoryPageComponent/>}/>
-                      <Route path='/products/categories/:categoryName' element={<ProductPageComponent/>}/>
+                      <Route path='/products' element={<ProductPageComponent/>}/>
 
                       <Route path='/account/cart' element={<CartComponent/>}/>
 

@@ -1,10 +1,16 @@
 import axios from 'axios'
+import qs from "qs";
 
 export const baseURL = 'http://localhost:8080'
 export const api = axios.create(
     {
-        baseURL: baseURL
-    }
+        baseURL: baseURL,
+        paramsSerializer: {
+            serialize: (params) => {
+               return qs.stringify(params, { arrayFormat: 'brackets' })
+            }
+        }
+    },
 )
 
 api.interceptors.request.use(
