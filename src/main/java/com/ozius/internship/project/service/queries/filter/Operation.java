@@ -6,7 +6,11 @@ public enum Operation {
     GTE(">="),
     LT("<"),
     LTE("<="),
-    LIKE("like");
+    LIKE("like"),
+    CONTAINS("like"),
+    STARTS_WITH("like"),
+    ENDS_WITH("like");
+
 
     private String sqlOperator;
 
