@@ -1,5 +1,5 @@
 import React, { Fragment, useRef, useState, useEffect } from 'react';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {Link, useLocation} from 'react-router-dom';
 import { useAuth } from '../../security/AuthContext';
 import { getAllCategoriesApi } from "../../security/api/CategoryApi";
 import { baseURL } from "../../security/ApiClient";
@@ -18,7 +18,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import {ReactComponent as Logo} from "./icon.svg";
-import {getFavorites, getCartItems, removeFavorite} from "../../security/api/BuyerApi";
+import {getFavorites, removeFavorite} from "../../security/api/BuyerApi";
+import {getCartItems} from "../../security/api/CartApi";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -35,7 +36,6 @@ function classNames(...classes) {
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isShowing, setIsShowing] = useState(false)
 
     const [categories, setCategories] = useState([]);
     const [favorites, setFavorites] = useState([])
@@ -47,8 +47,6 @@ export default function Header() {
     const auth = useAuth();
 
     const location = useLocation()
-    const navigate = useNavigate()
-
     const buttonRef = useRef();
 
     const getCategoryList = () => {
@@ -113,19 +111,21 @@ export default function Header() {
                     </Link>
                 </div>
                 <div className="flex md:hidden lg:hidden xl:hidden 2xl:hidden">
-                    <Link to='/account/cart' className="relative mr-6">
-                        <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                        {numberOfCartItems!==0 &&
-                            <div className="absolute
+                    {!!username &&
+                        <Link to='/account/cart' className="relative mr-6">
+                            <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
+                            {numberOfCartItems!==0 &&
+                                <div className="absolute
                                  inline-flex items-center justify-center
                                  w-4 h-4
                                  text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
                                  -top-2 -right-2
                                  dark:border-gray-900">
-                                {numberOfCartItems}
-                            </div>
-                        }
-                    </Link>
+                                    {numberOfCartItems}
+                                </div>
+                            }
+                        </Link>
+                    }
 
                     <button
                         type="button"
@@ -293,18 +293,20 @@ export default function Header() {
                         </Popover>
                     }
 
-                    <Link to='/account/cart' className="inline-flex relative mr-6">
-                        <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
-                        {numberOfCartItems!==0 &&
-                            <div className="absolute inline-flex items-center justify-center
+                    {!!username &&
+                        <Link to='/account/cart' className="inline-flex relative mr-6">
+                            <ShoppingBagIcon className="h-6 w-6 text-gray-900 dark:text-inherit"/>
+                            {numberOfCartItems!==0 &&
+                                <div className="absolute inline-flex items-center justify-center
                                  w-4 h-4
                                  text-xxs font-bold text-white bg-red-500 border-0 border-white rounded-full
                                  -top-2 -left-2
                                  dark:border-gray-900">
-                                {numberOfCartItems}
-                            </div>
-                        }
-                    </Link>
+                                    {numberOfCartItems}
+                                </div>
+                            }
+                        </Link>
+                    }
 
                     {isAuthenticated &&
                         <Popover className="relative mr-5 ">

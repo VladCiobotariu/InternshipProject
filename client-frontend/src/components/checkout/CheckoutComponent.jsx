@@ -1,15 +1,23 @@
-import {getCartItems} from "../../security/api/BuyerApi";
+import {getCartItems} from "../../security/api/CartApi";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../security/AuthContext";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import CartItemCard from "../cart/CartItemCard";
-import CheckoutForm from "./countries/CheckoutForm";
 import ShippingAddressesComponent from "./ShippingAddressesComponent";
+import {submitOrder} from "../../security/api/OrderApi";
 
 function CheckoutComponent(){
 
     const [cartItems, setCartItems] = useState([])
     const [cartTotalPrice, setCartTotalPrice] = useState(0)
+
+    const checkoutItems =  cartItems.map(({product, ...cartItems}) => cartItems)
+    checkoutItems.forEach( function(data){
+        data['productId']=data['id']
+        delete data['id']
+    })
+
+    const [shippingAddress, setShippingAddress] = useState(null)
 
     const {username} = useAuth()
     const location = useLocation()
@@ -29,8 +37,24 @@ function CheckoutComponent(){
             )
     }
 
-    function submitCheckoutForm(values){
-        console.log(values)
+    function callback(shippingAddress){
+        setShippingAddress(shippingAddress)
+    }
+
+    function handlePlaceOrder(){
+        console.log(shippingAddress)
+        console.log(checkoutItems)
+        console.log(username)
+
+        submitOrder(shippingAddress,checkoutItems,username)
+            .then(
+                (res) => console.log(res)
+            )
+            .catch(
+                (e) => {
+                    console.log(e)
+                }
+            )
     }
 
     useEffect(() => {
@@ -43,14 +67,7 @@ function CheckoutComponent(){
         <div className="sm:block flex justify-center mt-10 md:space-x-8 lg:space-x-8 xl:space-x-8 2xl:space-x-8 mx-8">
 
             <div className="sm:mt-8 sm:w-full w-1/2 max-w-lg sm:mx-auto">
-
-                {!username &&
-                    <CheckoutForm submitCheckoutForm={submitCheckoutForm}/>
-                }
-                {!!username &&
-                    <ShippingAddressesComponent/>
-                }
-
+                <ShippingAddressesComponent onClick={callback}/>
             </div>
 
             <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10">
@@ -78,7 +95,7 @@ function CheckoutComponent(){
                             <p className="mb-1 text-lg font-bold">{cartTotalPrice + shippingPrice} RON</p>
                         </div>
                     </div>
-                    <button form='my-form' type='submit' className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place Order</button>
+                    <button onClick={handlePlaceOrder} className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place Order</button>
                 </div>
 
             </div>

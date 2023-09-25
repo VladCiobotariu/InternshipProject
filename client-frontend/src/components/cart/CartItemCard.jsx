@@ -2,9 +2,12 @@ import {baseURL} from "../../security/ApiClient";
 import QuantityInput from "../input/QuantityInput";
 import React, {useState} from "react";
 import useBreakpoint from "../../hooks/useBreakpoint";
-import {modifyCartItemQuantity} from "../../security/api/BuyerApi";
+import {modifyCartItemQuantity} from "../../security/api/CartApi";
+import {useTranslation} from "react-i18next";
 
 function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiable}){
+
+    const { t } = useTranslation();
 
     /**
      * @param {{
@@ -19,6 +22,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
      *          quantity:float
      *       }} item
      */
+
     const totalPricePerItem = Math.round(((item.product.price * item.quantity) + Number.EPSILON) * 100) / 100
 
     const breakpoint = useBreakpoint()
@@ -57,7 +61,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
                 <div className="ml-4 flex justify-between w-full">
                     <div className="mt-0 mr-4">
                         <h2 className="sm:text-right text-lg font-bold text-gray-900 dark:text-white">{item.product.name}</h2>
-                        <p className="mt-1 text-xs text-gray-700 dark:text-gray-200">Price per {item.product.unitOfMeasure}: {item.product.price} RON</p>
+                        <p className="mt-1 text-xs text-gray-700 dark:text-gray-200">Price per {t(`enums.unitOfMeasure.${item.product.unitOfMeasure}`)}: {item.product.price} RON</p>
                     </div>
                     <div className="flex flex-col justify-between items-end mt-0">
                         {!!isModifiable &&

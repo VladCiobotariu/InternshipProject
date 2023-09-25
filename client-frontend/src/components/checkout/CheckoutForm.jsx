@@ -1,10 +1,9 @@
-import {shippingAddressSchema} from "../shippingAddressSchema";
+import {shippingAddressSchema} from "./shippingAddressSchema";
 import {Form, Formik} from "formik";
-import TextInputWithError from "../../input/TextInputWithError";
-import CountrySelector from "./selector";
-import {COUNTRIES} from "./countries";
+import TextInputWithError from "../input/TextInputWithError";
+import CountrySelector from "./countries/selector";
+import {COUNTRIES} from "./countries/countries";
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
 
 function CheckoutForm({submitCheckoutForm}){
 

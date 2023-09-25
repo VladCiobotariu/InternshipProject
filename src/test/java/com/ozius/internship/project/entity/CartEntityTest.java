@@ -4,7 +4,6 @@ import com.ozius.internship.project.JpaBaseEntity;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.cart.CartItem;
-import com.ozius.internship.project.entity.exception.IllegalQuantityException;
 import com.ozius.internship.project.entity.exception.NotFoundException;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.product.UnitOfMeasure;
@@ -15,12 +14,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Set;
 
-import static com.ozius.internship.project.TestDataCreator.*;
 import static com.ozius.internship.project.TestDataCreator.Categories.category1;
 import static com.ozius.internship.project.TestDataCreator.Categories.category2;
-import static com.ozius.internship.project.TestDataCreator.Products.*;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product2;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller1;
 import static com.ozius.internship.project.TestDataCreator.Sellers.seller2;
+import static com.ozius.internship.project.TestDataCreator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -252,94 +252,6 @@ public class CartEntityTest extends JpaBaseEntity {
         assertThat(persistedCart.getCartItems()).isEmpty();
         assertThat(persistedCart.getTotalCartPrice()).isEqualTo(0);
         assertThat(persistedCart.getCartItems().size()).isEqualTo(0);
-    }
-
-    //TODO removed test, same test as below
-    public void adding_cartItem_with_zero_quantity_throws_exception() {
-        // ----Arrange
-        doTransaction(em -> {
-            Cart cart = new Cart();
-            em.persist(cart);
-        });
-
-        // ----Act
-        Exception exception = doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "cartofi", "pentru fiert", "src/image4", 12.7f, category1, seller1, UnitOfMeasure.KILOGRAM);
-
-            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, 0));
-        });
-
-        //----Assert
-        assertTrue(exception.getMessage().contains("Quantity cannot be 0!"));
-    }
-
-    //TODO to be removed
-    public void updating_cartItem_with_zero_quantity_throws_exception() {
-        // ----Arrange
-        Product productSaved = doTransaction(em -> {
-            Cart cart = new Cart();
-            Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1, UnitOfMeasure.KILOGRAM);
-            cart.addOrUpdateItem(product, 2);
-            em.persist(cart);
-
-            return product;
-        });
-
-        // ----Act
-        Exception exception = doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class);
-            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(productSaved, 0));
-        });
-
-        // ----Assert
-        assertTrue(exception.getMessage().contains("Quantity cannot be 0!"));
-    }
-
-    //TODO removed test
-    public void adding_cartItem_with_quantity_less_than_zero_throws_exception() {
-        // ----Arrange
-        doTransaction(em -> {
-            Cart cart = new Cart();
-            em.persist(cart);
-        });
-
-        // ----Act
-        Exception exception = doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class);
-            Product p1 = createProduct(em, "cartofi", "pentru fiert", "src/image4", 12.7f, category1, seller1, UnitOfMeasure.KILOGRAM);
-            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(p1, -5));
-        });
-
-        // ----Assert
-        assertTrue(exception.getMessage().contains("Quantity cannot be less than 0!"));
-
-    }
-
-    //TODO remove test because same test as above
-    public void updating_cartItem_with_quantity_less_than_zero_throws_exception() {
-        // ----Arrange
-        Product productSaved = doTransaction(em -> {
-            Cart cart = new Cart();
-            Product product = createProduct(em, "popcorn", "descriere popcorn", "/popcorn", 5F, category1, seller1, UnitOfMeasure.KILOGRAM);
-            cart.addOrUpdateItem(product, 2);
-            em.persist(cart);
-
-            return product;
-        });
-
-        // ----Act
-        Exception exception = doTransaction(em -> {
-            EntityFinder entityFinder = new EntityFinder(em);
-            Cart cart = entityFinder.getTheOne(Cart.class);
-            return assertThrows(IllegalQuantityException.class, () -> cart.addOrUpdateItem(productSaved, -2));
-        });
-
-        // ----Assert
-        assertTrue(exception.getMessage().contains("Quantity cannot be less than 0!"));
     }
 
     @Test

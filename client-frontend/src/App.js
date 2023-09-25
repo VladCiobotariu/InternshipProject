@@ -75,9 +75,17 @@ function App() {
                       <Route path='/products/categories' element={<CategoryPageComponent/>}/>
                       <Route path='/products/categories/:categoryName' element={<ProductPageComponent/>}/>
 
-                      <Route path='/account/cart' element={<CartComponent/>}/>
+                      <Route path='/account/cart' element={
+                          <AuthenticatedRoute>
+                            <CartComponent/>
+                          </AuthenticatedRoute>
+                      }/>
 
-                      <Route path='/checkout' element={<CheckoutComponent/>}/>
+                      <Route path='/checkout' element={
+                          <AuthenticatedRoute>
+                            <CheckoutComponent/>
+                          </AuthenticatedRoute>
+                      }/>
                   </Routes>
 
                   <AuthVerify/>

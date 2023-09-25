@@ -65,8 +65,12 @@ public class TestDataCreator {
 
     public static void createBuyerAddressBaseData(EntityManager em){
         Buyer mergedBuyer = em.merge(Buyers.buyer3);
-        Address address = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
-        mergedBuyer.addAddress(address, "Vlad", "Cristi", "+40356424801");
+        Address address1 = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
+        mergedBuyer.addAddress(address1, "Vlad", "Cristi", "+40356424801");
+
+        Address address2 = new Address("Spania", "Marbella", "Barcelona", "Angola st 1", "Bloc, ap 170", "300999");
+        mergedBuyer.addAddress(address2, "Vlad", "Cristian", "+40356424809");
+
     }
 
     public static Seller createSellerFarmer(EntityManager em, Address address, UserAccount account, String alias){

@@ -1,4 +1,4 @@
-import {getCartItems, removeCartItem} from "../../security/api/BuyerApi";
+import {getCartItems, removeCartItem} from "../../security/api/CartApi";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../security/AuthContext";
 import {useLocation} from "react-router-dom";

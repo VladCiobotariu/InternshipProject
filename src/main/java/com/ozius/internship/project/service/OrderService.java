@@ -12,8 +12,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -26,8 +27,8 @@ public class OrderService {
         this.buyerService = buyerService;
     }
 
-    @Transactional
-    public void makeOrderFromCheckout(String buyerEmail, BuyerAddressDto shippingAddress, List<CheckoutItemDto> products) {
+    @Transactional //TODO maybe return object and put in response header
+    public void makeOrdersFromCheckout(String buyerEmail, BuyerAddressDto shippingAddress, List<CheckoutItemDto> products) {
 
         Address address = shippingAddress.getAddress();
         String buyerFirstName = shippingAddress.getFirstName();
@@ -39,7 +40,7 @@ public class OrderService {
             throw new IllegalArgumentException("buyer doesn't exits");
         }
 
-        Map<Seller, List<Order>> sellersToOrder = new HashMap<>();
+        Map<Seller, Order> sellersToOrder = new HashMap<>();
         for(CheckoutItemDto checkoutItemDto : products){
             Product product = em.find(Product.class, checkoutItemDto.getProductId());
             if(product == null){
@@ -47,12 +48,13 @@ public class OrderService {
             }
 
             Seller seller = product.getSeller();
-            AtomicReference<Order> order = new AtomicReference<>();
-            sellersToOrder.computeIfAbsent(seller, value -> {
-                order.set(new Order(address, buyer, seller, buyerEmail, buyerFirstName, buyerLastName, buyerTelephone));
-                em.persist(order.get());
-                return new ArrayList<>();
-            }).add(order.get());
+
+            Order orderPersisted = sellersToOrder.computeIfAbsent(seller, k -> {
+                Order order = new Order(address, buyer, k, buyerEmail, buyerFirstName, buyerLastName, buyerTelephone);
+                em.persist(order);
+                return order;
+            });
+            orderPersisted.addProduct(product, checkoutItemDto.getQuantity());
         }
     }
 }
