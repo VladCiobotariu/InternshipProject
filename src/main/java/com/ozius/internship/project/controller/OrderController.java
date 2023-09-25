@@ -17,7 +17,7 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('CLIENT') and #orderDTO.email == authentication.name")
     public void makeOrders(@RequestBody(required = false) OrderDTO orderDTO) {
 
         orderService.makeOrdersFromCheckout(orderDTO.getEmail(), orderDTO.getShippingAddress(), orderDTO.getProducts());

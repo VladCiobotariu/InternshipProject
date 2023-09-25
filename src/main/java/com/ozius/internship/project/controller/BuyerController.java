@@ -8,10 +8,13 @@ import com.ozius.internship.project.service.BuyerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -30,7 +33,7 @@ public class BuyerController {
     public Stream<ProductDTO> retrieveFavoritesByUserEmail(Principal principal) {
         String loggedUserName = principal.getName();
 
-        Set<Product> favorites = buyerService.getFavoritesByUserEmail(loggedUserName);
+        List<Product> favorites = buyerService.getFavoritesByUserEmail(loggedUserName);
         return favorites.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class));
     }
@@ -48,7 +51,7 @@ public class BuyerController {
     public Stream<BuyerAddressDto> retrieveBuyerAddressesByUserEmail(Principal principal){
         String loggedUserName = principal.getName();
 
-        Set<BuyerAddress> buyerAddresses = buyerService.getBuyerAddressesByUserEmail(loggedUserName);
+        List<BuyerAddress> buyerAddresses = buyerService.getBuyerAddressesByUserEmail(loggedUserName);
         return buyerAddresses.stream()
                 .map(address -> modelMapper.map(address, BuyerAddressDto.class));
     }

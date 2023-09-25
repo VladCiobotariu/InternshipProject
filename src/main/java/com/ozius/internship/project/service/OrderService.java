@@ -22,12 +22,14 @@ public class OrderService {
     @PersistenceContext
     private EntityManager em;
     private final BuyerService buyerService;
+    private final CartService cartService;
 
-    public OrderService(BuyerService buyerService) {
+    public OrderService(BuyerService buyerService, CartService cartService) {
         this.buyerService = buyerService;
+        this.cartService = cartService;
     }
 
-    @Transactional //TODO maybe return object and put in response header
+    @Transactional
     public void makeOrdersFromCheckout(String buyerEmail, BuyerAddressDto shippingAddress, List<CheckoutItemDto> products) {
 
         Address address = shippingAddress.getAddress();
@@ -42,19 +44,28 @@ public class OrderService {
 
         Map<Seller, Order> sellersToOrder = new HashMap<>();
         for(CheckoutItemDto checkoutItemDto : products){
+
+            //retrieve product and throw exception if not found
             Product product = em.find(Product.class, checkoutItemDto.getProductId());
             if(product == null){
                 throw new IllegalArgumentException("product with id: " + checkoutItemDto.getProductId() + " doesn't exits");
             }
 
+            //retrieve seller
             Seller seller = product.getSeller();
 
+            //retrieve order or create order if not found one in the map
             Order orderPersisted = sellersToOrder.computeIfAbsent(seller, k -> {
                 Order order = new Order(address, buyer, k, buyerEmail, buyerFirstName, buyerLastName, buyerTelephone);
                 em.persist(order);
                 return order;
             });
+
+            //add product to the retrieved order
             orderPersisted.addProduct(product, checkoutItemDto.getQuantity());
+
+            //remove product from cart
+            cartService.removeCartItemByProductId(buyerEmail, checkoutItemDto.getProductId());
         }
     }
 }

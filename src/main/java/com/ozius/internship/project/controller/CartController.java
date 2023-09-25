@@ -1,6 +1,7 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.CartDTO;
+import com.ozius.internship.project.dto.CartItemDTO;
 import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.service.CartService;
 import org.modelmapper.ModelMapper;
@@ -9,7 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 
 @RestController
 public class CartController {
@@ -24,14 +26,17 @@ public class CartController {
 
     @GetMapping("/my-cart")
     @PreAuthorize("hasRole('CLIENT')")
-    public CartDTO retrieveCartByUserEmail(Principal principal) {
+    public ResponseEntity<Object> retrieveCartByUserEmail(Principal principal) {
         String loggedUserName = principal.getName();
 
         Cart cart = cartService.getCartByUserEmail(loggedUserName);
         if(cart == null){
-            return new CartDTO(0, new HashSet<>(), 0d);
+           return ResponseEntity.notFound().build();
         }
-        return modelMapper.map(cart, CartDTO.class);
+        CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+        cartDTO.getCartItems().sort(Comparator.comparingLong(CartItemDTO::getId));
+
+        return ResponseEntity.ok(cartDTO);
     }
 
     @PutMapping("/my-cart")

@@ -11,10 +11,11 @@ function CheckoutComponent(){
     const [cartItems, setCartItems] = useState([])
     const [cartTotalPrice, setCartTotalPrice] = useState(0)
 
-    const checkoutItems =  cartItems.map(({product, ...cartItems}) => cartItems)
-    checkoutItems.forEach( function(data){
-        data['productId']=data['id']
-        delete data['id']
+    const checkoutItems =  cartItems.map(item => {
+        return {
+            productId: item.id,
+            quantity: item.quantity
+        }
     })
 
     const [shippingAddress, setShippingAddress] = useState(null)
@@ -42,14 +43,8 @@ function CheckoutComponent(){
     }
 
     function handlePlaceOrder(){
-        console.log(shippingAddress)
-        console.log(checkoutItems)
-        console.log(username)
 
         submitOrder(shippingAddress,checkoutItems,username)
-            .then(
-                (res) => console.log(res)
-            )
             .catch(
                 (e) => {
                     console.log(e)
