@@ -4,25 +4,24 @@ import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.buyer.BuyerAddress;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.repository.BuyerRepository;
+import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.repository.UserAccountRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
 @Service
 public class BuyerService {
 
-    @PersistenceContext
-    private EntityManager em;
     private final BuyerRepository buyerRepository;
     private final UserAccountRepository userAccountRepository;
+    private final ProductRepository productRepository;
 
-    public BuyerService(BuyerRepository buyerRepository, UserAccountRepository userAccountRepository) {
+    public BuyerService(BuyerRepository buyerRepository, UserAccountRepository userAccountRepository, ProductRepository productRepository) {
         this.buyerRepository = buyerRepository;
         this.userAccountRepository = userAccountRepository;
+        this.productRepository = productRepository;
     }
 
     @Transactional
@@ -32,15 +31,15 @@ public class BuyerService {
     }
 
     @Transactional
-    public Set<Product> getFavoritesByUserEmail(String email) {
+    public List<Product> getFavoritesByUserEmail(String email) {
         Buyer buyer = getBuyerByEmail(email);
-        return buyer.getFavoriteProducts();
+        return buyer.getFavoriteProducts().stream().toList();
     }
 
     @Transactional
     public void addFavoriteByProductId(String email, long productId) {
         Buyer buyer = getBuyerByEmail(email);
-        Product product = em.find(Product.class, productId);
+        Product product = productRepository.findById(productId).orElseThrow();
         buyer.addFavorite(product);
     }
 
@@ -48,14 +47,14 @@ public class BuyerService {
     @Transactional
     public void removeFavoriteByProductId(String email, long productId) {
         Buyer buyer = getBuyerByEmail(email);
-        //TODO ask, cant implement with paging and sorting repo
-        Product product = em.find(Product.class, productId);
+
+        Product product = productRepository.findById(productId).orElseThrow();
         buyer.removeFavorite(product);
     }
 
     @Transactional
-    public Set<BuyerAddress> getBuyerAddressesByUserEmail(String email){
+    public List<BuyerAddress> getBuyerAddressesByUserEmail(String email){
         Buyer buyer = getBuyerByEmail(email);
-        return buyer.getAddresses();
+        return buyer.getAddresses().stream().toList();
     }
 }

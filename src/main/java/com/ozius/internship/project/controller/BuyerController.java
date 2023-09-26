@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Stream;
 
 @RestController
@@ -19,7 +19,6 @@ public class BuyerController {
 
     private final BuyerService buyerService;
     private final ModelMapper modelMapper;
-    private Set<Product> favorites;
 
     public BuyerController(BuyerService buyerService, ModelMapper modelMapper) {
         this.buyerService = buyerService;
@@ -31,7 +30,7 @@ public class BuyerController {
     public Stream<ProductDTO> retrieveFavoritesByUserEmail(Principal principal) {
         String loggedUserName = principal.getName();
 
-        Set<Product> favorites = buyerService.getFavoritesByUserEmail(loggedUserName);
+        List<Product> favorites = buyerService.getFavoritesByUserEmail(loggedUserName);
         return favorites.stream()
                 .map(product -> modelMapper.map(product, ProductDTO.class));
     }
@@ -59,7 +58,7 @@ public class BuyerController {
     public Stream<BuyerAddressDto> retrieveBuyerAddressesByUserEmail(Principal principal){
         String loggedUserName = principal.getName();
 
-        Set<BuyerAddress> buyerAddresses = buyerService.getBuyerAddressesByUserEmail(loggedUserName);
+        List<BuyerAddress> buyerAddresses = buyerService.getBuyerAddressesByUserEmail(loggedUserName);
         return buyerAddresses.stream()
                 .map(address -> modelMapper.map(address, BuyerAddressDto.class));
     }
