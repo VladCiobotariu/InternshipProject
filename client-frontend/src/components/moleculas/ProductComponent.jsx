@@ -2,31 +2,21 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {baseURL} from "../../auth/ApiClient";
 import {useAuth} from "../../auth/AuthContext";
-import {addFavorite, getFavorites, removeFavorite} from "../../api/BuyerApi";
+import {useFavorite} from "../../contexts/FavoriteContext";
 
 
 const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
 
+    const {allFavorites, addToFavorite, removeFromFavorite} = useFavorite();
+
     const [isFavorite, setIsFavorite] = useState(false);
-    const [allFavorites, setAllFavorites] = useState([]);
 
     useEffect(() => {
         setIsFavorite(checkIsFavorite(allFavorites));
     }, [allFavorites]);
 
-    useEffect(() => {
-        if (isAuthenticated) {
-            getFavorites()
-                .then((res) => {
-                    const favorites = res.data;
-                    localStorage.setItem('favorites', JSON.stringify(favorites));
-                    setAllFavorites(favorites);
-                })
-                .catch((err) => console.log(err));
-        }
-    }, [isAuthenticated]);
 
     // we check if the component is in the favoritesArray
     // some - checks if at least on element satisfies the condition
@@ -36,28 +26,10 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
 
     const toggleFavorite = () => {
         if (!isFavorite) {
-            addToFavorite(id);
+            addToFavorite(id, name);
         } else {
-            removeFromFavorite(id);
+            removeFromFavorite(id, name);
         }
-    };
-
-    const addToFavorite = (productId) => {
-        addFavorite(productId)
-            .then((res) => {
-                console.log(`added product ${productId} to favorites`);
-                setAllFavorites([...allFavorites, { id: productId }]);
-            })
-            .catch((err) => console.log(err));
-    };
-
-    const removeFromFavorite = (productId) => {
-        removeFavorite(productId)
-            .then((res) => {
-                console.log(`removed product ${productId} from favorites`);
-                setAllFavorites(allFavorites.filter((favorite) => favorite.id !== productId));
-            })
-            .catch((err) => console.log(err));
     };
 
     return (
@@ -65,7 +37,7 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
             <li className="flex mb-10 h-full">
 
                 <a className=" group bg-white border border-zinc-300 rounded-xl w-full flex flex-col justify-between">
-                    <div className="aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl ">  {/*removed position relative, should not be relative because interfere with components on top*/}
+                    <div className="relative aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl ">  {/*removed position relative, should not be relative because interfere with components on top*/}
                         <img
                             src={`${baseURL}${imageName}`}
                             alt={name}
