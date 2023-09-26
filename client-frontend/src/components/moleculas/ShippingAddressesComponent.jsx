@@ -6,7 +6,7 @@ import {useLocation} from "react-router-dom";
 import AddressComponent from "./AddressComponent";
 
 
-const ShippingAddressesComponent = ({onClick}) => {
+const ShippingAddressesComponent = ({onClick, className}) => {
 
     const [shippingAddresses, setShippingAddresses] = useState([])
     const [plan, setPlan] = useState(null)
@@ -31,6 +31,8 @@ const ShippingAddressesComponent = ({onClick}) => {
             .then(
                 (response) => {
                     setShippingAddresses(response.data)
+                    setPlan(response.data[0])
+                    onClick(response.data[0])
                 }
             )
             .catch(
@@ -46,7 +48,7 @@ const ShippingAddressesComponent = ({onClick}) => {
 
     return (
         <>
-            <RadioGroup value={plan} onChange={handelSelect}>
+            <RadioGroup value={plan} onChange={handelSelect} className={className}>
                 <RadioGroup.Label className="text-xl font-bold">Addresses</RadioGroup.Label>
                 {shippingAddresses.map((item) => (
                     <RadioGroup.Option key={item.id} value={item} className="mt-4">

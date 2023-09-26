@@ -65,7 +65,7 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
             <li className="flex mb-10 h-full">
 
                 <a className=" group bg-white border border-zinc-300 rounded-xl w-full flex flex-col justify-between">
-                    <div className="relative aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl ">
+                    <div className="aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl ">  {/*removed position relative, should not be relative because interfere with components on top*/}
                         <img
                             src={`${baseURL}${imageName}`}
                             alt={name}
