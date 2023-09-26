@@ -111,9 +111,9 @@ export default function HeaderComponent() {
         navigate(`/products?${newSearch}`);
     }
 
-
+    //todo modify in product page so it wont be a z index this big here! or ask
     return (
-        <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
+        <header className="bg-white dark:bg-[#0F172A] shadow-md dark:shadow-sm dark:shadow-black sticky top-0">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 md:px-8 lg:px-8 xl:px-8 2xl:px-8" aria-label="Global">
                 <div className="flex md:flex-1 lg:flex-1 xl:flex-1 2xl:flex-1">
                     <Link to='/' className="-m-1.5 p-1.5">

@@ -33,6 +33,7 @@ function Cart(){
                 (response) => {
                     setCartItems(response.data.cartItems)
                     setCartTotalPrice(response.data.totalCartPrice)
+                    setIsLoading(false)
                 }
             )
             .catch(
@@ -47,7 +48,6 @@ function Cart(){
             .then(
                 async () => {
                     getCartItemsList()
-                    setIsLoading(false)
                 }
             )
             .catch(
@@ -62,7 +62,7 @@ function Cart(){
     }, [location, username]);
 
     return(
-        <div className="h-screen pt-10">
+        <div className="pt-10">
 
             <h1 className="mb-10 text-center text-2xl font-bold dark:text-white">Cart</h1>
 
