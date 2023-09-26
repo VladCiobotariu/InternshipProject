@@ -13,7 +13,6 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
     const [allFavorites, setAllFavorites] = useState([]);
 
     useEffect(() => {
-        // Check if the product is in favorites when the component mounts
         setIsFavorite(checkIsFavorite(allFavorites));
     }, [allFavorites]);
 
@@ -23,18 +22,19 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
                 .then((res) => {
                     const favorites = res.data;
                     localStorage.setItem('favorites', JSON.stringify(favorites));
-                    setAllFavorites(favorites); // Update allFavorites state
+                    setAllFavorites(favorites);
                 })
                 .catch((err) => console.log(err));
         }
     }, [isAuthenticated]);
 
+    // we check if the component is in the favoritesArray
+    // some - checks if at least on element satisfies the condition
     const checkIsFavorite = (favoritesArray) => {
         return favoritesArray.some((favorite) => favorite.id === id);
     };
 
     const toggleFavorite = () => {
-        // Toggle the favorite status
         if (!isFavorite) {
             addToFavorite(id);
         } else {
@@ -46,7 +46,6 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
         addFavorite(productId)
             .then((res) => {
                 console.log(`added product ${productId} to favorites`);
-                // Update allFavorites state after adding
                 setAllFavorites([...allFavorites, { id: productId }]);
             })
             .catch((err) => console.log(err));
@@ -56,7 +55,6 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
         removeFavorite(productId)
             .then((res) => {
                 console.log(`removed product ${productId} from favorites`);
-                // Update allFavorites state after removing
                 setAllFavorites(allFavorites.filter((favorite) => favorite.id !== productId));
             })
             .catch((err) => console.log(err));
