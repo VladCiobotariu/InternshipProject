@@ -12,7 +12,7 @@ const ProductComponent = ({name, imageName, price, toggleModal}) => {
 
 
                 <a className=" group bg-white border border-zinc-300 rounded-xl w-full flex flex-col justify-between">
-                    <div className="aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl ">  {/*removed position relative, should not be relative because interfere with components on top*/}
+                    <div className="relative aspect-square overflow-hidden border-b-2 cursor-pointer rounded-xl">
                         <img
                             src={`${baseURL}${imageName}`}
                             alt={name}
