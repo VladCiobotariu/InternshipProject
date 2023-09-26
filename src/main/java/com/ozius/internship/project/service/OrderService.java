@@ -12,8 +12,9 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class OrderService {
@@ -21,13 +22,15 @@ public class OrderService {
     @PersistenceContext
     private EntityManager em;
     private final BuyerService buyerService;
+    private final CartService cartService;
 
-    public OrderService(BuyerService buyerService) {
+    public OrderService(BuyerService buyerService, CartService cartService) {
         this.buyerService = buyerService;
+        this.cartService = cartService;
     }
 
     @Transactional
-    public void makeOrderFromCheckout(String buyerEmail, BuyerAddressDto shippingAddress, List<CheckoutItemDto> products) {
+    public void makeOrdersFromCheckout(String buyerEmail, BuyerAddressDto shippingAddress, List<CheckoutItemDto> products) {
 
         Address address = shippingAddress.getAddress();
         String buyerFirstName = shippingAddress.getFirstName();
@@ -39,20 +42,30 @@ public class OrderService {
             throw new IllegalArgumentException("buyer doesn't exits");
         }
 
-        Map<Seller, List<Order>> sellersToOrder = new HashMap<>();
+        Map<Seller, Order> sellersToOrder = new HashMap<>();
         for(CheckoutItemDto checkoutItemDto : products){
+
+            //retrieve product and throw exception if not found
             Product product = em.find(Product.class, checkoutItemDto.getProductId());
             if(product == null){
                 throw new IllegalArgumentException("product with id: " + checkoutItemDto.getProductId() + " doesn't exits");
             }
 
+            //retrieve seller
             Seller seller = product.getSeller();
-            AtomicReference<Order> order = new AtomicReference<>();
-            sellersToOrder.computeIfAbsent(seller, value -> {
-                order.set(new Order(address, buyer, seller, buyerEmail, buyerFirstName, buyerLastName, buyerTelephone));
-                em.persist(order.get());
-                return new ArrayList<>();
-            }).add(order.get());
+
+            //retrieve order or create order if not found one in the map
+            Order orderPersisted = sellersToOrder.computeIfAbsent(seller, k -> {
+                Order order = new Order(address, buyer, k, buyerEmail, buyerFirstName, buyerLastName, buyerTelephone);
+                em.persist(order);
+                return order;
+            });
+
+            //add product to the retrieved order
+            orderPersisted.addProduct(product, checkoutItemDto.getQuantity());
+
+            //remove product from cart
+            cartService.removeCartItemByProductId(buyerEmail, checkoutItemDto.getProductId());
         }
     }
 }

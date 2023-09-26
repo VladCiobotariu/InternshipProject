@@ -110,7 +110,7 @@ public class Order extends BaseEntity {
     @Column(name = Columns.ORDER_DATE, nullable = false)
     private LocalDateTime orderDate;
 
-    @Column(name = Columns.TELEPHONE, nullable = false, length = 10)
+    @Column(name = Columns.TELEPHONE, nullable = false, length = 12)
     private String telephone;
 
     @Column(name = Columns.TOTAL_PRICE, nullable = false)

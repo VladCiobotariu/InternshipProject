@@ -1,5 +1,11 @@
 {
   "main": {
     "header": "Welcome to the app!"
+  },
+  "enums": {
+    "unitOfMeasure": {
+      "KILOGRAM": "kg",
+      "GRAM": "g"
+    }
   }
 }

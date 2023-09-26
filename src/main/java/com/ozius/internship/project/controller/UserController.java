@@ -17,7 +17,6 @@ public class UserController {
     }
 
     @GetMapping("/users/{email}")
-//    @PreAuthorize("hasRole('CLIENT') and #email == authentication.name")
     public ResponseEntity<Object> retrieveUserByEmail(@PathVariable String email){
 
         UserAccount user = userAccountRepository.findByEmail(email);
