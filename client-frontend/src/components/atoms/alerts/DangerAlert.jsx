@@ -1,6 +1,6 @@
 function DangerAlert({paragraph, className}){
     return(
-        <div role="alert" className={`${className} max-w-sm rounded border-s-4 border-red-500 bg-red-50 p-4 absolute sm:sticky sm:mx-auto sm:max-w-sm`}>
+        <div role="alert" className={`${className} max-w-sm rounded border-s-4 border-red-500 bg-red-50 p-4 relative sm:sticky sm:mx-auto sm:max-w-sm`}>
             <div className="flex items-center gap-2 text-red-800">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

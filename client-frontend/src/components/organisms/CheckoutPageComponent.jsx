@@ -98,12 +98,10 @@ function CheckoutPageComponent(){
 
     return (
         // todo type for alert
-        <div className="mb-96">
-            {!!infoAlertShowing &&
-                <PopupSuccessAlert classname="top-[86px] right-5 sm:top-2 sm:mt-4" handleCloseButton={popupInfoCloseButton} title="Order Placed" paragraph="You will be redirected..."/>
-            }
-            {!dangerAlertShowing &&
-                <DangerAlert className="top-[86px] right-5 sm:top-2 sm:mt-4" paragraph="To place an order you nedd to selet a shipping address or add a new address"/>
+        <div className="mb-">
+
+            {!!dangerAlertShowing &&
+                <DangerAlert className="top-[86px] right-5 sm:top-2 sm:mt-4" paragraph="To place an order you nedd to selet a shipping address or add a new address" />
             }
 
             <div className="sm:block flex justify-center mt-10 md:space-x-8 lg:space-x-8 xl:space-x-8 2xl:space-x-8 mx-8">
@@ -119,7 +117,13 @@ function CheckoutPageComponent(){
                     </div>
                 </div>
 
-                <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10">
+                <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10 relative">
+
+                    {!!infoAlertShowing &&
+                        <div>
+                            <PopupSuccessAlert classname="-top-6 right-0 sm:top-2 sm:mt-4" handleCloseButton={popupInfoCloseButton} title="Order Placed" paragraph="You will be redirected..."/>
+                        </div>
+                    }
 
                     <p className="text-xl font-medium md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">Order Summary</p>
                     <div className="mt-4">
