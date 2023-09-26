@@ -56,7 +56,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
             {product &&
                 <div>
                     <div className="bg-white px-8 pb-4 pt-5">
-                        <div className="">
+                        <div>
                             <div className="flex flex-col">
                                 <div className="flex justify-between">
                                     <div>

@@ -9,7 +9,6 @@ const SelectionOfNumberPerPage = ({itemsPerPage, handleItemsPerPageChange}) => {
                 <option value="4">4 per page</option>
                 <option value="8">8 per page</option>
                 <option value="12">12 per page</option>
-                <option value="16">12 per page</option>
             </select>
         </div>
     )

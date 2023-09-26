@@ -37,6 +37,14 @@ public class BuyerService {
     }
 
     @Transactional
+    public void addFavoriteByProductId(String email, long productId) {
+        Buyer buyer = getBuyerByEmail(email);
+        Product product = productRepository.findById(productId).orElseThrow();
+        buyer.addFavorite(product);
+    }
+
+
+    @Transactional
     public void removeFavoriteByProductId(String email, long productId) {
         Buyer buyer = getBuyerByEmail(email);
 
