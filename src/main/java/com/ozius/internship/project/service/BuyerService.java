@@ -38,6 +38,14 @@ public class BuyerService {
     }
 
     @Transactional
+    public void addFavoriteByProductId(String email, long productId) {
+        Buyer buyer = getBuyerByEmail(email);
+        Product product = em.find(Product.class, productId);
+        buyer.addFavorite(product);
+    }
+
+
+    @Transactional
     public void removeFavoriteByProductId(String email, long productId) {
         Buyer buyer = getBuyerByEmail(email);
         //TODO ask, cant implement with paging and sorting repo

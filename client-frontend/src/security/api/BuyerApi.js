@@ -25,6 +25,14 @@ export function getFavorites(){
     return api.get(`/my-favorites`)
 }
 
+export function addFavorite(productId) {
+    return api.put('/my-favorites', {},{
+        params: {
+            productId
+        }
+    })
+}
+
 export function removeFavorite(productId){
     return api.delete('/my-favorites',{
         params:{

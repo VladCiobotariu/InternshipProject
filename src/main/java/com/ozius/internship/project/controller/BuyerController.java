@@ -19,6 +19,7 @@ public class BuyerController {
 
     private final BuyerService buyerService;
     private final ModelMapper modelMapper;
+    private Set<Product> favorites;
 
     public BuyerController(BuyerService buyerService, ModelMapper modelMapper) {
         this.buyerService = buyerService;
@@ -35,13 +36,23 @@ public class BuyerController {
                 .map(product -> modelMapper.map(product, ProductDTO.class));
     }
 
+    @PutMapping("/my-favorites")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<String> addFavoriteByProductId(Principal principal, @RequestParam(value = "productId") long productId) {
+        String loggedUsername = principal.getName();
+
+        buyerService.addFavoriteByProductId(loggedUsername, productId);
+        return ResponseEntity.ok("added favorite product");
+
+    }
+
     @DeleteMapping("/my-favorites")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<String> deleteFavoriteByProductId(@RequestParam(value = "productId") long productId, Principal principal) {
         String loggedUserName = principal.getName();
 
         buyerService.removeFavoriteByProductId(loggedUserName, productId);
-        return ResponseEntity.ok().body("favorite deleted");
+        return ResponseEntity.ok("favorite deleted");
     }
 
     @GetMapping("/my-buyer-addresses")

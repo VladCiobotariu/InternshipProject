@@ -194,6 +194,7 @@ function ProductPageComponent() {
                                     <div key={product.id}>
                                         <ProductComponent
                                             key={product.id}
+                                            id={product.id}
                                             name={product.name}
                                             imageName={product.imageName}
                                             price={product.price}
