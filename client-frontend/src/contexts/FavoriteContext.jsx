@@ -12,44 +12,44 @@ const FavoriteProvider = ({children}) => {
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
     const {isAuthenticated} = useAuth()
 
-    const addToFavorite = (productId, productName) => {
-        getProductByNameApi(productName)
-            .then((product) => {
-                addFavorite(productId)
-                    .then(() => {
-                        setAllFavorites([...allFavorites, product.data]);
-                    })
-                    .catch((err) => console.log(err));
+    const loadFavoriteItems = () => {
+        if (!!isAuthenticated) {
+            getFavorites()
+                .then((res) => {
+                    setAllFavorites(res.data)
+                    setNumberOfFavorites(res.data.length)
+                })
+                .catch((err) => console.log(err));
+        }
+    }
+
+    const addToFavorite = (productId) => {
+        addFavorite(productId)
+            .then(() => {
+                loadFavoriteItems();
             })
             .catch((err) => console.log(err));
+    }
+
+    const checkIsFavorite = (favoritesArray, id) => {
+        return favoritesArray.some((favorite) => favorite.id === id);
     };
 
     const removeFromFavorite = (productId) => {
         removeFavorite(productId)
             .then(() => {
-                setAllFavorites(allFavorites.filter((favorite) => favorite.id !== productId));
+                loadFavoriteItems();
             })
             .catch((err) => console.log(err));
     };
 
     useEffect(() => {
-        if(!!isAuthenticated){
-            getFavorites()
-                .then((res) => {
-                    setAllFavorites(res.data)
-                })
-                .catch((err) => console.log(err));
-        }
-
+        loadFavoriteItems();
     }, [isAuthenticated]);
-
-    useEffect(() => {
-        setNumberOfFavorites(allFavorites.length)
-    }, [allFavorites])
 
 
     return (
-        <FavoriteContext.Provider value={{allFavorites, numberOfFavorites, addToFavorite, removeFromFavorite}}>
+        <FavoriteContext.Provider value={{allFavorites, numberOfFavorites, addToFavorite, removeFromFavorite, checkIsFavorite}}>
             {children}
         </FavoriteContext.Provider>
     )

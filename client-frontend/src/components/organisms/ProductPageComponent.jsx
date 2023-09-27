@@ -198,6 +198,7 @@ function ProductPageComponent() {
                                             name={product.name}
                                             imageName={product.imageName}
                                             price={product.price}
+                                            sellerAlias={product.seller.alias}
                                             toggleModal={() => toggleModal(product.name)}
                                         />
                                     </div>

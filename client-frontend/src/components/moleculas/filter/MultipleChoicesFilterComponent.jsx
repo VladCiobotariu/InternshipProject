@@ -41,7 +41,7 @@ const CityFilterComponent = ({onClickInside, toggleFilter, list, handleListChang
                     </div>
                     <div className="flex justify-start">
                         <button type="button"
-                                className="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg  px-3 py-1 mt-3"
+                                className="bg-indigo-600 hover:bg-indigo-700 text-white my-2 py-1 px-4 rounded-lg border border-indigo-800 transition duration-100 ease-in-out hover:scale-105"
                                 onClick={handleClickOnSave}>
                             Save
                         </button>

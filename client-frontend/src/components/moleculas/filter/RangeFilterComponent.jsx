@@ -34,8 +34,6 @@ const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChan
         }
     }
 
-    // todo - add borders to buttons
-
     return (
         <div onClick={onClickInside}>
             <div className="w-80 bg-white">
@@ -75,12 +73,15 @@ const RangeFilterComponent = ({onClickInside, toggleRangeFilter, handleRangeChan
                         </div>
                     }
                     <div className="flex justify-start">
-                        <button type="button"
-                                className="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg  px-3 py-1.5 mt-2"
-                                onClick={handleSaveRanges}>
+                        <button
+                            type="button"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white my-2 py-1 px-4 rounded-lg border border-indigo-800 transition duration-100 ease-in-out hover:scale-105"
+                            onClick={handleSaveRanges}
+                        >
                             Save
                         </button>
                     </div>
+
                 </div>
             </div>
         </div>
