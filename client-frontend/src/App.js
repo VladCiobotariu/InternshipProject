@@ -5,7 +5,7 @@ import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
 import AuthProvider, {useAuth} from './auth/AuthContext'
 import FavoriteProvider from './contexts/FavoriteContext'
 
-import HeaderComponent from "./components/organisms/header/HeaderComponent";
+import HeaderComponent from "./components/moleculas/header/HeaderComponent";
 import WelcomePageComponent from "./components/organisms/WelcomePageComponent";
 import LoginPageComponent from "./components/organisms/LoginPageComponent";
 import RegisterPageComponent from "./components/organisms/RegisterPageComponent";

@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {addFavorite, getFavorites, removeFavorite} from "../api/BuyerApi";
 import {getProductByNameApi} from "../api/ProductApi";
+import {useAuth} from "../auth/AuthContext";
 
 const FavoriteContext = createContext(undefined)
 export const useFavorite = () => useContext(FavoriteContext)
@@ -9,6 +10,7 @@ const FavoriteProvider = ({children}) => {
 
     const [allFavorites, setAllFavorites] = useState([]);
     const [numberOfFavorites, setNumberOfFavorites] = useState(0);
+    const {isAuthenticated} = useAuth()
 
     const addToFavorite = (productId, productName) => {
         getProductByNameApi(productName)
@@ -31,15 +33,15 @@ const FavoriteProvider = ({children}) => {
     };
 
     useEffect(() => {
-        getFavorites()
-            .then((res) => {
-                const favorites = res.data;
-                localStorage.setItem('favorites', JSON.stringify(favorites));
-                setAllFavorites(favorites)
-            })
-            .catch((err) => console.log(err));
+        if(!!isAuthenticated){
+            getFavorites()
+                .then((res) => {
+                    setAllFavorites(res.data)
+                })
+                .catch((err) => console.log(err));
+        }
 
-    }, []);
+    }, [isAuthenticated]);
 
     useEffect(() => {
         setNumberOfFavorites(allFavorites.length)

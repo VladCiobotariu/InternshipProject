@@ -1,5 +1,6 @@
-function PopupSuccessAlert({handleCloseButton, title, paragraph, classname}){
+function PopupSuccessAlert({type, title, paragraph, classname, handleCloseButton}){
     return(
+
         <div role="alert" className={`${classname} rounded-xl border border-gray-100 bg-white p-4 absolute sm:sticky sm:mx-auto sm:max-w-sm`}>
             <div className="flex items-start gap-4">
                 <span className="text-green-600">
