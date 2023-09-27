@@ -1,0 +1,21 @@
+.grid-header {
+    grid-area: header;
+}
+
+.grid-reviews {
+    grid-area: review;
+}
+
+.grid-details {
+    grid-area: details;
+}
+
+@media (max-width: 768px) {
+    .grid-wrapper {
+        display: grid;
+        grid-template-areas:
+      'header'
+      'review'
+      'details';
+    }
+}

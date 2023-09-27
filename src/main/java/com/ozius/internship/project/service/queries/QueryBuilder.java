@@ -2,6 +2,7 @@ package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.service.queries.filter.FilterCriteria;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
+import com.ozius.internship.project.service.queries.filter.Operation;
 import com.ozius.internship.project.service.queries.sort.SortCriteria;
 import com.ozius.internship.project.service.queries.sort.SortOrder;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
@@ -89,22 +90,20 @@ public class QueryBuilder {
         return this;
     }
 
-    public QueryBuilder orderBy(String orderCondition, SortOrder sortOrder) {
+    public void orderBy(String orderCondition, SortOrder sortOrder) {
         if(haveAnyOrderConditions) {
             sqlQueryBuilder.append(String.format(" , %s %s", orderCondition, sortOrder));
         } else {
             sqlQueryBuilder.append(String.format(" order by %s %s", orderCondition, sortOrder));
             haveAnyOrderConditions = true;
         }
-        return this;
     }
 
-    protected QueryBuilder mapCriteriaToPropertyPath(String criteria, String propertyPath) {
+    protected void mapCriteriaToPropertyPath(String criteria, String propertyPath) {
         criteriaToPropertyPathMappings.put(criteria, propertyPath);
-        return this;
     }
 
-    public QueryBuilder applySortSpecs(SortSpecs sortSpecs) {
+    public void applySortSpecs(SortSpecs sortSpecs) {
         for (SortCriteria sortCriterion : sortSpecs.getSortCriteria()) {
             String propertyPath = criteriaToPropertyPathMappings.get(sortCriterion.getCriteria());
 
@@ -113,7 +112,6 @@ public class QueryBuilder {
             }
             orderBy(propertyPath, sortCriterion.getSortOrder());
         }
-        return this;
     }
 
     /***
@@ -135,18 +133,17 @@ public class QueryBuilder {
      * => where p.name = ('rosii' or p.name like '%mere%') and (p.categoryName = 'fructe' or p.categoryName = 'legume')
      *
      * @param filterSpecs
-     * @return
      */
 
-    public QueryBuilder applyFilterSpecs(FilterSpecs filterSpecs) {
+    public void applyFilterSpecs(FilterSpecs filterSpecs) {
         int paramIndex = 0;
         Map<String, Set<FilterCriteria>> filterCriteriaByFilterName = filterSpecs.getFilterCriteria().stream()
                 .collect(Collectors.groupingBy(FilterCriteria::getCriteria, Collectors.toSet()));
 
-        return buildOrCondition(filterCriteriaByFilterName, paramIndex);
+        buildOrCondition(filterCriteriaByFilterName, paramIndex);
     }
 
-    private QueryBuilder buildOrCondition(Map<String, Set<FilterCriteria>> filterCriteriaByFilterName, int paramIndex) {
+    private void buildOrCondition(Map<String, Set<FilterCriteria>> filterCriteriaByFilterName, int paramIndex) {
         for(Map.Entry<String, Set<FilterCriteria>> entry : filterCriteriaByFilterName.entrySet() ) {
             String filterName = entry.getKey();
             Set<FilterCriteria> filterCriteriaForFilter = entry.getValue();
@@ -168,25 +165,41 @@ public class QueryBuilder {
 
             and(filterConditionBuilder);
         }
-        return this;
     }
 
     private void addOrConditionsToBuilder(Set<FilterCriteria> filterCriteriaForFilter, String filterName, int paramIndex, QueryBuilder filterConditionBuilder) {
         for (FilterCriteria filterCriterion : filterCriteriaForFilter) {
 
-            String propertyPath = criteriaToPropertyPathMappings.get(filterName); // get p.categoryName
-            String sqlOperator = filterCriterion.getOperation().getSqlOperator(); // get operator (=/like)
+            String propertyPath = criteriaToPropertyPathMappings.get(filterName);
+            Operation operation = filterCriterion.getOperation();
+            String sqlOperator = operation.getSqlOperator();
+            Object value = filterCriterion.getValue();
 
             if(propertyPath == null) {
                 throw new IllegalArgumentException("Unmapped criteria " + filterName);
             }
 
+            Object newValue = prepareSQLValue(value, operation);
+
             String paramName = String.format("%s%s", filterName, paramIndex++);
 
             String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
 
-            filterConditionBuilder.or(condition, paramName, filterCriterion.getValue());
+            filterConditionBuilder.or(condition, paramName, newValue);
         }
+    }
+
+    private Object prepareSQLValue(Object value, Operation operation) {
+        if(operation.equals(Operation.CONTAINS)) {
+            return String.format("%%%s%%", value);
+        }
+        if(operation.equals(Operation.STARTS_WITH)) {
+            return String.format("%s%%", value);
+        }
+        if(operation.equals(Operation.ENDS_WITH)) {
+            return String.format("%%%s", value);
+        }
+        return value;
     }
 
     private QueryBuilder setStartOrQuery(int filterCriteriaFilterSize) {

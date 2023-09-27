@@ -5,6 +5,7 @@ import {useAuth} from "../../../auth/AuthContext";
 import {useNavigate} from "react-router-dom";
 import QuantityInput from "../../atoms/input/QuantityInput";
 import {useCart} from "../../../contexts/CartContext";
+import {useTranslation} from "react-i18next";
 
 const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
 
@@ -15,6 +16,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
     const {updateCartItemQuantity} = useCart()
 
     const {isAuthenticated} = useAuth();
+    const { t } = useTranslation();
 
     const getProductByName = (productName) => {
         getProductByNameApi(productName)
@@ -72,7 +74,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
                                 <div className="flex justify-between border-t border-t-zinc-300">
                                     <div className="mt-2 mr-4">
                                         <h2 className="text-lg font-bold text-gray-900">{product.name}</h2>
-                                        <p className="mt-1 text-xs text-gray-700">{product.description}</p>
+                                        <p className="mt-1 text-xs text-gray-700">Price per {t(`enums.unitOfMeasure.${product.unitOfMeasure}`)}: {product.price} RON</p>
                                         <div className="mt-7">
                                             <p className="mt-1 text-xs text-gray-700">{product.seller.city}</p>
                                             <p className="mt-1 text-xs text-gray-700">{product.seller.alias}</p>

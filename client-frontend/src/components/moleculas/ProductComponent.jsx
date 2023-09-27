@@ -5,24 +5,18 @@ import {useAuth} from "../../auth/AuthContext";
 import {useFavorite} from "../../contexts/FavoriteContext";
 
 
-const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
+const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
 
-    const {allFavorites, addToFavorite, removeFromFavorite} = useFavorite();
+    const {allFavorites, addToFavorite, removeFromFavorite, checkIsFavorite} = useFavorite();
 
     const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
-        setIsFavorite(checkIsFavorite(allFavorites));
+        setIsFavorite(checkIsFavorite(allFavorites, id));
     }, [allFavorites]);
 
-
-    // we check if the component is in the favoritesArray
-    // some - checks if at least on element satisfies the condition
-    const checkIsFavorite = (favoritesArray) => {
-        return favoritesArray.some((favorite) => favorite.id === id);
-    };
 
     const toggleFavorite = () => {
         if (!isFavorite) {
@@ -42,7 +36,7 @@ const ProductComponent = ({ id, name, imageName, price, toggleModal }) => {
                             src={`${baseURL}${imageName}`}
                             alt={name}
                             className="object-cover w-48 h-48 mx-auto"
-                            onClick={() => navigate(`/products/categories/fruits/${name}`)}
+                            onClick={() => navigate(`/${sellerAlias}/products/${name}`)}
                         />
                         {isAuthenticated &&
                             <div className="absolute top-0 left-0 p-2">
