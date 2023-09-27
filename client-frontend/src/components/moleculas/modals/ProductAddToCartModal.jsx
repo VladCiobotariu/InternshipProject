@@ -4,7 +4,7 @@ import {baseURL} from "../../../auth/ApiClient";
 import {useAuth} from "../../../auth/AuthContext";
 import {useNavigate} from "react-router-dom";
 import QuantityInput from "../../atoms/input/QuantityInput";
-import {addOrUpdateCartItem} from "../../../api/CartApi";
+import {useCart} from "../../../contexts/CartContext";
 
 const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
 
@@ -12,6 +12,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
 
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const {updateCartItemQuantity} = useCart()
 
     const {isAuthenticated} = useAuth();
 
@@ -24,11 +25,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
     }
 
     const addItemToCart = (productId, quantity) => {
-        addOrUpdateCartItem(productId, quantity)
-            .then((res) => {
-                console.log(res.data)
-            })
-            .catch((err) => console.log(err))
+        updateCartItemQuantity(productId, quantity)
     }
 
     useEffect(() => {
@@ -68,7 +65,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
                                     <div className="flex items-center text-zinc-800">
                                         <QuantityInput
                                             quantity={quantity}
-                                            functionToBeCalled={updateQuantity}
+                                            onQuantityChanged={updateQuantity}
                                         />
                                     </div>
                                 </div>

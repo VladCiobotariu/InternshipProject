@@ -1,4 +1,4 @@
-function QuantityInput({quantity, functionToBeCalled}){
+function QuantityInput({quantity, onQuantityChanged}){
 
     return(
         <div>
@@ -6,7 +6,7 @@ function QuantityInput({quantity, functionToBeCalled}){
 
             <div className="flex items-center border border-gray-200 rounded">
                 <button
-                    onClick={()=>functionToBeCalled(-1)}
+                    onClick={()=>onQuantityChanged(-1)}
                     type="button"
                     className="dark:text-white sm:bg-blue-500 dark:hover:text-black hover:text-white w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"
                 >
@@ -20,7 +20,7 @@ function QuantityInput({quantity, functionToBeCalled}){
                 </div>
 
                 <button
-                    onClick={()=>functionToBeCalled(1)}
+                    onClick={()=>onQuantityChanged(1)}
                     type="button"
                     className="dark:text-white sm:bg-blue-500 dark:hover:text-black hover:text-white
                      w-10 h-10 leading-10 text-gray-600 transition hover:bg-blue-500 dark:hover:bg-white"

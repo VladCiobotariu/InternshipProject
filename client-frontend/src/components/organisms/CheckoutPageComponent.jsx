@@ -1,4 +1,3 @@
-import {getCartItems} from "../../api/CartApi";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../auth/AuthContext";
 import {Link, useLocation, useNavigate} from "react-router-dom";
@@ -8,17 +7,18 @@ import {submitOrder} from "../../api/OrderApi";
 import PopupSuccessAlert from "../atoms/alerts/PopupSuccessAlert";
 import DangerAlert from "../atoms/alerts/DangerAlert";
 import {getBuyerAddresses} from "../../api/BuyerApi";
+import {useCart} from "../../contexts/CartContext";
 
 function CheckoutPageComponent(){
 
-    const [cartItems, setCartItems] = useState([])
-    const [cartTotalPrice, setCartTotalPrice] = useState(0)
+    const {allCartItems, cartTotalPrice} = useCart()
+
     const [infoAlertShowing, setInfoAlertShowing] = useState(false)
     const [dangerAlertShowing, setDangerAlertShowing] = useState(false)
 
-    const checkoutItems =  cartItems.map(item => {
+    const checkoutItems =  allCartItems.map(item => {
         return {
-            productId: item.id,
+            productId: item.product.id,
             quantity: item.quantity
         }
     })
@@ -31,22 +31,6 @@ function CheckoutPageComponent(){
     const navigate = useNavigate()
 
     const shippingPrice = 10
-
-    function getCartItemsList() {
-        getCartItems()
-            .then(
-                (response) => {
-                    setCartItems(response.data.cartItems)
-                    setCartTotalPrice(response.data.totalCartPrice)
-                    if(!response.data.cartItems.length){
-                        navigate('/account/cart')
-                    }
-                }
-            )
-            .catch(
-                (err) => console.log(err)
-            )
-    }
 
     function getShippingAddresses(){
         getBuyerAddresses()
@@ -67,11 +51,12 @@ function CheckoutPageComponent(){
 
     function handlePlaceOrder(){
         if(!!selectedShippingAddress){
+            console.log(checkoutItems)
             submitOrder(selectedShippingAddress,checkoutItems,username)
                 .then(
                     () => {
                         setInfoAlertShowing(true)
-                        setTimeout(() => getCartItemsList(), 2000)
+                        setTimeout(() => navigate('/account/cart'), 2000)
                     }
                 )
                 .catch(
@@ -87,11 +72,11 @@ function CheckoutPageComponent(){
 
     function popupInfoCloseButton(){
         setInfoAlertShowing(false)
+        navigate('/account/cart')
     }
 
     useEffect(() => {
         if(username){
-            getCartItemsList()
             getShippingAddresses()
         }
     }, [location, username]);
@@ -127,8 +112,8 @@ function CheckoutPageComponent(){
 
                     <p className="text-xl font-medium md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">Order Summary</p>
                     <div className="mt-4">
-                        {cartItems.map((item)=>(
-                            <CartItemCard key={item.id} item={item} getCartItemsList={getCartItemsList}/>
+                        {allCartItems.map((item)=>(
+                            <CartItemCard key={item.id} item={item}/>
                         ))}
                     </div>
 

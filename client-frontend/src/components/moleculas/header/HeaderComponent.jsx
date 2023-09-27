@@ -1,25 +1,25 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import { useAuth } from '../../../auth/AuthContext';
-import { getAllCategoriesApi } from "../../../api/CategoryApi";
-import { baseURL } from "../../../auth/ApiClient";
+import {useAuth} from '../../../auth/AuthContext';
+import {getAllCategoriesApi} from "../../../api/CategoryApi";
+import {baseURL} from "../../../auth/ApiClient";
 import '../../../styles/Header.css'
 
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
+import {Dialog, Disclosure, Popover, Transition} from '@headlessui/react';
 import {
+    ArrowLeftOnRectangleIcon,
     Bars3Icon,
-    XMarkIcon,
-    UserCircleIcon,
     ClipboardDocumentListIcon,
     Cog6ToothIcon,
-    ArrowLeftOnRectangleIcon,
-    ShoppingBagIcon,
     HeartIcon,
+    ShoppingBagIcon,
+    UserCircleIcon,
+    XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import {ChevronDownIcon} from '@heroicons/react/20/solid';
 import {ReactComponent as Logo} from "./icon.svg";
-import {getCartItems} from "../../../api/CartApi";
 import {useFavorite} from "../../../contexts/FavoriteContext";
+import {useCart} from "../../../contexts/CartContext";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -39,16 +39,14 @@ export default function HeaderComponent() {
 
     const [categories, setCategories] = useState([]);
 
-    const[numberOfCartItems, setNumberOfCartItems] = useState(0)
-
-    const { isAuthenticated, username } = useAuth();
-    const auth = useAuth();
+    const { isAuthenticated, username, logout } = useAuth();
 
     const location = useLocation()
     const buttonRef = useRef();
 
     const navigate = useNavigate()
     const {allFavorites, numberOfFavorites, removeFromFavorite} = useFavorite();
+    const { numberOfCartItems } = useCart()
 
     const getCategoryList = () => {
         getAllCategoriesApi()
@@ -59,23 +57,8 @@ export default function HeaderComponent() {
     };
 
     useEffect(() => {
-        if(!!username){
-            getCartItemsList()
-        }
         getCategoryList()
     }, [location, username]);
-
-    function getCartItemsList(){
-        getCartItems()
-            .then(
-                (response) => setNumberOfCartItems(response.data.cartItems.length)
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-    }
 
     const favoriteDeleteButton = (productId) => {
         removeFromFavorite(productId)
@@ -357,7 +340,7 @@ export default function HeaderComponent() {
                                                 <button
                                                     onClick={() => {
                                                             buttonRef.current?.click()
-                                                            auth.logout()
+                                                            logout()
                                                         }
                                                     }
                                                     className="block font-semibold text-gray-900 dark:text-inherit">
@@ -511,7 +494,7 @@ export default function HeaderComponent() {
                                                         <button
                                                             onClick={()=>{
                                                                     setMobileMenuOpen(false)
-                                                                    auth.logout()
+                                                                    logout()
                                                                 }
                                                             }
                                                             className="flex w-full rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
