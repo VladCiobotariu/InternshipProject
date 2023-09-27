@@ -174,19 +174,36 @@ public class QueryBuilder {
     private void addOrConditionsToBuilder(Set<FilterCriteria> filterCriteriaForFilter, String filterName, int paramIndex, QueryBuilder filterConditionBuilder) {
         for (FilterCriteria filterCriterion : filterCriteriaForFilter) {
 
-            String propertyPath = criteriaToPropertyPathMappings.get(filterName); // get p.categoryName
-            String sqlOperator = filterCriterion.getOperation().getSqlOperator(); // get operator (=/like)
+            String propertyPath = criteriaToPropertyPathMappings.get(filterName);
+            String sqlOperator = filterCriterion.getOperation().getSqlOperator();
+            Object value = filterCriterion.getValue();
 
             if(propertyPath == null) {
                 throw new IllegalArgumentException("Unmapped criteria " + filterName);
             }
 
+            String operatorName = filterCriterion.getOperation().toString();
+            Object newValue = modifyValue(value, operatorName);
+
             String paramName = String.format("%s%s", filterName, paramIndex++);
 
             String condition = String.format("%s %s :%s", propertyPath, sqlOperator, paramName);
 
-            filterConditionBuilder.or(condition, paramName, filterCriterion.getValue());
+            filterConditionBuilder.or(condition, paramName, newValue);
         }
+    }
+
+    private Object modifyValue(Object value, String operator) {
+        if(operator.equals("CONTAINS")) {
+            return String.format("%%%s%%", value);
+        }
+        if(operator.equals("STARTS_WITH")) {
+            return String.format("%s%%", value);
+        }
+        if(operator.equals("ENDS_WITH")) {
+            return String.format("%%%s", value);
+        }
+        return value;
     }
 
     private QueryBuilder setStartOrQuery(int filterCriteriaFilterSize) {

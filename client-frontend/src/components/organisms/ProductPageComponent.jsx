@@ -124,7 +124,7 @@ function ProductPageComponent() {
             filterSearchSpec.push(createFilterCriteria("priceTo", "lte", filterOptions.priceTo));
         }
         if (filterOptions.productName) {
-            filterSearchSpec.push(createFilterCriteria("productName", "like", filterOptions.productName));
+            filterSearchSpec.push(createFilterCriteria("productName", "starts_with", filterOptions.productName));
         }
         return filterSearchSpec;
     }

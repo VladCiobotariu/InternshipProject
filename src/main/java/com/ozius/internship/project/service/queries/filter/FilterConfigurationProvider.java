@@ -15,10 +15,12 @@ public class FilterConfigurationProvider {
     private final Map<String, FilterConfiguration<?>> filterConfigurationMap = new HashMap<>();
 
     public FilterConfigurationProvider() {
-        mapCriteriaToFormatInDataBase("productName", new FilterConfiguration<>(Operation.LIKE, new CapitalizeConverter()));
+        mapCriteriaToFormatInDataBase("productName", new FilterConfiguration<>(Operation.STARTS_WITH, new CapitalizeConverter()));
         mapCriteriaToFormatInDataBase("categoryName", new FilterConfiguration<>(Operation.EQ, new NoTransformationConverter()));
         mapCriteriaToFormatInDataBase("cityName", new FilterConfiguration<>(Operation.EQ, value -> value));
         mapCriteriaToFormatInDataBase("orderStatus", new FilterConfiguration<>(Operation.EQ, new OrderStatusConverter()));
+        mapCriteriaToFormatInDataBase("priceFrom", new FilterConfiguration<>(Operation.GTE, new NoTransformationConverter()));
+        mapCriteriaToFormatInDataBase("priceTo", new FilterConfiguration<>(Operation.LTE, new NoTransformationConverter()));
     }
 
     public FilterConfiguration<?> getConfigurationForFilter(String filter){
