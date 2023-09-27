@@ -59,7 +59,7 @@ export default function HeaderComponent() {
     };
 
     useEffect(() => {
-        if(username){
+        if(!!username){
             getCartItemsList()
         }
         getCategoryList()
