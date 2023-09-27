@@ -23,4 +23,5 @@ public class ProductService {
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
         return productDTO;
     }
+
 }

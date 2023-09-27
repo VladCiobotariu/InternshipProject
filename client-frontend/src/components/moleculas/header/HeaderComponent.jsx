@@ -18,8 +18,8 @@ import {
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import {ReactComponent as Logo} from "./icon.svg";
-import {getFavorites, removeFavorite} from "../../../api/BuyerApi";
 import {getCartItems} from "../../../api/CartApi";
+import {useFavorite} from "../../../contexts/FavoriteContext";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -38,10 +38,8 @@ export default function HeaderComponent() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [categories, setCategories] = useState([]);
-    const [favorites, setFavorites] = useState([])
 
     const[numberOfCartItems, setNumberOfCartItems] = useState(0)
-    const[numberOfFavorites, setNumberOfFavorites] = useState(0)
 
     const { isAuthenticated, username } = useAuth();
     const auth = useAuth();
@@ -50,6 +48,7 @@ export default function HeaderComponent() {
     const buttonRef = useRef();
 
     const navigate = useNavigate()
+    const {allFavorites, numberOfFavorites, removeFromFavorite} = useFavorite();
 
     const getCategoryList = () => {
         getAllCategoriesApi()
@@ -59,24 +58,8 @@ export default function HeaderComponent() {
             .catch((err) => console.log(err));
     };
 
-    function getFavoritesList(){
-        getFavorites()
-            .then(
-                (response) => {
-                    setFavorites(response.data)
-                    setNumberOfFavorites(response.data.length)
-                }
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-    }
-
     useEffect(() => {
         if(username){
-            getFavoritesList()
             getCartItemsList()
         }
         getCategoryList()
@@ -94,14 +77,8 @@ export default function HeaderComponent() {
             )
     }
 
-    function favoriteDeleteButton(productId){
-        removeFavorite(productId)
-            .then(
-                () => getFavoritesList()
-            )
-            .catch(
-                (err) => console.log(err)
-            )
+    const favoriteDeleteButton = (productId) => {
+        removeFromFavorite(productId)
     }
 
     const createQueryParam = (categoryName) => {
@@ -250,7 +227,7 @@ export default function HeaderComponent() {
                                         dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md"
                                     >
                                         <div className="p-2">
-                                            {favorites.map((item) => (
+                                            {allFavorites.map((item) => (
 
                                                 /**
                                                  * @param {{

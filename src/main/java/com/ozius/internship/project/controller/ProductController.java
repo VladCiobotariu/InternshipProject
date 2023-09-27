@@ -51,8 +51,9 @@ public class ProductController {
 
     @GetMapping("/products/{productName}")
     public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
-        ProductDTO productDTO =  productService.getProductByName(productName);
+        ProductDTO productDTO = productService.getProductByName(productName);
         return ResponseEntity.ok(productDTO);
     }
+
 
 }
