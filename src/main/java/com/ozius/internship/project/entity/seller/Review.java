@@ -22,7 +22,6 @@ public class Review extends BaseEntity {
     @Column(name = Columns.DESCRIPTION, length = 250, nullable = false)
     private String description;
 
-    // todo - ask if you can make the rating an integer instead of float because of the RatingComponents i found
     @Column(name = Columns.RATING, nullable = false)
     private float rating;
 

@@ -17,9 +17,8 @@ public class ProductService {
         this.modelMapper = modelMapper;
     }
 
-
-    public ProductDTO getProductByName(String productName) {
-        Product product = productRepository.findByName(productName);
+    public ProductDTO getProductById(long id) {
+        Product product = productRepository.findById(id).orElseThrow();
         ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
         return productDTO;
     }

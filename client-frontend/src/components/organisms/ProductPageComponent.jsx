@@ -5,7 +5,6 @@ import {getProductsApi} from "../../api/ProductApi";
 import FilteringComponent from "../moleculas/filter/FilteringComponent";
 import NoEntityMessageComponent from "../atoms/error/NoEntityMessageComponent";
 import ProductAddToCartModal from "../moleculas/modals/ProductAddToCartModal";
-import BaseModal from "../atoms/BaseModal";
 import PaginationComponent from "../moleculas/PaginationComponent";
 import SelectionOfNumberPerPage from "../atoms/input/SelectionOfNumberPerPage";
 
@@ -36,11 +35,12 @@ function ProductPageComponent() {
     const [filterOptions, setFilterOptions] = useState(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [productName, setProductName] = useState(null);
 
-    const toggleModal = (productName) => {
+    const [productId, setProductId] = useState(null);
+
+    const toggleModal = (productId) => {
         setIsModalOpen(!isModalOpen);
-        setProductName(productName);
+        setProductId(productId);
     }
 
     const getProducts = (page, newItemsPerPage, sortSpecs, filterSpecs) => {
@@ -199,7 +199,7 @@ function ProductPageComponent() {
                                             imageName={product.imageName}
                                             price={product.price}
                                             sellerAlias={product.seller.alias}
-                                            toggleModal={() => toggleModal(product.name)}
+                                            toggleModal={() => toggleModal(product.id)}
                                         />
                                     </div>
                                 ))}
@@ -228,19 +228,12 @@ function ProductPageComponent() {
 
             </section>
 
-            <BaseModal
+            <ProductAddToCartModal
+                toggleModal={toggleModal}
                 isModalOpen={isModalOpen}
-                toggleModal={() => toggleModal(productName)}>
-
-                <ProductAddToCartModal
-                    toggleModal={toggleModal}
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    productName={productName}
-                />
-            </BaseModal>
-
-
+                setIsModalOpen={setIsModalOpen}
+                productId={productId}
+            />
         </div>
     );
 }

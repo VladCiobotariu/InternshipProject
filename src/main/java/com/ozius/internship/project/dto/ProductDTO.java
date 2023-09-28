@@ -13,4 +13,6 @@ public class ProductDTO {
     private CategoryDTO category;
     private SellerDTO seller;
     private UnitOfMeasure unitOfMeasure;
+
+    private float reviewRating;
 }
