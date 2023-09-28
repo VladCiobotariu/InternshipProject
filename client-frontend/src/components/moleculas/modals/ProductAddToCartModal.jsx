@@ -54,17 +54,17 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
         <div>
             {product &&
                 <div>
-                    <div className="bg-white px-8 pb-4 pt-5">
+                    <div className="bg-white px-8 pb-4 pt-5 dark:bg-[#0F172A]">
                         <div>
                             <div className="flex flex-col">
                                 <div className="flex justify-between">
                                     <div>
                                         <img src={`${baseURL}${product.imageName}`}
                                              alt=""
-                                             className="object-cover w-44 h-auto mx-auto rounded-lg"
+                                             className="object-cover w-44 h-auto mx-auto rounded-lg dark:mb-2"
                                         />
                                     </div>
-                                    <div className="flex items-center text-zinc-800">
+                                    <div className="flex items-center text-zinc-800 dark:text-zinc-100">
                                         <QuantityInput
                                             quantity={quantity}
                                             onQuantityChanged={updateQuantity}
@@ -73,24 +73,24 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
                                 </div>
                                 <div className="flex justify-between border-t border-t-zinc-300">
                                     <div className="mt-2 mr-4">
-                                        <h2 className="text-lg font-bold text-gray-900">{product.name}</h2>
-                                        <p className="mt-1 text-xs text-gray-700">Price per {t(`enums.unitOfMeasure.${product.unitOfMeasure}`)}: {product.price} RON</p>
+                                        <h2 className="text-lg font-bold text-gray-900 dark:text-zinc-100">{product.name}</h2>
+                                        <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">Price per {t(`enums.unitOfMeasure.${product.unitOfMeasure}`)}: {product.price} RON</p>
                                         <div className="mt-7">
-                                            <p className="mt-1 text-xs text-gray-700">{product.seller.city}</p>
-                                            <p className="mt-1 text-xs text-gray-700">{product.seller.alias}</p>
+                                            <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">{product.seller.city}</p>
+                                            <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">{product.seller.alias}</p>
 
                                         </div>
 
                                     </div>
                                     <div className="flex items-center">
-                                        <p className="text-sm text-zinc-800">{(product.price * quantity).toFixed(2)} RON</p>
+                                        <p className="text-sm text-zinc-800 dark:text-zinc-100">{(product.price * quantity).toFixed(2)} RON</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                     </div>
-                    <div className="flex justify-end border border-t-zinc-300 px-4 py-3">
+                    <div className="flex justify-end border px-4 py-3 dark:bg-[#0F172A] dark:border-t-zinc-300 dark:border-x-[#0F172A] dark:border-b-[#0F172A]">
                         <button type="button"
                                 className="text-white items-end bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 shadow-lg shadow-indigo-500/50 dark:shadow-lg dark:shadow-indigo-800/80 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2 mb-2"
                                 onClick={() => handleAddToCart()}>
