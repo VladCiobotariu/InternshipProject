@@ -2,7 +2,7 @@ function BaseAlert({type, title, paragraph, classname, handleCloseButton}){
     return(
 
         <div role="alert" className={`${classname} z-10 absolute sm:sticky max-w-sm sm:max-w-sm sm:mx-auto p-4 rounded-xl
-                      border border-gray-100 bg-white
+                      border border-gray-100 bg-gray-200 dark:bg-white
                       ${type==='danger' ? 'border-red-500 border-s-4 bg-red-50' : ''}
                       ${type==='info' ? 'border-blue-800 border-s-4 bg-blue-50' : ''}
                       ${type==='success' ? 'border border-gray-100 bg-white' : ''}

@@ -47,9 +47,9 @@ function App() {
 
     return (
         <div className="bg-white dark:bg-inherit">
-            <AuthProvider>
-                <FavoriteProvider>
-                    <BrowserRouter>
+            <BrowserRouter>
+                <AuthProvider>
+                    <FavoriteProvider>
                         <CartProvider>
                             <HeaderComponent/>
 
@@ -86,10 +86,12 @@ function App() {
                             </Routes>
 
                             <AuthVerify/>
+
+
                         </CartProvider>
-                    </BrowserRouter>
-                </FavoriteProvider>
-            </AuthProvider>
+                    </FavoriteProvider>
+                </AuthProvider>
+            </BrowserRouter>
         </div>
     );
 }
