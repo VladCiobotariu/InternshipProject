@@ -64,7 +64,7 @@ const ProductAddToCartModal = ({setIsModalOpen, productName}) => {
                                              className="object-cover w-44 h-auto mx-auto rounded-lg"
                                         />
                                     </div>
-                                    <div className="flex items-center text-zinc-800">
+                                    <div className="flex items-center text-zinc-800 dark:text-white">
                                         <QuantityInput
                                             quantity={quantity}
                                             onQuantityChanged={updateQuantity}

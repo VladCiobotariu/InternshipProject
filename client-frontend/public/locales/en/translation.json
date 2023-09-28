@@ -5,7 +5,8 @@
   "enums": {
     "unitOfMeasure": {
       "KILOGRAM": "kg",
-      "GRAM": "g"
+      "GRAM": "g",
+      "ONE_UNIT": "piece"
     }
   }
 }

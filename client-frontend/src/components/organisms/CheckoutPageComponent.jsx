@@ -4,24 +4,17 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import CartItemCard from "../moleculas/cart/CartItemCard";
 import ShippingAddressesComponent from "../moleculas/ShippingAddressesComponent";
 import {submitOrder} from "../../api/OrderApi";
-import PopupSuccessAlert from "../atoms/alerts/PopupSuccessAlert";
-import DangerAlert from "../atoms/alerts/DangerAlert";
+import BaseAlert from "../atoms/alerts/BaseAlert";
 import {getBuyerAddresses} from "../../api/BuyerApi";
 import {useCart} from "../../contexts/CartContext";
+import useBreakpoint from "../../hooks/useBreakpoint";
 
 function CheckoutPageComponent(){
 
-    const {allCartItems, cartTotalPrice} = useCart()
+    const {allCartItems, numberOfCartItems, cartTotalPrice} = useCart()
 
-    const [infoAlertShowing, setInfoAlertShowing] = useState(false)
-    const [dangerAlertShowing, setDangerAlertShowing] = useState(false)
-
-    const checkoutItems =  allCartItems.map(item => {
-        return {
-            productId: item.product.id,
-            quantity: item.quantity
-        }
-    })
+    const [alert, setAlert] = useState(null)
+    const breakpoint = useBreakpoint()
 
     const [shippingAddresses, setShippingAddresses]= useState([])
     const [selectedShippingAddress, setSelectedShippingAddress] = useState(null)
@@ -50,13 +43,24 @@ function CheckoutPageComponent(){
     }
 
     function handlePlaceOrder(){
+        const checkoutItems =  allCartItems.map(item => {
+            return {
+                productId: item.product.id,
+                quantity: item.quantity
+            }
+        })
         if(!!selectedShippingAddress){
-            console.log(checkoutItems)
             submitOrder(selectedShippingAddress,checkoutItems,username)
                 .then(
                     () => {
-                        setInfoAlertShowing(true)
-                        setTimeout(() => navigate('/account/cart'), 2000)
+                        setAlert({
+                            type: "success",
+                            title: "Order Placed",
+                            paragraph: "You will be redirected..."
+                        })
+                        setTimeout(() => {
+                            navigate('/account/cart')
+                        }, 2000)
                     }
                 )
                 .catch(
@@ -65,14 +69,17 @@ function CheckoutPageComponent(){
                     }
                 )
         } else {
-            setDangerAlertShowing(true)
+            setAlert({
+                type: 'danger',
+                title: "Something went wrong",
+                paragraph: "Can't place an order without an address. Please select address or add a new one."
+            })
         }
 
     }
 
     function popupInfoCloseButton(){
-        setInfoAlertShowing(false)
-        navigate('/account/cart')
+        setAlert(null)
     }
 
     useEffect(() => {
@@ -82,11 +89,10 @@ function CheckoutPageComponent(){
     }, [location, username]);
 
     return (
-        // todo type for alert
         <div className="mb-">
 
-            {!!dangerAlertShowing &&
-                <DangerAlert className="top-[86px] right-5 sm:top-2 sm:mt-4" paragraph="To place an order you nedd to selet a shipping address or add a new address" />
+            {(!!alert && breakpoint==='sm') &&
+                <BaseAlert type={alert.type} classname="sm:top-4 sm:mt-4" handleCloseButton={popupInfoCloseButton} title={alert.title} paragraph={alert.paragraph}/>
             }
 
             <div className="sm:block flex justify-center mt-10 md:space-x-8 lg:space-x-8 xl:space-x-8 2xl:space-x-8 mx-8">
@@ -104,18 +110,18 @@ function CheckoutPageComponent(){
 
                 <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10 relative">
 
-                    {!!infoAlertShowing &&
-                        <div>
-                            <PopupSuccessAlert classname="-top-6 right-0 sm:top-2 sm:mt-4" handleCloseButton={popupInfoCloseButton} title="Order Placed" paragraph="You will be redirected..."/>
-                        </div>
+                    {(!!alert && breakpoint!=='sm') &&
+                        <BaseAlert type={alert.type} classname="-top-6 right-0" handleCloseButton={popupInfoCloseButton} title={alert.title} paragraph={alert.paragraph}/>
                     }
 
                     <p className="text-xl font-medium md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">Order Summary</p>
-                    <div className="mt-4">
-                        {allCartItems.map((item)=>(
-                            <CartItemCard key={item.id} item={item}/>
-                        ))}
-                    </div>
+                    {numberOfCartItems!==0 &&
+                        <div className="mt-4">
+                            {allCartItems.map((item)=>(
+                                <CartItemCard key={item.id} item={item}/>
+                            ))}
+                        </div>
+                    }
 
                     <div className="dark:text-white mt-6 rounded-2xl bg-white dark:bg-[#192235] p-6 shadow-md mb-14">
                         <div className="mb-2 flex justify-between">
