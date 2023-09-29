@@ -1,6 +1,7 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.ProductWithRatingsDTO;
+import com.ozius.internship.project.dto.ReviewDTO;
 import com.ozius.internship.project.service.ProductService;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
@@ -53,6 +54,12 @@ public class ProductController {
     public ResponseEntity<ProductWithRatingsDTO> getProductWithReviews(@PathVariable long id) {
         ProductWithRatingsDTO productWithRatingsDTO = productService.getProductWithReviews(id);
         return ResponseEntity.ok(productWithRatingsDTO);
+    }
+
+    @GetMapping("/products/{id}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviewsForProduct(@PathVariable long id) {
+        List<ReviewDTO> reviews = productService.getReviewsForProduct(id);
+        return ResponseEntity.ok(reviews);
     }
 
 }
