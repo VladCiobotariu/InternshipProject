@@ -7,9 +7,9 @@ public enum Operation {
     LT("<"),
     LTE("<="),
     LIKE("like"),
-    CONTAINS("like"),
-    STARTS_WITH("like"),
-    ENDS_WITH("like");
+    CONTAINS("like"), // % sdas %
+    STARTS_WITH("like"), // sdsa %
+    ENDS_WITH("like"); // % dsad
 
 
     private String sqlOperator;

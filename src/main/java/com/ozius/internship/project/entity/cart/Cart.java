@@ -30,6 +30,7 @@ public class Cart extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = CartItem.Columns.CART_ID, foreignKey = @ForeignKey(foreignKeyDefinition =
             "FOREIGN KEY (" + CartItem.Columns.CART_ID + ") REFERENCES " + Cart.TABLE_NAME + " (" + BaseEntity.ID + ")  ON DELETE CASCADE"))
+    @OrderBy("id ASC")  //orders by when get on cartItems
     private Set<CartItem> cartItems;
 
     @Column(name = Columns.TOTAL_PRICE, nullable = false, scale = 2)

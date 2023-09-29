@@ -2,9 +2,10 @@ import './styles/App.css';
 import "@fontsource/roboto";
 
 import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom'
-import AuthProvider, { useAuth } from './auth/AuthContext'
+import AuthProvider, {useAuth} from './auth/AuthContext'
+import FavoriteProvider from './contexts/FavoriteContext'
 
-import HeaderComponent from "./components/organisms/header/HeaderComponent";
+import HeaderComponent from "./components/moleculas/header/HeaderComponent";
 import WelcomePageComponent from "./components/organisms/WelcomePageComponent";
 import LoginPageComponent from "./components/organisms/LoginPageComponent";
 import RegisterPageComponent from "./components/organisms/RegisterPageComponent";
@@ -13,27 +14,29 @@ import CartComponent from "./components/organisms/CartPageComponent";
 import CategoryPageComponent from './components/organisms/CategoryPageComponent'
 import ProductPageComponent from './components/organisms/ProductPageComponent'
 import CheckoutPageComponent from "./components/organisms/CheckoutPageComponent";
+import CartProvider from "./contexts/CartContext";
+import ProductDetailComponent from "./components/moleculas/ProductDetailComponent";
 
-function AuthenticatedRoute({children}){
+function AuthenticatedRoute({children}) {
 
     const auth = sessionStorage.getItem('isAuthenticated')
 
-    if(auth === "false"){
+    if (auth === "false") {
         return <Navigate to={"/"}/>
     }
-    if(auth){
-        return(
+    if (auth) {
+        return (
             children
         )
     }
     return <Navigate to={"/"}/>
 }
 
-function NotAuthenticatedRoute({children}){
+function NotAuthenticatedRoute({children}) {
 
     const auth = useAuth()
-    if(!auth.isAuthenticated){
-        return(
+    if (!auth.isAuthenticated) {
+        return (
             children
         )
     }
@@ -42,51 +45,53 @@ function NotAuthenticatedRoute({children}){
 
 function App() {
 
-
     return (
-      <div className="bg-white dark:bg-inherit">
-          <AuthProvider>
-              <BrowserRouter>
+        <div className="bg-white dark:bg-inherit">
+            <AuthProvider>
+                <FavoriteProvider>
+                    <BrowserRouter>
+                        <CartProvider>
+                            <HeaderComponent/>
 
-                  <HeaderComponent/>
+                            <Routes>
+                                <Route path='/' element={<WelcomePageComponent/>}/>
+                                <Route path='' element={<WelcomePageComponent/>}/>
+                                <Route path='/login' element={
+                                    <NotAuthenticatedRoute>
+                                        <LoginPageComponent/>
+                                    </NotAuthenticatedRoute>
+                                }/>
 
-                  <Routes>
-                      <Route path='/' element={<WelcomePageComponent/>}/>
-                      <Route path='' element={<WelcomePageComponent/>}/>
-                      <Route path='/login' element={
-                          <NotAuthenticatedRoute>
-                              <LoginPageComponent/>
-                          </NotAuthenticatedRoute>
-                      }/>
+                                <Route path='/register' element={
+                                    <NotAuthenticatedRoute>
+                                        <RegisterPageComponent/>
+                                    </NotAuthenticatedRoute>
+                                }/>
 
-                      <Route path='/register' element={
-                          <NotAuthenticatedRoute>
-                              <RegisterPageComponent/>
-                          </NotAuthenticatedRoute>
-                      }/>
+                            <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+                            <Route path='/products' element={<ProductPageComponent/>}/>
+                            <Route path='/:sellerAlias/products/:productName' element={<ProductDetailComponent/>}/>
 
-                      <Route path='/products/categories' element={<CategoryPageComponent/>}/>
-                      <Route path='/products' element={<ProductPageComponent/>}/>
+                                <Route path='/account/cart' element={
+                                    <AuthenticatedRoute>
+                                        <CartComponent/>
+                                    </AuthenticatedRoute>
+                                }/>
 
-                      <Route path='/account/cart' element={
-                          <AuthenticatedRoute>
-                            <CartComponent/>
-                          </AuthenticatedRoute>
-                      }/>
+                                <Route path='/checkout' element={
+                                    <AuthenticatedRoute>
+                                        <CheckoutPageComponent/>
+                                    </AuthenticatedRoute>
+                                }/>
+                            </Routes>
 
-                      <Route path='/checkout' element={
-                          <AuthenticatedRoute>
-                            <CheckoutPageComponent/>
-                          </AuthenticatedRoute>
-                      }/>
-                  </Routes>
-
-                  <AuthVerify/>
-
-              </BrowserRouter>
-          </AuthProvider>
-      </div>
-  );
+                            <AuthVerify/>
+                        </CartProvider>
+                    </BrowserRouter>
+                </FavoriteProvider>
+            </AuthProvider>
+        </div>
+    );
 }
 
 export default App;

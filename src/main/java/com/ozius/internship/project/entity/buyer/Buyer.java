@@ -63,6 +63,22 @@ public class Buyer extends BaseEntity {
         return Collections.unmodifiableSet(addresses);
     }
 
+    public String getFirstName() {
+        return account.getFirstName();
+    }
+
+    public String getLastName() {
+        return account.getLastName();
+    }
+
+    public String getImageName() {
+        return account.getImageName();
+    }
+
+    public String getTelephone() {
+        return account.getTelephone();
+    }
+
     public void addFavorite(Product product){
         if(this.favoriteProducts.stream().anyMatch(item -> item.equals(product))){
             throw new IllegalItemException("can't add to favorites, items already exists");

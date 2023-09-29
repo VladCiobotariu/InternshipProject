@@ -31,7 +31,7 @@ public class CartController {
 
         Cart cart = cartService.getCartByUserEmail(loggedUserName);
         if(cart == null){
-           return ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
         CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
         cartDTO.getCartItems().sort(Comparator.comparingLong(CartItemDTO::getId));

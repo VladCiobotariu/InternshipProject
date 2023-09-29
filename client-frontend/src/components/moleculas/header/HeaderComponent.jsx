@@ -1,25 +1,25 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import { useAuth } from '../../../auth/AuthContext';
-import { getAllCategoriesApi } from "../../../api/CategoryApi";
-import { baseURL } from "../../../auth/ApiClient";
+import {useAuth} from '../../../auth/AuthContext';
+import {getAllCategoriesApi} from "../../../api/CategoryApi";
+import {baseURL} from "../../../auth/ApiClient";
 import '../../../styles/Header.css'
 
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
+import {Dialog, Disclosure, Popover, Transition} from '@headlessui/react';
 import {
+    ArrowLeftOnRectangleIcon,
     Bars3Icon,
-    XMarkIcon,
-    UserCircleIcon,
     ClipboardDocumentListIcon,
     Cog6ToothIcon,
-    ArrowLeftOnRectangleIcon,
-    ShoppingBagIcon,
     HeartIcon,
+    ShoppingBagIcon,
+    UserCircleIcon,
+    XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import {ChevronDownIcon} from '@heroicons/react/20/solid';
 import {ReactComponent as Logo} from "./icon.svg";
-import {getFavorites, removeFavorite} from "../../../api/BuyerApi";
-import {getCartItems} from "../../../api/CartApi";
+import {useFavorite} from "../../../contexts/FavoriteContext";
+import {useCart} from "../../../contexts/CartContext";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -38,18 +38,15 @@ export default function HeaderComponent() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const [categories, setCategories] = useState([]);
-    const [favorites, setFavorites] = useState([])
 
-    const[numberOfCartItems, setNumberOfCartItems] = useState(0)
-    const[numberOfFavorites, setNumberOfFavorites] = useState(0)
-
-    const { isAuthenticated, username } = useAuth();
-    const auth = useAuth();
+    const { isAuthenticated, username, logout } = useAuth();
 
     const location = useLocation()
     const buttonRef = useRef();
 
     const navigate = useNavigate()
+    const {allFavorites, numberOfFavorites, removeFromFavorite} = useFavorite();
+    const { numberOfCartItems } = useCart()
 
     const getCategoryList = () => {
         getAllCategoriesApi()
@@ -59,49 +56,12 @@ export default function HeaderComponent() {
             .catch((err) => console.log(err));
     };
 
-    function getFavoritesList(){
-        getFavorites()
-            .then(
-                (response) => {
-                    setFavorites(response.data)
-                    setNumberOfFavorites(response.data.length)
-                }
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-    }
-
     useEffect(() => {
-        if(username){
-            getFavoritesList()
-            getCartItemsList()
-        }
         getCategoryList()
     }, [location, username]);
 
-    function getCartItemsList(){
-        getCartItems()
-            .then(
-                (response) => setNumberOfCartItems(response.data.cartItems.length)
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-    }
-
-    function favoriteDeleteButton(productId){
-        removeFavorite(productId)
-            .then(
-                () => getFavoritesList()
-            )
-            .catch(
-                (err) => console.log(err)
-            )
+    const favoriteDeleteButton = (productId) => {
+        removeFromFavorite(productId)
     }
 
     const createQueryParam = (categoryName) => {
@@ -111,9 +71,8 @@ export default function HeaderComponent() {
         navigate(`/products?${newSearch}`);
     }
 
-
     return (
-        <header className="bg-transparent dark:bg-transparent shadow-md dark:shadow-sm dark:shadow-black">
+        <header className="bg-white dark:bg-[#0F172A] shadow-md dark:shadow-sm dark:shadow-black sticky top-0 z-[1]">
             <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 md:px-8 lg:px-8 xl:px-8 2xl:px-8" aria-label="Global">
                 <div className="flex md:flex-1 lg:flex-1 xl:flex-1 2xl:flex-1">
                     <Link to='/' className="-m-1.5 p-1.5">
@@ -251,7 +210,7 @@ export default function HeaderComponent() {
                                         dark:bg-opacity-70 dark:backdrop-blur-md bg-opacity-70 backdrop-blur-md"
                                     >
                                         <div className="p-2">
-                                            {favorites.map((item) => (
+                                            {allFavorites.map((item) => (
 
                                                 /**
                                                  * @param {{
@@ -381,7 +340,7 @@ export default function HeaderComponent() {
                                                 <button
                                                     onClick={() => {
                                                             buttonRef.current?.click()
-                                                            auth.logout()
+                                                            logout()
                                                         }
                                                     }
                                                     className="block font-semibold text-gray-900 dark:text-inherit">
@@ -535,7 +494,7 @@ export default function HeaderComponent() {
                                                         <button
                                                             onClick={()=>{
                                                                     setMobileMenuOpen(false)
-                                                                    auth.logout()
+                                                                    logout()
                                                                 }
                                                             }
                                                             className="flex w-full rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
