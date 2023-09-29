@@ -8,8 +8,9 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ProductWithRatingsDTO extends ProductDTO {
 
-    private float productRatings;
-    public void setProductRatings(float productRatings) {
-        this.productRatings = productRatings;
+    private ReviewsInformationDTO reviewInformation;
+    public void setReviewInformation(ReviewsInformationDTO reviewInformation) {
+        this.reviewInformation = reviewInformation;
     }
+
 }

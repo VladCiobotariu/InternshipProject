@@ -1,7 +1,8 @@
 import React, {useState} from 'react'
 import QuantityInput from "../../atoms/input/QuantityInput";
+import ProductSpecificInfo from "./ProductSpecificInfo";
 
-const ProductDetails = () => {
+const ProductInformation = () => {
 
     const [quantity, setQuantity] = useState(1);
 
@@ -20,16 +21,14 @@ const ProductDetails = () => {
             <p className=" font-semibold text-xl leading-5 mt-6">$ 790.89</p>
 
             <div className="mt-10">
-                <div className="flex justify-between items-center">
-                    <p className="font-medium text-base leading-4 text-zinc-600 dark:text-zinc-100">Category</p>
-                    <div className="flex">Fruits</div>
-                </div>
-                <hr className="bg-gray-200 w-full my-4"/>
-                <div className="flex justify-between items-center">
-                    <p className="font-medium text-base leading-4 text-zinc-600 dark:text-zinc-100">Producer</p>
-                    <div className="flex">SellerAlias</div>
-                </div>
-                <hr className="bg-gray-200 w-full my-3"/>
+                <ProductSpecificInfo
+                    label="Category"
+                    information="Fruits"
+                />
+                <ProductSpecificInfo
+                    label="Producer"
+                    information="SellerName"
+                />
                 <div className="flex justify-between items-center">
                     <p className="font-medium text-base leading-4 text-zinc-600 dark:text-zinc-100">Quantity</p>
                     <div className="flex">
@@ -50,4 +49,4 @@ const ProductDetails = () => {
     )
 }
 
-export default ProductDetails;
+export default ProductInformation;

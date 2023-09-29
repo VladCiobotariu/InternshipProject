@@ -49,7 +49,6 @@ public class ProductController {
         return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productWithRatingsDTOS);
     }
 
-    // todo - get list of reviews for specific product (products/id/reviews)
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductWithRatingsDTO> getProductWithReviews(@PathVariable long id) {
         ProductWithRatingsDTO productWithRatingsDTO = productService.getProductWithReviews(id);

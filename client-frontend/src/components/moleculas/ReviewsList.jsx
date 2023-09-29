@@ -9,8 +9,7 @@ const ReviewsList = () => {
                     Reviews!
                 </div>
                 <div>
-                    <button
-                        onClick="">Click here</button>
+                    <button>Click here</button>
                 </div>
             </div>
         </div>

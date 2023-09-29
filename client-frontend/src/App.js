@@ -15,7 +15,7 @@ import CategoryPageComponent from './components/organisms/CategoryPageComponent'
 import ProductPageComponent from './components/organisms/ProductPageComponent'
 import CheckoutPageComponent from "./components/organisms/CheckoutPageComponent";
 import CartProvider from "./contexts/CartContext";
-import ProductDetailComponent from "./components/moleculas/ProductDetailComponent";
+import ProductDetailsPageComponent from "./components/organisms/ProductDetailsPageComponent";
 
 function AuthenticatedRoute({children}) {
 
@@ -70,7 +70,7 @@ function App() {
 
                             <Route path='/products/categories' element={<CategoryPageComponent/>}/>
                             <Route path='/products' element={<ProductPageComponent/>}/>
-                            <Route path='/:sellerAlias/products/:productName' element={<ProductDetailComponent/>}/>
+                            <Route path='/:sellerAlias/products/:productId' element={<ProductDetailsPageComponent/>}/>
 
                                 <Route path='/account/cart' element={
                                     <AuthenticatedRoute>

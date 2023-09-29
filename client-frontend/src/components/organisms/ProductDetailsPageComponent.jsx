@@ -1,25 +1,44 @@
-import React from 'react'
-import ProductDetails from "./details/ProductDetails";
+import React, {useEffect, useState} from 'react'
+import ProductInformation from "../moleculas/productInformation/ProductInformation";
 import useBreakpoint from "../../hooks/useBreakpoint";
 import '../../styles/ProductDetailsComponent.css'
 import StarReviewsReadOnly from "../atoms/starReviews/StarReviewsReadOnly";
 import ProductHistorySteps from "../atoms/products/ProductHistorySteps";
-import image from "./mango.jpg";
-import ReviewsList from "./ReviewsList";
+import image from "../moleculas/mango.jpg";
+import ReviewsList from "../moleculas/ReviewsList";
+import {getProductByIdApi} from "../../api/ProductApi";
+import {useParams} from "react-router-dom";
 
-const ProductDetailComponent = () => {
+const ProductDetailsPageComponent = () => {
 
     const breakpoint = useBreakpoint()
+    const {productId} = useParams();
+    const [product, setProduct] = useState(null);
+
+    const getProduct = (productId) => {
+        getProductByIdApi(productId)
+            .then((res) => {
+                setProduct(res.data)
+            })
+            .catch((err) => console.log(err))
+    }
+
+    useEffect(() => {
+        getProduct(productId);
+    }, []);
 
     return (
-        <div className="mx-auto mt-16 max-w-7xl px-10">
+        product && (<div className="mx-auto mt-16 max-w-7xl px-10">
             <div className={`flex justify-center items-center ${breakpoint === 'sm' ? 'sm:flex-col' : ''} gap-8`}>
 
                 <div className="w-full items-center grid-wrapper">
 
                     <div className="grid-header">
                         <p className="font-normal leading-4 text-zinc-600 dark:text-zinc-300">
-                            <ProductHistorySteps />
+                            <ProductHistorySteps
+                                categoryName={product.category.name}
+                                productName={product.name}
+                            />
                         </p>
                         <h2 className="font-semibold text-3xl leading-7 text-zinc-800 mt-4 dark:text-zinc-100">
                             Wooden Stool
@@ -42,7 +61,7 @@ const ProductDetailComponent = () => {
                         </div>
 
                         <div className={` ${breakpoint === 'sm' ? 'ml-0' : 'flex-grow ml-8'}`}>
-                            <ProductDetails/>
+                            <ProductInformation/>
                         </div>
                     </div>
                 </div>
@@ -54,8 +73,8 @@ const ProductDetailComponent = () => {
                     <ReviewsList />
                 </div>
             </div>
-        </div>
+        </div>)
     );
 };
 
-export default ProductDetailComponent;
+export default ProductDetailsPageComponent;

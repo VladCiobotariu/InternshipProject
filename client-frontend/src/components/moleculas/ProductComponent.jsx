@@ -13,8 +13,6 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
 
     const [isFavorite, setIsFavorite] = useState(false);
 
-    const [product, setProduct] = useState(null);
-
     useEffect(() => {
         setIsFavorite(checkIsFavorite(allFavorites, id));
     }, [allFavorites]);
@@ -38,7 +36,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                             src={`${baseURL}${imageName}`}
                             alt={name}
                             className="object-cover w-48 h-48 mx-auto"
-                            onClick={() => navigate(`/${sellerAlias}/products/${name}`)}
+                            onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                         />
                         {isAuthenticated &&
                             <div className="absolute top-0 left-0 p-2">

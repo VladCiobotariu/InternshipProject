@@ -225,8 +225,9 @@ public class TestDataCreator {
     public static void createReviewsBaseData(EntityManager em) {
         Reviews.review1 = createReview(em, Buyers.buyer2, "review for product 1 from buyer 2", 5F, Products.product1);
         Reviews.review2 = createReview(em, Buyers.buyer3, "review for product 1 from buyer 3", 3F, Products.product1);
-        Reviews.review3 = createReview(em, Buyers.buyer2, "review for product 2 from buyer 2", 4F, Products.product2);
-        Reviews.review4 = createReview(em, Buyers.buyer3, "review for product 2 from buyer 3", 2F, Products.product2);
+        Reviews.review3 = createReview(em, Buyers.buyer1, "review for product 1 from buyer 1", 5F, Products.product1);
+        Reviews.review4 = createReview(em, Buyers.buyer2, "review for product 2 from buyer 2", 4F, Products.product2);
+        Reviews.review5 = createReview(em, Buyers.buyer3, "review for product 2 from buyer 3", 2F, Products.product2);
     }
 
     public static class Buyers{
@@ -272,6 +273,7 @@ public class TestDataCreator {
         public static Review review2;
         public static Review review3;
         public static Review review4;
+        public static Review review5;
     }
 
 }
