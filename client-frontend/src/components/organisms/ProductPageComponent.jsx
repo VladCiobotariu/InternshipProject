@@ -233,8 +233,6 @@ function ProductPageComponent() {
                 toggleModal={() => toggleModal(productName)}>
 
                 <ProductAddToCartModal
-                    toggleModal={toggleModal}
-                    isModalOpen={isModalOpen}
                     setIsModalOpen={setIsModalOpen}
                     productName={productName}
                 />

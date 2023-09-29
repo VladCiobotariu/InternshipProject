@@ -1,14 +1,15 @@
-function BaseAlert({type, title, paragraph, classname, handleCloseButton}){
+function BaseAlert({type, title, paragraph, onCloseButton}){
     return(
 
-        <div role="alert" className={`${classname} z-10 absolute sm:sticky max-w-sm sm:max-w-sm sm:mx-auto p-4 rounded-xl
+        <div className="max-w-[1100px] z-10 absolute sm:sticky sm:top-6 sm:mt-4 w-full transform sm:transform-none translate-y-2 mx-auto left-0 right-0 flex justify-end">
+            <div role="alert" className={`max-w-sm sm:max-w-sm sm:mx-auto p-4 rounded-xl
                       border border-gray-100 bg-gray-200 dark:bg-white
                       ${type==='danger' ? 'border-red-500 border-s-4 bg-red-50' : ''}
                       ${type==='info' ? 'border-blue-800 border-s-4 bg-blue-50' : ''}
                       ${type==='success' ? 'border border-gray-100 bg-white' : ''}
                       ${type==='warning' ? 'border-yellow-500 border-s-4 bg-yellow-50' : ''}
                       `}>
-            <div className="flex items-start gap-4">
+                <div className="flex items-start gap-4">
 
                     <span className={`text-black
                                       ${type==='info' ? 'text-blue-800 dark:text-blue-400' : ''}
@@ -40,43 +41,44 @@ function BaseAlert({type, title, paragraph, classname, handleCloseButton}){
 
 
 
-                <div className="flex-1">
-                    <strong className={`block font-medium text-gray-900
+                    <div className="flex-1">
+                        <strong className={`block font-medium text-gray-900
                                       ${type==='danger' ? 'text-red-800' : ''}
                                       ${type==='info' ? 'text-blue-800' : ''}
                                       ${type==='warning' ? '' : ''}
                         `}>
-                        {title}
-                    </strong>
+                            {title}
+                        </strong>
 
-                    <p className={`mt-1 text-sm text-gray-700
+                        <p className={`mt-1 text-sm text-gray-700
                                   ${type==='danger' ? 'text-red-700' : ''}
                                   ${type==='info' ? 'text-blue-700' : ''}
                                   ${type==='warning' ? '' : ''}
                     `}>
-                        {paragraph}
-                    </p>
+                            {paragraph}
+                        </p>
+                    </div>
+
+                    <button onClick={onCloseButton} className="text-gray-500 transition hover:text-gray-600">
+                        <span className="sr-only">Dismiss popup</span>
+
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="h-6 w-6"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M6 18L18 6M6 6l12 12"
+                            />
+                        </svg>
+                    </button>
+
                 </div>
-
-                <button onClick={handleCloseButton} className="text-gray-500 transition hover:text-gray-600">
-                    <span className="sr-only">Dismiss popup</span>
-
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="h-6 w-6"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M6 18L18 6M6 6l12 12"
-                        />
-                    </svg>
-                </button>
-
             </div>
         </div>
     )

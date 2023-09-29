@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React from 'react'
 import ImageDetails from "../atoms/productDetails/ImageDetails";
 import ProductDetails from "./details/ProductDetails";
 import useBreakpoint from "../../hooks/useBreakpoint";
-import './ProductDetailsComponent.css'
+import '../../styles/ProductDetailsComponent.css'
 
 const ProductDetailComponent = () => {
 

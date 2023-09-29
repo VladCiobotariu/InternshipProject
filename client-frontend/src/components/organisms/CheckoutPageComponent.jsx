@@ -4,17 +4,14 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import CartItemCard from "../moleculas/cart/CartItemCard";
 import ShippingAddressesComponent from "../moleculas/ShippingAddressesComponent";
 import {submitOrder} from "../../api/OrderApi";
-import BaseAlert from "../atoms/alerts/BaseAlert";
 import {getBuyerAddresses} from "../../api/BuyerApi";
 import {useCart} from "../../contexts/CartContext";
-import useBreakpoint from "../../hooks/useBreakpoint";
+import {useAlert} from "../../contexts/AlertContext";
 
 function CheckoutPageComponent(){
 
-    const {allCartItems, numberOfCartItems, cartTotalPrice} = useCart()
-
-    const [alert, setAlert] = useState(null)
-    const breakpoint = useBreakpoint()
+    const {allCartItems, numberOfCartItems, cartTotalPrice, refreshCart} = useCart()
+    const {pushAlert, clearAlert} = useAlert()
 
     const [shippingAddresses, setShippingAddresses]= useState([])
     const [selectedShippingAddress, setSelectedShippingAddress] = useState(null)
@@ -30,7 +27,7 @@ function CheckoutPageComponent(){
             .then(
                 (response) => {
                     setShippingAddresses(response.data)
-                    setSelectedShippingAddress(response.data[0])
+                    // setSelectedShippingAddress(response.data[0])
                 }
             )
             .catch(
@@ -40,26 +37,32 @@ function CheckoutPageComponent(){
 
     function handleAddressSelected(shippingAddress){
         setSelectedShippingAddress(shippingAddress)
+        if(!!shippingAddress){
+            clearAlert()
+        }
     }
 
     function handlePlaceOrder(){
+
         const checkoutItems =  allCartItems.map(item => {
             return {
                 productId: item.product.id,
                 quantity: item.quantity
             }
         })
+
         if(!!selectedShippingAddress){
             submitOrder(selectedShippingAddress,checkoutItems,username)
                 .then(
                     () => {
-                        setAlert({
+                        pushAlert({
                             type: "success",
                             title: "Order Placed",
                             paragraph: "You will be redirected..."
                         })
                         setTimeout(() => {
-                            navigate('/account/cart')
+                            refreshCart()
+                            navigate('/account/cart') //todo remove after alert context
                         }, 2000)
                     }
                 )
@@ -69,17 +72,13 @@ function CheckoutPageComponent(){
                     }
                 )
         } else {
-            setAlert({
+            pushAlert({
                 type: 'danger',
-                title: "Something went wrong",
+                title: "Validation Error",
                 paragraph: "Can't place an order without an address. Please select address or add a new one."
             })
         }
 
-    }
-
-    function popupInfoCloseButton(){
-        setAlert(null)
     }
 
     useEffect(() => {
@@ -89,11 +88,7 @@ function CheckoutPageComponent(){
     }, [location, username]);
 
     return (
-        <div className="mb-">
-
-            {(!!alert && breakpoint==='sm') &&
-                <BaseAlert type={alert.type} classname="sm:top-4 sm:mt-4" handleCloseButton={popupInfoCloseButton} title={alert.title} paragraph={alert.paragraph}/>
-            }
+        <div className="">
 
             <div className="sm:block flex justify-center mt-10 md:space-x-8 lg:space-x-8 xl:space-x-8 2xl:space-x-8 mx-8">
 
@@ -101,20 +96,8 @@ function CheckoutPageComponent(){
                     <Link to="/account/cart" className="text-sm font-semibold leading-6 text-inherit dark:text-inherit">
                         <span aria-hidden="true">&larr;</span> Cart
                     </Link>
-                    <div className="mt-4">
-                        <ShippingAddressesComponent shippingAddresses={shippingAddresses}
-                                                    selectedShippingAddress={selectedShippingAddress}
-                                                    onAddressSelected={handleAddressSelected}/>
-                    </div>
-                </div>
 
-                <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10 relative">
-
-                    {(!!alert && breakpoint!=='sm') &&
-                        <BaseAlert type={alert.type} classname="-top-6 right-0" handleCloseButton={popupInfoCloseButton} title={alert.title} paragraph={alert.paragraph}/>
-                    }
-
-                    <p className="text-xl font-medium md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">Order Summary</p>
+                    <p className="text-xl font-bold mt-4">Order Summary</p>
                     {numberOfCartItems!==0 &&
                         <div className="mt-4">
                             {allCartItems.map((item)=>(
@@ -122,6 +105,15 @@ function CheckoutPageComponent(){
                             ))}
                         </div>
                     }
+                </div>
+
+                <div className="w-1/2 max-w-lg sm:w-full sm:mx-auto sm:mt-10 relative">
+
+                    <div className="md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">
+                        <ShippingAddressesComponent shippingAddresses={shippingAddresses}
+                                                    selectedShippingAddress={selectedShippingAddress}
+                                                    onAddressSelected={handleAddressSelected}/>
+                    </div>
 
                     <div className="dark:text-white mt-6 rounded-2xl bg-white dark:bg-[#192235] p-6 shadow-md mb-14">
                         <div className="mb-2 flex justify-between">
