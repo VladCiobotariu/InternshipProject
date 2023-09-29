@@ -1,8 +1,7 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.dto.ProductDTO;
+import com.ozius.internship.project.dto.ProductWithRatingsDTO;
 import com.ozius.internship.project.service.ProductService;
-import com.ozius.internship.project.service.queries.JpaQueryBuilder;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
@@ -32,7 +31,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ApiPaginationResponse<List<ProductDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
+    public ApiPaginationResponse<List<ProductWithRatingsDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
                                                                        @RequestParam(name = "page", defaultValue = "1") int page,
                                                                        @RequestParam(name = "sort", required = false) SortSpecs sortSpecs,
                                                                        @RequestParam(name = "filter", required = false) FilterSpecs filterSpecs) {
@@ -44,17 +43,16 @@ public class ProductController {
 
         int numOfTotalProds = query.getResultList().size();
 
-        List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
+        List<ProductWithRatingsDTO> productWithRatingsDTOS = query.getPagingResultList(itemsPerPage, page-1);
 
-        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productsDTO);
-    }
-    @GetMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> getProductById(@PathVariable long id) {
-        ProductDTO productDTO = productService.getProductById(id);
-        return ResponseEntity.ok(productDTO);
+        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productWithRatingsDTOS);
     }
 
     // todo - get list of reviews for specific product (products/id/reviews)
-
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ProductWithRatingsDTO> getProductWithReviews(@PathVariable long id) {
+        ProductWithRatingsDTO productWithRatingsDTO = productService.getProductWithReviews(id);
+        return ResponseEntity.ok(productWithRatingsDTO);
+    }
 
 }

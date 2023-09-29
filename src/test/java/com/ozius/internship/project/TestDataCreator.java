@@ -13,6 +13,10 @@ import com.ozius.internship.project.entity.seller.SellerType;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.ozius.internship.project.TestDataCreator.Buyers.buyer2;
+import static com.ozius.internship.project.TestDataCreator.Products.product1;
+import static com.ozius.internship.project.TestDataCreator.Products.product2;
+
 public class TestDataCreator {
 
     public static void createBaseDataForProduct(EntityManager em, PasswordEncoder passwordEncoder) {
@@ -182,11 +186,12 @@ public class TestDataCreator {
     }
 
 
-    public static Review createReview(Buyer buyer, String description, float rating, Product product){
+    public static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
 
         Seller seller = product.getSeller();
-
-        return seller.addReview(buyer, description, rating, product);
+        Review review = seller.addReview(buyer, description, rating, product);
+        em.persist(review);
+        return review;
     }
 
     private static Cart createCart(EntityManager em, Buyer buyer){
@@ -205,7 +210,7 @@ public class TestDataCreator {
         Cart cart1 = createCart(em, Buyers.buyer3);
         Cart cart2 = createCart(em, Buyers.buyer2);
 
-        addItemToCart(em, cart1, Products.product1, 2F);
+        addItemToCart(em, cart1, product1, 2F);
         addItemToCart(em, cart1, Products.product2, 5F);
 
         addItemToCart(em, cart2, Products.product2, 5F);
@@ -213,8 +218,15 @@ public class TestDataCreator {
 
     public static void createFavoritesBaseData(EntityManager em){
         Buyer buyer = em.merge(Buyers.buyer3);
-        buyer.addFavorite(Products.product1);
+        buyer.addFavorite(product1);
         buyer.addFavorite(Products.product2);
+    }
+
+    public static void createReviewsBaseData(EntityManager em) {
+        Reviews.review1 = createReview(em, Buyers.buyer2, "review for product 1 from buyer 2", 5F, Products.product1);
+        Reviews.review2 = createReview(em, Buyers.buyer3, "review for product 1 from buyer 3", 3F, Products.product1);
+        Reviews.review3 = createReview(em, Buyers.buyer2, "review for product 2 from buyer 2", 4F, Products.product2);
+        Reviews.review4 = createReview(em, Buyers.buyer3, "review for product 2 from buyer 3", 2F, Products.product2);
     }
 
     public static class Buyers{
@@ -253,6 +265,13 @@ public class TestDataCreator {
 
     public static class Addresses{
         public static Address address1;
+    }
+
+    public static class Reviews {
+        public static Review review1;
+        public static Review review2;
+        public static Review review3;
+        public static Review review4;
     }
 
 }
