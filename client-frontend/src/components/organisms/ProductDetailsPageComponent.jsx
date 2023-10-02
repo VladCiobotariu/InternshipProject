@@ -8,6 +8,7 @@ import image from "../moleculas/mango.jpg";
 import ReviewsList from "../moleculas/ReviewsList";
 import {getProductByIdApi} from "../../api/ProductApi";
 import {useParams} from "react-router-dom";
+import {baseURL} from "../../auth/ApiClient";
 
 const ProductDetailsPageComponent = () => {
 
@@ -41,12 +42,16 @@ const ProductDetailsPageComponent = () => {
                             />
                         </p>
                         <h2 className="font-semibold text-3xl leading-7 text-zinc-800 mt-4 dark:text-zinc-100">
-                            Wooden Stool
+                            {product.name}
                         </h2>
                     </div>
 
                     <div className="mt-4 block grid-reviews ">
-                        <StarReviewsReadOnly/>
+                        <StarReviewsReadOnly
+                            rating={product.reviewInformation.productRating}
+                            numReviews={product.reviewInformation.numberReviews}
+                            isRatingDisplayed={product.reviewInformation.ratingApplicable}
+                        />
                     </div>
 
 
@@ -54,14 +59,21 @@ const ProductDetailsPageComponent = () => {
                         <div className={` ${breakpoint === 'sm' ? 'mb-4' : 'flex-shrink-0'}`}>
                             <div className="flex justify-center items-center w-full h-full pr-2 border-r sm:border-none sm:mt-4">
                                 <img
-                                    src={image}
-                                    alt="Apple"
+                                    src={`${baseURL}${product.imageName}`}
+                                    alt={product.name}
                                     className="w-[30rem] md:w-[22rem]"/>
                             </div>
                         </div>
 
                         <div className={` ${breakpoint === 'sm' ? 'ml-0' : 'flex-grow ml-8'}`}>
-                            <ProductInformation/>
+                            <ProductInformation
+                                description={product.description}
+                                price={product.price}
+                                category={product.category.name}
+                                producer={product.seller.alias}
+                                city={product.seller.city}
+                                productId={product.id}
+                            />
                         </div>
                     </div>
                 </div>

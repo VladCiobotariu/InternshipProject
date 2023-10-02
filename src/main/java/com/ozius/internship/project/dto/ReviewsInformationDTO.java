@@ -5,17 +5,12 @@ import lombok.Data;
 @Data
 public class ReviewsInformationDTO {
 
-    private Float productRating;
-    private Integer numberReviews;
-    private Boolean areReviewsDisplayed;
+    private Double productRating;
+    private long numberReviews;
+    private boolean isRatingApplicable;
 
-    public ReviewsInformationDTO(Float productRating, Integer numberReviews) {
+    public ReviewsInformationDTO(Double productRating, long numberReviews) {
         this.productRating = productRating;
         this.numberReviews = numberReviews;
-        if(numberReviews > 2) {
-            this.areReviewsDisplayed = true;
-        } else {
-            this.areReviewsDisplayed = false;
-        }
     }
 }

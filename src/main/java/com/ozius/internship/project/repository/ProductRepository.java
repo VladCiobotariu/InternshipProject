@@ -1,5 +1,6 @@
 package com.ozius.internship.project.repository;
 
+import com.ozius.internship.project.dto.ReviewsInformationDTO;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.Review;
 import jakarta.persistence.Tuple;
@@ -14,9 +15,8 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // todo - ask if tuple is ok to use here
-    @Query("SELECT AVG(r.rating) AS productRating, COUNT(r) AS numberReviews FROM Seller s JOIN s.reviews r WHERE r.product.id = :id")
-    Tuple calculateReviewInfoForProduct(@Param("id") long id);
+    @Query("SELECT NEW com.ozius.internship.project.dto.ReviewsInformationDTO(AVG(r.rating), COUNT(r)) FROM Seller s JOIN s.reviews r WHERE r.product.id = :id")
+    ReviewsInformationDTO calculateReviewInfoForProduct(@Param("id") long id);
 
     @Query("SELECT r FROM Seller s JOIN s.reviews r WHERE r.product.id = :id")
     List<Review> getReviewsForProduct(@Param("id") long id);
