@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import ProductInformation from "../moleculas/productInformation/ProductInformation";
-import useBreakpoint from "../../hooks/useBreakpoint";
-import '../../styles/ProductDetailsComponent.css'
 import StarReviewsReadOnly from "../atoms/starReviews/StarReviewsReadOnly";
 import ProductHistorySteps from "../atoms/products/ProductHistorySteps";
-import image from "../moleculas/mango.jpg";
 import ReviewsList from "../moleculas/ReviewsList";
 import {getProductByIdApi} from "../../api/ProductApi";
 import {useParams} from "react-router-dom";
@@ -12,7 +9,6 @@ import {baseURL} from "../../auth/ApiClient";
 
 const ProductDetailsPageComponent = () => {
 
-    const breakpoint = useBreakpoint()
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
 
@@ -30,11 +26,11 @@ const ProductDetailsPageComponent = () => {
 
     return (
         product && (<div className="mx-auto mt-16 max-w-7xl px-10">
-            <div className={`flex justify-center items-center ${breakpoint === 'sm' ? 'sm:flex-col' : ''} gap-8`}>
+            <div className={`flex justify-center items-center sm:flex-col gap-8`}>
 
-                <div className="w-full items-center grid-wrapper">
+                <div className="w-full items-center">
 
-                    <div className="grid-header">
+                    <div className="">
                         <p className="font-normal leading-4 text-zinc-600 dark:text-zinc-300">
                             <ProductHistorySteps
                                 categoryName={product.category.name}
@@ -46,7 +42,7 @@ const ProductDetailsPageComponent = () => {
                         </h2>
                     </div>
 
-                    <div className="mt-4 block grid-reviews ">
+                    <div className="mt-4 block">
                         <StarReviewsReadOnly
                             rating={product.reviewInformation.productRating}
                             numReviews={product.reviewInformation.numberReviews}
@@ -55,17 +51,17 @@ const ProductDetailsPageComponent = () => {
                     </div>
 
 
-                    <div className={`${breakpoint === 'sm' ? 'grid-details' : 'flex'} mt-4`}>
-                        <div className={` ${breakpoint === 'sm' ? 'mb-4' : 'flex-shrink-0'}`}>
+                    <div className="flex sm:flex-col mt-4">
+                        <div className="flex-shrink-0 sm:mb-4">
                             <div className="flex justify-center items-center w-full h-full pr-2 border-r sm:border-none sm:mt-4">
                                 <img
                                     src={`${baseURL}${product.imageName}`}
                                     alt={product.name}
-                                    className="w-[30rem] md:w-[22rem]"/>
+                                    className="w-[30rem] md:w-[20rem]"/>
                             </div>
                         </div>
 
-                        <div className={` ${breakpoint === 'sm' ? 'ml-0' : 'flex-grow ml-8'}`}>
+                        <div className="flex-grow ml-8 sm:ml-0">
                             <ProductInformation
                                 description={product.description}
                                 price={product.price}

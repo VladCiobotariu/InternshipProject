@@ -77,7 +77,9 @@ const ProductInformation = ({description, price, category, producer, city, produ
 
             </div>
             <div className="flex">
-                <AddRemoveWishlist />
+                <AddRemoveWishlist
+                    productId={productId}
+                />
                 <button
                     className="font-medium rounded-lg text-base leading-4 text-white bg-indigo-600 w-full py-5 mt-6 border border-indigo-750 hover:bg-indigo-700 dark:border-indigo-900"
                     onClick={() => handleAddToCart()}>

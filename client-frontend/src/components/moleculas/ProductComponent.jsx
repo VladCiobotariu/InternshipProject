@@ -20,9 +20,9 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
 
     const toggleFavorite = () => {
         if (!isFavorite) {
-            addToFavorite(id, name);
+            addToFavorite(id);
         } else {
-            removeFromFavorite(id, name);
+            removeFromFavorite(id);
         }
     };
 

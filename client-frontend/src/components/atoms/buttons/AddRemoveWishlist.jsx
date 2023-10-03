@@ -1,21 +1,43 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import {useAuth} from "../../../auth/AuthContext";
+import {useFavorite} from "../../../contexts/FavoriteContext";
 
-const AddRemoveWishlist = () => {
+const AddRemoveWishlist = ({productId}) => {
 
-    const { isAuthenticated } = useAuth();
+    const {isAuthenticated} = useAuth();
+
+    const {allFavorites, addToFavorite, removeFromFavorite, checkIsFavorite} = useFavorite();
+    const [isFavorite, setIsFavorite] = useState(false);
+
+    useEffect(() => {
+        setIsFavorite(checkIsFavorite(allFavorites, productId));
+    }, [allFavorites]);
+
+
+    const toggleFavorite = () => {
+        if (!isFavorite) {
+            addToFavorite(productId);
+        } else {
+            removeFromFavorite(productId);
+        }
+    };
+
 
     return (
         isAuthenticated && (
             <button
                 className="flex justify-center font-medium rounded-lg text-base leading-4 text-white bg-indigo-600 w-full py-5 mt-6 border border-indigo-750 hover:bg-indigo-700 dark:border-indigo-900"
-                onClick={null}>
+                onClick={toggleFavorite}>
                 <div className="flex">
                     <div className="mt-[3px]">
-                        Add to wishlist
+                        {isFavorite ? (
+                            'Remove from wishlist'
+                        ) : (
+                            'Add to wishlist'
+                        )}
                     </div>
                     <div className="">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" fill={isFavorite ? "white" : "none"}
                              viewBox="0 0 24 24" strokeWidth={1.5}
                              stroke="currentColor" className="ml-2 w-5 h-5 text-white">
                             <path strokeLinecap="round" strokeLinejoin="round"
