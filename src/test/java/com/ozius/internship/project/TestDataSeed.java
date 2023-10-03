@@ -30,11 +30,13 @@ public class TestDataSeed {
             TestDataCreator.createSellerBaseData(em, passwordEncoder);
             TestDataCreator.createCategoriesBaseData(em);
             TestDataCreator.createProductsBaseData(em);
+            TestDataCreator.createReviewsBaseData(em);
 
             TestDataCreator.createCartBaseData(em);
             TestDataCreator.createFavoritesBaseData(em);
 
             TestDataCreator.createBuyerAddressBaseData(em);
+
         });
     }
 

@@ -12,6 +12,6 @@ export const getProductsApi = (page, itemsPerPage, sortSpecs, filterSpecs) => {
     });
 }
 
-export const getProductByNameApi = (productName) => {
-    return api.get(`/products/${productName}`)
+export const getProductByIdApi = (productId) => {
+    return api.get(`/products/${productId}`)
 }

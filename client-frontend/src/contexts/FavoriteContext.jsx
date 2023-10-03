@@ -1,6 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
 import {addFavorite, getFavorites, removeFavorite} from "../api/BuyerApi";
-import {getProductByNameApi} from "../api/ProductApi";
 import {useAuth} from "../auth/AuthContext";
 
 const FavoriteContext = createContext(undefined)

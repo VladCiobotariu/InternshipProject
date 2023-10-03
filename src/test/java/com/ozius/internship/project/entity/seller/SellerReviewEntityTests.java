@@ -60,7 +60,7 @@ public class SellerReviewEntityTests extends JpaBaseEntity {
             Seller seller = em.merge(product.getSeller());
 
             // in create review, Review is for sure added to the correct seller
-            createReview(buyer1, "review 1", 5F, product);
+            createReview(em, buyer1, "review 1", 5F, product);
 
             return seller;
         });
