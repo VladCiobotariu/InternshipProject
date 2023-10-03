@@ -15,7 +15,8 @@ import CategoryPageComponent from './components/organisms/CategoryPageComponent'
 import ProductPageComponent from './components/organisms/ProductPageComponent'
 import CheckoutPageComponent from "./components/organisms/CheckoutPageComponent";
 import CartProvider from "./contexts/CartContext";
-import ProductDetailsPageComponent from "./components/organisms/ProductDetailsPageComponent";
+import ProductDetailComponent from "./components/moleculas/ProductDetailComponent";
+import AlertProvider from "./contexts/AlertContext";
 
 function AuthenticatedRoute({children}) {
 
@@ -47,49 +48,54 @@ function App() {
 
     return (
         <div className="bg-white dark:bg-inherit">
-            <AuthProvider>
-                <FavoriteProvider>
-                    <BrowserRouter>
+            <BrowserRouter>
+                <AuthProvider>
+                    <FavoriteProvider>
                         <CartProvider>
+
                             <HeaderComponent/>
 
-                            <Routes>
-                                <Route path='/' element={<WelcomePageComponent/>}/>
-                                <Route path='' element={<WelcomePageComponent/>}/>
-                                <Route path='/login' element={
-                                    <NotAuthenticatedRoute>
-                                        <LoginPageComponent/>
-                                    </NotAuthenticatedRoute>
-                                }/>
+                                <AlertProvider>
 
-                                <Route path='/register' element={
-                                    <NotAuthenticatedRoute>
-                                        <RegisterPageComponent/>
-                                    </NotAuthenticatedRoute>
-                                }/>
+                                    <Routes>
+                                        <Route path='/' element={<WelcomePageComponent/>}/>
+                                        <Route path='' element={<WelcomePageComponent/>}/>
+                                        <Route path='/login' element={
+                                            <NotAuthenticatedRoute>
+                                                <LoginPageComponent/>
+                                            </NotAuthenticatedRoute>
+                                        }/>
 
-                            <Route path='/products/categories' element={<CategoryPageComponent/>}/>
-                            <Route path='/products' element={<ProductPageComponent/>}/>
-                            <Route path='/:sellerAlias/products/:productId' element={<ProductDetailsPageComponent/>}/>
+                                        <Route path='/register' element={
+                                            <NotAuthenticatedRoute>
+                                                <RegisterPageComponent/>
+                                            </NotAuthenticatedRoute>
+                                        }/>
 
-                                <Route path='/account/cart' element={
-                                    <AuthenticatedRoute>
-                                        <CartComponent/>
-                                    </AuthenticatedRoute>
-                                }/>
+                                    <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+                                    <Route path='/products' element={<ProductPageComponent/>}/>
+                                    <Route path='/:sellerAlias/products/:productName' element={<ProductDetailComponent/>}/>
 
-                                <Route path='/checkout' element={
-                                    <AuthenticatedRoute>
-                                        <CheckoutPageComponent/>
-                                    </AuthenticatedRoute>
-                                }/>
-                            </Routes>
+                                        <Route path='/account/cart' element={
+                                            <AuthenticatedRoute>
+                                                <CartComponent/>
+                                            </AuthenticatedRoute>
+                                        }/>
+
+                                        <Route path='/checkout' element={
+                                            <AuthenticatedRoute>
+                                                <CheckoutPageComponent/>
+                                            </AuthenticatedRoute>
+                                        }/>
+                                    </Routes>
+                                </AlertProvider>
 
                             <AuthVerify/>
+
                         </CartProvider>
-                    </BrowserRouter>
-                </FavoriteProvider>
-            </AuthProvider>
+                    </FavoriteProvider>
+                </AuthProvider>
+            </BrowserRouter>
         </div>
     );
 }

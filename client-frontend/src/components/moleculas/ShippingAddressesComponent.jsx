@@ -2,7 +2,7 @@ import {RadioGroup} from '@headlessui/react'
 import AddressComponent from "./AddressComponent";
 
 
-const ShippingAddressesComponent = ({shippingAddresses, selectedShippingAddress, onAddressSelected}) => {
+const ShippingAddressesComponent = ({shippingAddresses, selectedShippingAddress, onAddressSelected, toggleModal}) => {
 
     return (
         <>
@@ -11,7 +11,7 @@ const ShippingAddressesComponent = ({shippingAddresses, selectedShippingAddress,
                 {shippingAddresses.map((item) => (
                     <RadioGroup.Option key={item.id} value={item} className="mt-4">
                         {({ checked }) => (
-                            <AddressComponent item={item} checked={checked} editFunction={()=>console.log("pressed")}/>
+                            <AddressComponent item={item} checked={checked} toggleModal={()=>toggleModal(item)}/>
                         )}
                     </RadioGroup.Option>
                 ))}

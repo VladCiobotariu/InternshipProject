@@ -10,7 +10,6 @@ function Cart(){
     const {allCartItems, numberOfCartItems, cartTotalPrice} = useCart()
     const shippingPrice = 10
 
-
     return(
         <div className="pt-10">
 

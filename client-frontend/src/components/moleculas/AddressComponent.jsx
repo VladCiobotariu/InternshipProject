@@ -1,6 +1,6 @@
 import {PencilSquareIcon} from "@heroicons/react/24/outline";
 
-function AddressComponent({item, checked, editFunction}){
+function AddressComponent({item, checked, toggleModal}){
     return(
         <div
             className={` ${!!checked ? 'border-blue-500 ring-1 ring-blue-500': 'dark:border-none border-gray-100 hover:border-gray-200'} border flex items-center justify-between rounded-2xl bg-white dark:bg-[#192235] p-4 text-sm font-medium shadow-sm`}
@@ -24,7 +24,7 @@ function AddressComponent({item, checked, editFunction}){
                 </div>
             </div>
 
-            <button onClick={editFunction} className="">
+            <button onClick={()=>toggleModal(item)} className="">
                 <PencilSquareIcon className="w-6 h-6"/>
             </button>
         </div>

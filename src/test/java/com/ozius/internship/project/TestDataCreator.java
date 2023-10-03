@@ -71,7 +71,7 @@ public class TestDataCreator {
         Address address1 = new Address("Romania", "Timis", "Timisoara", "Strada Macilor 10", "Bloc 4, Scara F, ap 50", "300091");
         mergedBuyer.addAddress(address1, "Vlad", "Cristi", "+40356424801");
 
-        Address address2 = new Address("Spania", "Marbella", "Barcelona", "Angola st 1", "Bloc, ap 170", "300999");
+        Address address2 = new Address("Moldova", "Marbella", "Barcelona", "Angola st 1", "Bloc, ap 170", "300999");
         mergedBuyer.addAddress(address2, "Vlad", "Cristian", "+40356424809");
 
     }

@@ -23,3 +23,7 @@ export function removeFavorite(productId){
         }
     })
 }
+
+export function updateShippingAddress(shippingAddress){
+    return api.put('/my-buyer-addresses', shippingAddress)
+}
