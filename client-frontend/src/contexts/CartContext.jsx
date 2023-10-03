@@ -1,7 +1,6 @@
 import {createContext, useContext, useEffect, useState} from 'react'
 import {useAuth} from "../auth/AuthContext";
 import {addOrUpdateCartItem, getCartItems, removeCartItem} from "../api/CartApi";
-import {useLocation} from "react-router-dom";
 
 const CartContext = createContext(undefined)
 export const useCart = () => useContext(CartContext)
@@ -13,7 +12,6 @@ const CartProvider = ({children}) => {
     const [cartTotalPrice, setCartTotalPrice] = useState(0)
 
     const {isAuthenticated, username} = useAuth()
-    const location = useLocation()
 
     function loadCartItems() {
 
@@ -24,27 +22,34 @@ const CartProvider = ({children}) => {
          *  }} data
          */
 
-        getCartItems()
-            .then(
-                (response) => {
-                    setAllCartItems(response.data.cartItems)
-                    setNumberOfCartItems(response.data.cartItems.length)
-                    setCartTotalPrice(response.data.totalCartPrice)
-                }
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                    setAllCartItems([])
-                }
-            )
+        if(!!isAuthenticated){
+            getCartItems()
+                .then(
+                    (response) => {
+                        setAllCartItems(response.data.cartItems)
+                        setNumberOfCartItems(response.data.cartItems.length)
+                        setCartTotalPrice(response.data.totalCartPrice)
+                    }
+                )
+                .catch(
+                    (err) => {
+                        console.log(err)
+                        setAllCartItems([])
+                    }
+                )
+        } else {
+            setAllCartItems(null)
+            setNumberOfCartItems(0)
+            setCartTotalPrice(0)
+        }
+
     }
 
     function updateCartItemQuantity(productId, newQuantity){
         addOrUpdateCartItem(productId, newQuantity)
             .then(
                 () => {
-                    loadCartItems()
+                    refreshCart()
                 }
             )
             .catch(
@@ -58,7 +63,7 @@ const CartProvider = ({children}) => {
         removeCartItem(productId)
             .then(
                 () => {
-                    loadCartItems()
+                    refreshCart()
                 }
             )
             .catch(
@@ -66,11 +71,13 @@ const CartProvider = ({children}) => {
             )
     }
 
+    function refreshCart(){
+        loadCartItems()
+    }
+
     useEffect(() => {
-        if(!!isAuthenticated){
-            loadCartItems()
-        }
-    }, [isAuthenticated, username, location]);
+        refreshCart()
+    }, [isAuthenticated, username]);
 
     useEffect(() => {
         if(allCartItems!==null){
@@ -79,7 +86,7 @@ const CartProvider = ({children}) => {
     }, [allCartItems]);
 
     return (
-        <CartContext.Provider value={{allCartItems, numberOfCartItems, cartTotalPrice, updateCartItemQuantity, deleteCartItem}}>
+        <CartContext.Provider value={{allCartItems, numberOfCartItems, cartTotalPrice, updateCartItemQuantity, deleteCartItem, refreshCart}}>
             {children}
         </CartContext.Provider>
     )
