@@ -2,9 +2,6 @@ import { object, string } from "yup";
 import "yup-phone-lite";
 
 export const shippingAddressSchema = object().shape({
-        email: string()
-            .required()
-            .email("Invalid email"),
         firstName: string()
             .required(),
         lastName: string()

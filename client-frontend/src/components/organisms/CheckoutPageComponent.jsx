@@ -17,27 +17,13 @@ function CheckoutPageComponent(){
 
     const [shippingAddresses, setShippingAddresses]= useState([])
     const [selectedShippingAddress, setSelectedShippingAddress] = useState(null)
+    const shippingPrice = 10
 
     const {username} = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const shippingPrice = 10
-
-    function handleSaveForm(values){
-        updateShippingAddress(values)
-            .then(
-                () => {
-                    setIsModalOpen(false)
-                    getShippingAddresses()
-                }
-            )
-            .catch(
-                (err) => console.log(err)
-            )
-    }
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen)
@@ -61,6 +47,21 @@ function CheckoutPageComponent(){
         if(!!shippingAddress){
             clearAlert()
         }
+    }
+
+    function handleSaveForm(values){
+        if(JSON.stringify(values)!==JSON.stringify(selectedShippingAddress)){
+            updateShippingAddress(values)
+                .then(
+                    () => {
+                        getShippingAddresses()
+                    }
+                )
+                .catch(
+                    (err) => console.log(err)
+                )
+        }
+        setIsModalOpen(false)
     }
 
     function handlePlaceOrder(){
