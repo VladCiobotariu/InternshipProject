@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import ProductInformation from "../moleculas/productInformation/ProductInformation";
-import StarReviewsReadOnly from "../atoms/starReviews/StarReviewsReadOnly";
 import ProductHistorySteps from "../atoms/products/ProductHistorySteps";
-import ReviewsList from "../moleculas/ReviewsList";
+import ReviewItems from "../moleculas/reviews/ReviewItems";
 import {getProductByIdApi} from "../../api/ProductApi";
 import {useParams} from "react-router-dom";
 import {baseURL} from "../../auth/ApiClient";
+import ProductRating from "../atoms/starReviews/ProductRating";
 
 const ProductDetailsPageComponent = () => {
 
@@ -31,22 +31,23 @@ const ProductDetailsPageComponent = () => {
                 <div className="w-full items-center">
 
                     <div className="">
-                        <p className="font-normal leading-4 text-zinc-600 dark:text-zinc-300">
+                        <div className="font-normal leading-4 text-zinc-600 dark:text-zinc-300">
                             <ProductHistorySteps
                                 categoryName={product.category.name}
                                 productName={product.name}
                             />
-                        </p>
+                        </div>
                         <h2 className="font-semibold text-3xl leading-7 text-zinc-800 mt-4 dark:text-zinc-100">
                             {product.name}
                         </h2>
                     </div>
 
                     <div className="mt-4 block">
-                        <StarReviewsReadOnly
+                        <ProductRating
                             rating={product.reviewInformation.productRating}
                             numReviews={product.reviewInformation.numberReviews}
                             isRatingDisplayed={product.reviewInformation.ratingApplicable}
+                            viewType='extended'
                         />
                     </div>
 
@@ -78,7 +79,9 @@ const ProductDetailsPageComponent = () => {
             <div className="flex justify-center items-center w-full">
                 <div
                     className="w-full mt-10">
-                    <ReviewsList />
+                    <ReviewItems
+                        productId={product.id}
+                    />
                 </div>
             </div>
         </div>)

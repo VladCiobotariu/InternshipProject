@@ -56,7 +56,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                         <div className="">
                             <h3
                                 className="font-bold text-xl text-zinc-800 cursor-pointer group-hover:underline group-hover:underline-offset-4"
-                                onClick={() => navigate(`/products/categories/fruits/${name}`)}
+                                onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                             >
                                 {name}
                             </h3>

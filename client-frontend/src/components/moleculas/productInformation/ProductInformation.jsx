@@ -4,16 +4,16 @@ import ProductSpecificInfo from "./ProductSpecificInfo";
 import {useCart} from "../../../contexts/CartContext";
 import {useAuth} from "../../../auth/AuthContext";
 import {useNavigate} from "react-router-dom";
-import PopupSuccessAlert from "../../atoms/alerts/PopupSuccessAlert";
 import AddRemoveWishlist from "../../atoms/buttons/AddRemoveWishlist";
+import {useAlert} from "../../../contexts/AlertContext";
 
 const ProductInformation = ({description, price, category, producer, city, productId}) => {
 
     const [quantity, setQuantity] = useState(1);
     const {updateCartItemQuantity} = useCart()
     const {isAuthenticated} = useAuth();
+    const {pushAlert, clearAlert} = useAlert()
     const navigate = useNavigate();
-    const [infoAlertShowing, setInfoAlertShowing] = useState(false)
 
     const updateQuantity = (input) => {
         setQuantity((prevQuantity) => Math.max(1, prevQuantity + input));
@@ -26,16 +26,18 @@ const ProductInformation = ({description, price, category, producer, city, produ
     const handleAddToCart = () => {
         if (isAuthenticated) {
             addItemToCart(productId, quantity);
-            setInfoAlertShowing(true);
-            setTimeout(() => navigate('/account/cart'), 2000)
+            pushAlert({
+                type: "info",
+                title: "Product Added To Cart",
+                paragraph: "You will be redirected..."
+            })
+            setTimeout(() => {
+                navigate('/account/cart');
+                clearAlert();
+            }, 2000)
         } else {
             navigate("/login");
         }
-    }
-
-    function popupInfoCloseButton(){
-        setInfoAlertShowing(false)
-        navigate('/products')
     }
 
     return (
@@ -45,11 +47,6 @@ const ProductInformation = ({description, price, category, producer, city, produ
             </p>
             <p className=" font-semibold text-xl leading-5 mt-6">{price} RON</p>
 
-            {!!infoAlertShowing &&
-                <div>
-                    <PopupSuccessAlert classname="top-20 mt-12 right-8 sm:top-2 sm:mt-4" handleCloseButton={popupInfoCloseButton} title="Item added" paragraph="You will be redirected..."/>
-                </div>
-            }
 
             <div className="mt-10">
                 <ProductSpecificInfo
@@ -76,8 +73,8 @@ const ProductInformation = ({description, price, category, producer, city, produ
                 <hr className="bg-zinc-200 w-full my-3"/>
 
             </div>
-            <div className="flex">
-                <AddRemoveWishlist
+            <div className={`flex ${isAuthenticated ? "gap-10" : ""}`}>
+            <AddRemoveWishlist
                     productId={productId}
                 />
                 <button

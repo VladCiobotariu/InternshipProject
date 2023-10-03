@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {useAuth} from "../../../auth/AuthContext";
 import {useFavorite} from "../../../contexts/FavoriteContext";
+import {useAlert} from "../../../contexts/AlertContext";
 
 const AddRemoveWishlist = ({productId}) => {
 
@@ -8,6 +9,7 @@ const AddRemoveWishlist = ({productId}) => {
 
     const {allFavorites, addToFavorite, removeFromFavorite, checkIsFavorite} = useFavorite();
     const [isFavorite, setIsFavorite] = useState(false);
+    const {pushAlert, clearAlert} = useAlert()
 
     useEffect(() => {
         setIsFavorite(checkIsFavorite(allFavorites, productId));
@@ -17,8 +19,22 @@ const AddRemoveWishlist = ({productId}) => {
     const toggleFavorite = () => {
         if (!isFavorite) {
             addToFavorite(productId);
+            pushAlert({
+                type: "info",
+                title: "Product Added To Wishlist"
+            })
+            setTimeout(() => {
+                clearAlert();
+            }, 2000)
         } else {
             removeFromFavorite(productId);
+            pushAlert({
+                type: "info",
+                title: "Product Removed From Wishlist"
+            })
+            setTimeout(() => {
+                clearAlert();
+            }, 2000)
         }
     };
 
