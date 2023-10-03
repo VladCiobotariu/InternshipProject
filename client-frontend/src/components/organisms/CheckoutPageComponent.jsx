@@ -4,9 +4,11 @@ import {Link, useLocation, useNavigate} from "react-router-dom";
 import CartItemCard from "../moleculas/cart/CartItemCard";
 import ShippingAddressesComponent from "../moleculas/ShippingAddressesComponent";
 import {submitOrder} from "../../api/OrderApi";
-import {getBuyerAddresses} from "../../api/BuyerApi";
+import {getBuyerAddresses, updateShippingAddress} from "../../api/BuyerApi";
 import {useCart} from "../../contexts/CartContext";
 import {useAlert} from "../../contexts/AlertContext";
+import AddressForm from "../moleculas/forms/AddressForm";
+import BaseModal from "../atoms/BaseModal";
 
 function CheckoutPageComponent(){
 
@@ -20,14 +22,33 @@ function CheckoutPageComponent(){
     const location = useLocation()
     const navigate = useNavigate()
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const shippingPrice = 10
+
+    function handleSaveForm(values){
+        updateShippingAddress(values)
+            .then(
+                () => {
+                    setIsModalOpen(false)
+                    getShippingAddresses()
+                }
+            )
+            .catch(
+                (err) => console.log(err)
+            )
+    }
+
+    const toggleModal = () => {
+        setIsModalOpen(!isModalOpen)
+    }
 
     function getShippingAddresses(){
         getBuyerAddresses()
             .then(
                 (response) => {
                     setShippingAddresses(response.data)
-                    // setSelectedShippingAddress(response.data[0])
+                    // setSelectedShippingAddress(response.data[0])  //todo modify
                 }
             )
             .catch(
@@ -112,7 +133,9 @@ function CheckoutPageComponent(){
                     <div className="md:mt-10 lg:mt-10 xl:mt-10 2xl:mt-10">
                         <ShippingAddressesComponent shippingAddresses={shippingAddresses}
                                                     selectedShippingAddress={selectedShippingAddress}
-                                                    onAddressSelected={handleAddressSelected}/>
+                                                    onAddressSelected={handleAddressSelected}
+                                                    toggleModal={()=>toggleModal(selectedShippingAddress)}
+                        />
                     </div>
 
                     <div className="dark:text-white mt-6 rounded-2xl bg-white dark:bg-[#192235] p-6 shadow-md mb-14">
@@ -136,6 +159,11 @@ function CheckoutPageComponent(){
 
                 </div>
             </div>
+
+            <BaseModal isModalOpen={isModalOpen} toggleModal={toggleModal}>
+                <AddressForm onSaveForm={handleSaveForm} shippingAddress={selectedShippingAddress}/>
+            </BaseModal>
+
         </div>
     )
 }

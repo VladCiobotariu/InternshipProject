@@ -40,7 +40,7 @@ public class BuyerAddress extends BaseEntity {
     @Column(name = Columns.LAST_NAME, nullable = false)
     private String lastName;
 
-    @Column(name = Columns.TELEPHONE, nullable = false)
+    @Column(name = Columns.TELEPHONE, nullable = false, length = 12)
     private String telephone;
 
     protected BuyerAddress() {
