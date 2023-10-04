@@ -13,5 +13,8 @@ public class ProductDTO {
     protected CategoryDTO category;
     protected SellerDTO seller;
     protected UnitOfMeasure unitOfMeasure;
+    protected Double productRating;
+    protected long numberReviews;
+    protected boolean isRatingApplicable;
 
 }

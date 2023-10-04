@@ -144,6 +144,9 @@ public class Seller extends BaseEntity {
 
         Review reviewNew = new Review(description, rating, buyer, product);
         this.reviews.add(reviewNew);
+
+//        EventPublisher.getInstance().publishEvent(new ProductReviewAdded(product.getId()));
+
         return reviewNew;
     }
 

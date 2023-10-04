@@ -1,7 +1,6 @@
 package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.dto.ProductWithRatingsDTO;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
@@ -10,7 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 
-public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,ProductWithRatingsDTO> {
+public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,ProductDTO> {
 
     private final ModelMapper modelMapper;
 
@@ -32,8 +31,8 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
     }
 
     @Override
-    public ResultTransformer<Product, ProductWithRatingsDTO> getTransformer() {
-        return new ModelMapperBasedResultTransformer<>(modelMapper, ProductWithRatingsDTO.class);
+    public ResultTransformer<Product, ProductDTO> getTransformer() {
+        return new ModelMapperBasedResultTransformer<>(modelMapper, ProductDTO.class);
     }
 
     public ProductPaginationSearchQuery orderBy(SortSpecs sortSpecs) {
