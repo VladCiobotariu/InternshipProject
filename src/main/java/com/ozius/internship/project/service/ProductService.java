@@ -1,15 +1,15 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.dto.ProductWithRatingsDTO;
 import com.ozius.internship.project.dto.ReviewDTO;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,26 +23,23 @@ public class ProductService {
         this.modelMapper = modelMapper;
     }
 
-    public ProductDTO getProductById(long id) {
+    public ProductDTO getProductWithReviews(long id) {
         Product product = productRepository.findById(id).orElseThrow();
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
-        return productDTO;
+        return modelMapper.map(product, ProductDTO.class);
     }
 
-    public ProductWithRatingsDTO getProductWithReviews(long id) {
-        Product product = productRepository.findById(id).orElseThrow();
-        Float ratings = productRepository.calculateAverageRatingForProduct(product);
-        Set<Review> reviews = productRepository.getReviewsForProduct(product);
+    public List<ReviewDTO> getReviewsForProduct(long id) {
+        List<Review> reviews = productRepository.getReviewsForProduct(id);
 
-        Set<ReviewDTO> reviewDTOS = reviews.stream()
+        return reviews.stream()
                 .map(review -> modelMapper.map(review, ReviewDTO.class))
-                .collect(Collectors.toSet());
-
-        ProductWithRatingsDTO productWithRatingsDTO = modelMapper.map(product, ProductWithRatingsDTO.class);
-        productWithRatingsDTO.setProductRatings(ratings);
-        productWithRatingsDTO.setRatingItems(reviewDTOS);
-
-        return productWithRatingsDTO;
+                .collect(Collectors.toList());
     }
 
+    @Transactional
+    public void recalculateProductRating(long productId) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        List<Review> reviews = productRepository.getReviewsForProduct(productId);
+        product.updateRatingInformation(reviews);
+    }
 }

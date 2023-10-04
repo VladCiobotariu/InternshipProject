@@ -13,8 +13,6 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
 
     const [isFavorite, setIsFavorite] = useState(false);
 
-    const [product, setProduct] = useState(null);
-
     useEffect(() => {
         setIsFavorite(checkIsFavorite(allFavorites, id));
     }, [allFavorites]);
@@ -22,9 +20,9 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
 
     const toggleFavorite = () => {
         if (!isFavorite) {
-            addToFavorite(id, name);
+            addToFavorite(id);
         } else {
-            removeFromFavorite(id, name);
+            removeFromFavorite(id);
         }
     };
 
@@ -38,7 +36,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                             src={`${baseURL}${imageName}`}
                             alt={name}
                             className="object-cover w-48 h-48 mx-auto"
-                            onClick={() => navigate(`/${sellerAlias}/products/${name}`)}
+                            onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                         />
                         {isAuthenticated &&
                             <div className="absolute top-0 left-0 p-2">
@@ -58,7 +56,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                         <div className="">
                             <h3
                                 className="font-bold text-xl text-zinc-800 cursor-pointer group-hover:underline group-hover:underline-offset-4"
-                                onClick={() => navigate(`/products/categories/fruits/${name}`)}
+                                onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                             >
                                 {name}
                             </h3>
