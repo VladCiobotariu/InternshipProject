@@ -44,9 +44,9 @@ const ProductDetailsPageComponent = () => {
 
                     <div className="mt-4 block">
                         <ProductRating
-                            rating={product.reviewInformation.productRating}
-                            numReviews={product.reviewInformation.numberReviews}
-                            isRatingDisplayed={product.reviewInformation.ratingApplicable}
+                            rating={product.productRating}
+                            numReviews={product.numberReviews}
+                            isRatingDisplayed={product.ratingApplicable}
                             viewType='extended'
                         />
                     </div>
@@ -54,7 +54,7 @@ const ProductDetailsPageComponent = () => {
 
                     <div className="flex sm:flex-col mt-4">
                         <div className="flex-shrink-0 sm:mb-4">
-                            <div className="flex justify-center items-center w-full h-full pr-2 border-r sm:border-none sm:mt-4">
+                            <div className="flex justify-center items-center w-full h-full pr-2 border-r border-indigo-200 sm:border-none sm:mt-4">
                                 <img
                                     src={`${baseURL}${product.imageName}`}
                                     alt={product.name}

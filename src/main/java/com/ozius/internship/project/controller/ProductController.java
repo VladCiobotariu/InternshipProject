@@ -1,6 +1,6 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.dto.ProductWithRatingsDTO;
+import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.dto.ReviewDTO;
 import com.ozius.internship.project.service.ProductService;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
@@ -32,7 +32,7 @@ public class ProductController {
     }
 
     @GetMapping("/products")
-    public ApiPaginationResponse<List<ProductWithRatingsDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
+    public ApiPaginationResponse<List<ProductDTO>> getProductsByFilter(@RequestParam(name = "itemsPerPage", defaultValue = "10") int itemsPerPage,
                                                                        @RequestParam(name = "page", defaultValue = "1") int page,
                                                                        @RequestParam(name = "sort", required = false) SortSpecs sortSpecs,
                                                                        @RequestParam(name = "filter", required = false) FilterSpecs filterSpecs) {
@@ -44,14 +44,14 @@ public class ProductController {
 
         int numOfTotalProds = query.getResultList().size();
 
-        List<ProductWithRatingsDTO> productWithRatingsDTOS = query.getPagingResultList(itemsPerPage, page-1);
+        List<ProductDTO> productDTO = query.getPagingResultList(itemsPerPage, page-1);
 
-        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productWithRatingsDTOS);
+        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productDTO);
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductWithRatingsDTO> getProductWithReviews(@PathVariable long id) {
-        ProductWithRatingsDTO productWithRatingsDTO = productService.getProductWithReviews(id);
+    public ResponseEntity<ProductDTO> getProductWithReviews(@PathVariable long id) {
+        ProductDTO productWithRatingsDTO = productService.getProductWithReviews(id);
         return ResponseEntity.ok(productWithRatingsDTO);
     }
 

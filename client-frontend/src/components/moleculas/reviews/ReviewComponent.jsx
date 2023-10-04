@@ -43,7 +43,7 @@ const ReviewComponent = ({firstName, lastName, imageName, rating, description}) 
                 </div>
 
                 <div className="px-4 pb-6 pt-2">
-                    <div>
+                    <div className="dark:text-white">
                         {description}
                     </div>
 

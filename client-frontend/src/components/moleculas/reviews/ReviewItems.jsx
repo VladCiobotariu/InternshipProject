@@ -23,8 +23,8 @@ const ReviewItems = ({productId}) => {
 
     return (
         <div id="reviews">
-            <div className="px-10 flex flex-col gap-2 p-5 text-zinc-800 border rounded-2xl border-indigo-200 shadow-md mt-10 mb-10">
-                <h1 className="text-xl pt-5 font-bold">Reviews</h1>
+            <div className="px-10 flex flex-col gap-2 p-5 text-zinc-800 border rounded-2xl border-indigo-300 shadow-md mt-10 mb-10">
+                <h1 className="text-xl pt-5 font-bold dark:text-white">Reviews</h1>
 
 
                 <div className="flex flex-col gap-3 mt-10">

@@ -190,7 +190,6 @@ public class TestDataCreator {
 
         Seller seller = product.getSeller();
         Review review = seller.addReview(buyer, description, rating, product);
-        em.persist(review);
         return review;
     }
 
