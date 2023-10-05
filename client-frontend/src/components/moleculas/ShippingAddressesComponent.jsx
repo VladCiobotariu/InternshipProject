@@ -7,10 +7,10 @@ const ShippingAddressesComponent = ({shippingAddresses, selectedShippingAddress,
     return (
         <>
             <RadioGroup value={selectedShippingAddress} onChange={onAddressSelected}>
-                <RadioGroup.Label className="flex justify-between items-end">
-                    <div className="text-xl font-bold">
+                <div className="flex justify-between items-end">
+                    <RadioGroup.Label className="text-xl font-bold">
                         Addresses
-                    </div>
+                    </RadioGroup.Label>
 
                     <ButtonSmallWithIcon text="Add Address" onClick={onAddAddress}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -18,7 +18,7 @@ const ShippingAddressesComponent = ({shippingAddresses, selectedShippingAddress,
                         </svg>
                     </ButtonSmallWithIcon>
 
-                </RadioGroup.Label>
+                </div>
                 {shippingAddresses.map((item) => (
                     <RadioGroup.Option key={item.id} value={item} className="mt-6">
                         {({ checked }) => (
