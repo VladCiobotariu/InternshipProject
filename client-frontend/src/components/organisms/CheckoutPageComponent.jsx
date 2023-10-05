@@ -9,6 +9,7 @@ import {useCart} from "../../contexts/CartContext";
 import {useAlert} from "../../contexts/AlertContext";
 import AddressForm from "../moleculas/forms/AddressForm";
 import BaseModal from "../atoms/BaseModal";
+import CartSummary from "../moleculas/cart/CartSummary";
 
 function CheckoutPageComponent() {
 
@@ -170,27 +171,11 @@ function CheckoutPageComponent() {
                         />
                     </div>
 
-                    <div className="dark:text-white mt-6 rounded-2xl bg-white dark:bg-[#192235] p-6 shadow-md mb-14">
-                        <div className="mb-2 flex justify-between">
-                            <p>Subtotal</p>
-                            <p>{cartTotalPrice} RON</p>
-                        </div>
-                        <div className="flex justify-between">
-                            <p>Shipping</p>
-                            <p>{shippingPrice} RON</p>
-                        </div>
-                        <hr className="my-4"/>
-                        <div className="flex justify-between">
-                            <p className="text-lg font-bold">Total</p>
-                            <div className="">
-                                <p className="mb-1 text-lg font-bold">{cartTotalPrice + shippingPrice} RON</p>
-                            </div>
-                        </div>
+                    <CartSummary cartTotalPrice={cartTotalPrice} shippingPrice={shippingPrice} className="mb-14">
                         <button onClick={handlePlaceOrder}
-                                className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place
-                            Order
+                                className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Place Order
                         </button>
-                    </div>
+                    </CartSummary>
 
                 </div>
             </div>
