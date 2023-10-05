@@ -39,7 +39,6 @@ const PaginationComponent = ({
                 className={classnames("pagination-item", {
                     disabled: currentPage === 1
                 })}
-                className="dark:text-white"
                 onClick={onPrevious}
             >
                 <div>{'<'}</div>
@@ -55,8 +54,7 @@ const PaginationComponent = ({
                         className={classnames("pagination-item", {
                             selected: pageNumber === currentPage
                         })}
-                        className="dark:text-zinc-100 dark:mx-4 dark:cursor-pointer"
-                        onClick={() => handlePageChange(pageNumber)}
+                       onClick={() => handlePageChange(pageNumber)}
                     >
                         {pageNumber}
                     </li>
@@ -66,7 +64,6 @@ const PaginationComponent = ({
                 className={classnames("pagination-item", {
                     disabled: currentPage === lastPage
                 })}
-                className="dark:text-white"
                 onClick={onNext}
             >
 

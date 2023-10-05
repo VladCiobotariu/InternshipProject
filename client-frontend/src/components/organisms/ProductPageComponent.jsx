@@ -7,7 +7,7 @@ import NoEntityMessageComponent from "../atoms/error/NoEntityMessageComponent";
 import ProductAddToCartModal from "../moleculas/modals/ProductAddToCartModal";
 import PaginationComponent from "../moleculas/PaginationComponent";
 import SelectionOfNumberPerPage from "../atoms/input/SelectionOfNumberPerPage";
-
+import useBreakpoint from "../../hooks/useBreakpoint";
 
 const buildFilterOptionsFromQueryParams = (queryParams) => {
     return {
@@ -37,6 +37,8 @@ function ProductPageComponent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const [productId, setProductId] = useState(null);
+
+    const breakpoint = useBreakpoint();
 
     const toggleModal = (productId) => {
         setIsModalOpen(!isModalOpen);
@@ -68,6 +70,10 @@ function ProductPageComponent() {
     useEffect(() => {
         setFilterOptions(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
     }, [location.search]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [breakpoint]);
 
     const handleItemsPerPageChange = (event) => {
         const newItemsPerPage = parseInt(event.target.value);
@@ -188,8 +194,13 @@ function ProductPageComponent() {
                         header="Products do not exist yet."
                         paragraph="Sorry, we could not find the products you are looking for."/>) : (
                         <div>
+                            <SelectionOfNumberPerPage
+                                itemsPerPage={itemsPerPage}
+                                setItemsPerPage={setItemsPerPage}
+                                handleItemsPerPageChange={handleItemsPerPageChange}
+                            />
 
-                            <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
+                            <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full sm:justify-center">
                                 {products.map((product) => (
                                     <div key={product.id}>
                                         <ProductComponent
@@ -205,8 +216,7 @@ function ProductPageComponent() {
                                 ))}
                             </ul>
 
-                            <div className="mt-10 flex items-center justify-between pb-5">
-                                <div className="flex-grow flex justify-center ml-44">
+                            <div className="mt-10 flex pb-10 justify-center">
                                     <PaginationComponent
                                         className="pagination-bar"
                                         currentPage={currentPage}
@@ -214,14 +224,7 @@ function ProductPageComponent() {
                                         itemsPerPage={itemsPerPage}
                                         handlePageChange={page => setCurrentPage(page)}
                                     />
-                                </div>
-
-                                <SelectionOfNumberPerPage
-                                    itemsPerPage={itemsPerPage}
-                                    handleItemsPerPageChange={handleItemsPerPageChange}
-                                />
                             </div>
-
                         </div>
                     )}
                 </div>
