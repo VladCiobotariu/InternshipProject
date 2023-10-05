@@ -1,9 +1,9 @@
 package com.ozius.internship.project.entity.seller;
 
-public class ProductReviewAdded {
+public class ReviewAddedEvent {
     private long productId;
 
-    public ProductReviewAdded(long productId) {
+    public ReviewAddedEvent(long productId) {
         this.productId = productId;
     }
 
