@@ -126,13 +126,13 @@ public class Product extends BaseEntity {
                 .orElse(0.0);
     }
 
-    public long calculateNumberReviews(List<Review> reviews) {
+    public int calculateNumberReviews(List<Review> reviews) {
         return reviews.size();
     }
 
     public void updateRatingInformation(List<Review> reviews) {
         this.productRating = calculateProductRating(reviews);
-        this.numberReviews = (int) calculateNumberReviews(reviews);
+        this.numberReviews = calculateNumberReviews(reviews);
         this.isRatingApplicable = numberReviews > 2;
     }
 

@@ -7,6 +7,7 @@ import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
 
 import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.infra.events.DomainEventPublisherProvider;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -145,7 +146,7 @@ public class Seller extends BaseEntity {
         Review reviewNew = new Review(description, rating, buyer, product);
         this.reviews.add(reviewNew);
 
-//        EventPublisher.getInstance().publishEvent(new ProductReviewAdded(product.getId()));
+        DomainEventPublisherProvider.getEventPublisher().publishEvent(new ReviewAddedEvent(product.getId()));
 
         return reviewNew;
     }
