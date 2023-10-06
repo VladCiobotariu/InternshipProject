@@ -2,6 +2,8 @@ package com.ozius.internship.project.service.listeners;
 
 import com.ozius.internship.project.entity.seller.ReviewAddedEvent;
 import com.ozius.internship.project.service.ProductService;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -15,9 +17,9 @@ public class ReviewAddedListener {
         this.productService = productService;
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     public void handleAddReview(ReviewAddedEvent event) {
-        System.out.println("event listened");
         productService.recalculateProductRating(event.getProductId());
     }
 }

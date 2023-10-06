@@ -1,11 +1,13 @@
 package com.ozius.internship.project.entity.seller;
 
-import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.DomainEventPublisherProvider;
+import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
-
+import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.product.Product;
 import jakarta.persistence.*;
 
@@ -145,7 +147,7 @@ public class Seller extends BaseEntity {
         Review reviewNew = new Review(description, rating, buyer, product);
         this.reviews.add(reviewNew);
 
-//        EventPublisher.getInstance().publishEvent(new ReviewAddedEvent(product.getId()));
+        DomainEventPublisherProvider.getEventPublisher().publishEvent(new ReviewAddedEvent(product.getId()));
 
         return reviewNew;
     }

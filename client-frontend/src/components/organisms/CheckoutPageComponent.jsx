@@ -114,7 +114,7 @@ function CheckoutPageComponent() {
                         })
                         setTimeout(() => {
                             refreshCart()
-                            navigate('/account/cart') //todo remove after alert context
+                            navigate('/order-history')
                         }, 2000)
                     }
                 )
