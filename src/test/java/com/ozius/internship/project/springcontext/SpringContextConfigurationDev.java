@@ -2,11 +2,9 @@ package com.ozius.internship.project.springcontext;
 
 import com.nimbusds.jose.jwk.RSAKey;
 import com.ozius.internship.project.SpringProfiles;
-import com.ozius.internship.project.entity.DomainEventPublisher;
 import com.ozius.internship.project.infra.images.service.ImageService;
 import com.ozius.internship.project.infra.images.service.LocalDiskImageHandlingService;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -50,10 +48,5 @@ public class SpringContextConfigurationDev {
                 .privateKey((PrivateKey) keyStore.getKey(KEY_STORE_ALIAS, KEY_STORE_PASSWORD.toCharArray()))
                 .keyID(UUID.randomUUID().toString())
                 .build();
-    }
-
-    @Bean
-    public SpringDevDomainEventPublisher eventPublisher(ApplicationEventPublisher applicationEventPublisher){
-        return new SpringDevDomainEventPublisher(applicationEventPublisher);
     }
 }

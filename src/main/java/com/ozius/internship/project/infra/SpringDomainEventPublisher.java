@@ -1,18 +1,15 @@
 package com.ozius.internship.project.infra;
 
 import com.ozius.internship.project.entity.DomainEventPublisher;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-
-public class SpringProdDomainEventPublisher implements DomainEventPublisher {
+@Component
+public class SpringDomainEventPublisher implements DomainEventPublisher {
 
     public final ApplicationEventPublisher applicationEventPublisher;
 
-    public SpringProdDomainEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public SpringDomainEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
