@@ -5,54 +5,33 @@ import CountrySelector from "../../atoms/countries/selector";
 import {COUNTRIES} from "../../atoms/countries/countries";
 import React, {useState} from "react";
 
-function CheckoutForm({submitCheckoutForm}){
+function AddressForm({onSaveForm, shippingAddress}){
 
     const [isOpen, setIsOpen] = useState(false);
-    const [country, setCountry] = useState('RO');
+    const [country, setCountry] = useState(COUNTRIES.find(option => option.title === shippingAddress.address.country).title)
 
-    function onCheckout(values){
-        values.country = country
-        submitCheckoutForm(values)
+    function onSubmit(values){
+        values.address.country = country
+        const address = {...values, id: shippingAddress.id}
+        onSaveForm(address)
     }
 
     return(
         <Formik
-            initialValues={{
-                email: "",
-                firstName: "",
-                lastName: "",
-                addressLine1: "",
-                addressLine2: "",
-                city: "",
-                country: "",
-                state: "",
-                zipCode: "",
-                telephone: ""
+            initialValues={shippingAddress}
+            onSubmit={(values)=> {
+                onSubmit(values)
             }}
-            onSubmit={()=>{}}
             validationSchema={shippingAddressSchema}
             validateOnBlur={false}
             validateOnChange={false}
         >
 
-            {({ errors, validateField , values}) => {
+            {({ errors, validateField}) => {
 
                 return (
 
-                    <Form id='my-form' onSubmit={()=> {
-                        onCheckout(values)
-                    }}>
-
-                        <p className="text-xl font-bold">Contact Information</p>
-                        <div className='mt-4'>
-                            <TextInputWithError fieldName={'email'}
-                                                errorName={errors.email}
-                                                labelName={'Email address'}
-                                                onBlur={()=>validateField('email')}/>
-                        </div>
-
-                        <hr
-                            className="my-4 h-0.5 border-t-0 bg-neutral-100 dark:bg-neutral-700 opacity-100 dark:opacity-50" />
+                    <Form className="px-10 py-10">
 
                         <p className="text-xl font-bold mb-4">Shipping Information</p>
                         <div className="space-y-2">
@@ -75,16 +54,18 @@ function CheckoutForm({submitCheckoutForm}){
                                 </div>
                             </div>
 
-                            <TextInputWithError fieldName={'addressLine1'}
-                                                errorName={errors.addressLine1}
+                            <TextInputWithError fieldName={'address.addressLine1'}
+                                                errorName={errors.address && errors.address.addressLine1}
                                                 labelName={'Street, number'}
-                                                onBlur={()=>validateField('addressLine1')}
+                                                onBlur={()=> {
+                                                        validateField('address.addressLine1')
+                                                }}
                                                 fieldType={"text"}/>
 
-                            <TextInputWithError fieldName={'addressLine2'}
-                                                errorName={errors.addressLine2}
+                            <TextInputWithError fieldName={'address.addressLine2'}
+                                                errorName={errors.address && errors.address.addressLine2}
                                                 labelName={'Block, Apartment'}
-                                                onBlur={()=>validateField('addressLine2')}
+                                                onBlur={()=>validateField('address.addressLine2')}
                                                 fieldType={"text"}/>
 
                             <TextInputWithError fieldName={'telephone'}
@@ -95,22 +76,22 @@ function CheckoutForm({submitCheckoutForm}){
 
                             <div className="flex flex-row space-x-4">
                                 <div className="w-1/2">
-                                    <TextInputWithError fieldName={'state'}
+                                    <TextInputWithError fieldName={'address.state'}
                                                         labelName={'State'}
-                                                        onBlur={()=>validateField('state')}
+                                                        errorName={errors.address && errors.address.state}
+                                                        onBlur={()=>validateField('address.state')}
                                                         fieldType={"text"}/>
                                 </div>
 
                                 <div className="w-1/2">
                                     <CountrySelector
-                                        id='country'
+                                        id='address.country'
                                         open={isOpen}
-                                        errorName={errors.country}
                                         onToggle={() => setIsOpen(!isOpen)}
                                         onChange={val => {
-                                            setCountry(val)
+                                            setCountry(COUNTRIES.find(option => option.value === val).title)
                                         }}
-                                        selectedValue={COUNTRIES.find(option => option.value === country)}
+                                        selectedValue={COUNTRIES.find(option => option.title === country)}
                                     />
                                 </div>
                             </div>
@@ -118,25 +99,25 @@ function CheckoutForm({submitCheckoutForm}){
                             <div className="flex flex-row space-x-4">
 
                                 <div className="w-1/2">
-                                    <TextInputWithError fieldName={'city'}
-                                                        errorName={errors.city}
+                                    <TextInputWithError fieldName={'address.city'}
+                                                        errorName={errors.address && errors.address.city}
                                                         labelName={'City'}
-                                                        onBlur={()=>validateField('city')}
+                                                        onBlur={()=>validateField('address.city')}
                                                         fieldType={"text"}/>
                                 </div>
 
                                 <div className="w-1/2">
-                                    <TextInputWithError fieldName={'zipCode'}
-                                                        errorName={errors.zipCode}
+                                    <TextInputWithError fieldName={'address.zipCode'}
+                                                        errorName={errors.address && errors.address.zipCode}
                                                         labelName={'Zip Code'}
-                                                        onBlur={()=>validateField('zipCode')}
+                                                        onBlur={()=>validateField('address.zipCode')}
                                                         fieldType={"text"}/>
                                 </div>
 
                             </div>
-
                         </div>
 
+                        <button type="submit" className="mt-10 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                     </Form>
                 );
             }}
@@ -144,4 +125,4 @@ function CheckoutForm({submitCheckoutForm}){
     )
 }
 
-export default CheckoutForm
+export default AddressForm

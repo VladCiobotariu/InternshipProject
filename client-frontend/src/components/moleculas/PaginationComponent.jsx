@@ -54,7 +54,7 @@ const PaginationComponent = ({
                         className={classnames("pagination-item", {
                             selected: pageNumber === currentPage
                         })}
-                        onClick={() => handlePageChange(pageNumber)}
+                       onClick={() => handlePageChange(pageNumber)}
                     >
                         {pageNumber}
                     </li>

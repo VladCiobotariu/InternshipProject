@@ -4,6 +4,7 @@ import com.ozius.internship.project.dto.BuyerAddressDto;
 import com.ozius.internship.project.dto.CheckoutItemDto;
 import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.entity.order.Order;
 import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.entity.seller.Seller;
@@ -63,9 +64,10 @@ public class OrderService {
 
             //add product to the retrieved order
             orderPersisted.addProduct(product, checkoutItemDto.getQuantity());
-
-            //remove product from cart
-            cartService.removeCartItemByProductId(buyerEmail, checkoutItemDto.getProductId());
         }
+
+        //remove products from cart
+        Cart buyerCart = cartService.getCartByUserEmail(buyerEmail);
+        buyerCart.clearCartFromAllCartItems();
     }
 }

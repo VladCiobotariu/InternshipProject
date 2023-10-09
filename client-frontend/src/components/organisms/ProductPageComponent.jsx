@@ -5,10 +5,9 @@ import {getProductsApi} from "../../api/ProductApi";
 import FilteringComponent from "../moleculas/filter/FilteringComponent";
 import NoEntityMessageComponent from "../atoms/error/NoEntityMessageComponent";
 import ProductAddToCartModal from "../moleculas/modals/ProductAddToCartModal";
-import BaseModal from "../atoms/BaseModal";
 import PaginationComponent from "../moleculas/PaginationComponent";
 import SelectionOfNumberPerPage from "../atoms/input/SelectionOfNumberPerPage";
-
+import useBreakpoint from "../../hooks/useBreakpoint";
 
 const buildFilterOptionsFromQueryParams = (queryParams) => {
     return {
@@ -36,11 +35,16 @@ function ProductPageComponent() {
     const [filterOptions, setFilterOptions] = useState(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [productName, setProductName] = useState(null);
 
-    const toggleModal = (productName) => {
+    const [productId, setProductId] = useState(null);
+
+    const [isLoading, setLoading] = useState(true)
+
+    const breakpoint = useBreakpoint();
+
+    const toggleModal = (productId) => {
         setIsModalOpen(!isModalOpen);
-        setProductName(productName);
+        setProductId(productId);
     }
 
     const getProducts = (page, newItemsPerPage, sortSpecs, filterSpecs) => {
@@ -49,6 +53,7 @@ function ProductPageComponent() {
             .then((res) => {
                 setProducts(res.data.data);
                 setTotalNumberProducts(res.data.numberOfElements);
+                setLoading(false)
 
             })
             .catch((err) => console.log(err))
@@ -68,6 +73,10 @@ function ProductPageComponent() {
     useEffect(() => {
         setFilterOptions(buildFilterOptionsFromQueryParams(new URLSearchParams(location.search)));
     }, [location.search]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [breakpoint]);
 
     const handleItemsPerPageChange = (event) => {
         const newItemsPerPage = parseInt(event.target.value);
@@ -165,82 +174,78 @@ function ProductPageComponent() {
 
     return (
         <div className="">
-            <section>
-                <div className="mx-auto mt-16 max-w-7xl px-10">
-                    <header>
-                        <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
-                            Check the products
-                        </h2>
-                    </header>
+            {isLoading === false &&
+                <section>
+                    <div className="mx-auto mt-16 max-w-7xl px-10">
+                        <header>
+                            <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
+                                Check the products
+                            </h2>
+                        </header>
 
-                    <div className="mb-8">
-                        <div>
-                            <FilteringComponent
-                                filterOptions={filterOptions}
-                                onFilterChanged={handleOnFilterChanged}
-                                onSortChanged={handleSortChanged}
-                            />
-                        </div>
-
-                    </div>
-
-                    {totalNumberProducts === 0 ? (<NoEntityMessageComponent
-                        header="Products do not exist yet."
-                        paragraph="Sorry, we could not find the products you are looking for."/>) : (
-                        <div>
-
-                            <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
-                                {products.map((product) => (
-                                    <div key={product.id}>
-                                        <ProductComponent
-                                            key={product.id}
-                                            id={product.id}
-                                            name={product.name}
-                                            imageName={product.imageName}
-                                            price={product.price}
-                                            sellerAlias={product.seller.alias}
-                                            toggleModal={() => toggleModal(product.name)}
-                                        />
-                                    </div>
-                                ))}
-                            </ul>
-
-                            <div className="mt-10 flex items-center justify-between pb-5">
-                                <div className="flex-grow flex justify-center ml-44">
-                                    <PaginationComponent
-                                        className="pagination-bar"
-                                        currentPage={currentPage}
-                                        totalCount={totalNumberProducts}
-                                        itemsPerPage={itemsPerPage}
-                                        handlePageChange={page => setCurrentPage(page)}
-                                    />
-                                </div>
-
-                                <SelectionOfNumberPerPage
-                                    itemsPerPage={itemsPerPage}
-                                    handleItemsPerPageChange={handleItemsPerPageChange}
+                        <div className="mb-8">
+                            <div>
+                                <FilteringComponent
+                                    filterOptions={filterOptions}
+                                    onFilterChanged={handleOnFilterChanged}
+                                    onSortChanged={handleSortChanged}
                                 />
                             </div>
 
                         </div>
-                    )}
-                </div>
 
-            </section>
+                        {(totalNumberProducts === 0) ? (<NoEntityMessageComponent
+                            header="Products do not exist yet."
+                            paragraph="Sorry, we could not find the products you are looking for."/>) : (
+                            <div>
 
-            <BaseModal
+                                <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
+                                    {products.map((product) => (
+                                        <div key={product.id}>
+                                            <ProductComponent
+                                                key={product.id}
+                                                id={product.id}
+                                                name={product.name}
+                                                imageName={product.imageName}
+                                                price={product.price}
+                                                sellerAlias={product.seller.alias}
+                                                toggleModal={() => toggleModal(product.id)}
+                                            />
+                                        </div>
+                                    ))}
+                                </ul>
+
+                                <div className="mt-10 flex items-center justify-between pb-5">
+                                    <div className="flex-grow flex justify-center ml-44">
+                                        <PaginationComponent
+                                            className="pagination-bar"
+                                            currentPage={currentPage}
+                                            totalCount={totalNumberProducts}
+                                            itemsPerPage={itemsPerPage}
+                                            handlePageChange={page => setCurrentPage(page)}
+                                        />
+                                    </div>
+
+                                    <SelectionOfNumberPerPage
+                                        itemsPerPage={itemsPerPage}
+                                        handleItemsPerPageChange={handleItemsPerPageChange}
+                                    />
+                                </div>
+
+                            </div>
+                        )}
+                    </div>
+
+                </section>
+            }
+
+
+            <ProductAddToCartModal
+                toggleModal={toggleModal}
                 isModalOpen={isModalOpen}
-                toggleModal={() => toggleModal(productName)}>
-
-                <ProductAddToCartModal
-                    toggleModal={toggleModal}
-                    isModalOpen={isModalOpen}
-                    setIsModalOpen={setIsModalOpen}
-                    productName={productName}
-                />
-            </BaseModal>
-
-
+                setIsModalOpen={setIsModalOpen}
+                productId={productId}
+            />
         </div>
     );
 }

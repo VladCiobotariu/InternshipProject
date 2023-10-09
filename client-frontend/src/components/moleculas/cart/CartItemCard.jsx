@@ -1,12 +1,13 @@
 import {baseURL} from "../../../auth/ApiClient";
 import QuantityInput from "../../atoms/input/QuantityInput";
-import React, {useState} from "react";
 import useBreakpoint from "../../../hooks/useBreakpoint";
-import {addOrUpdateCartItem} from "../../../api/CartApi";
 import {useTranslation} from "react-i18next";
+import {useCart} from "../../../contexts/CartContext";
 
-function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiable}){
+function CartItemCard({item, isModifiable}){
 
+    //TODO check if these are better to move out to parent
+    const { updateCartItemQuantity, deleteCartItem } = useCart()
     const { t } = useTranslation();
 
     /**
@@ -27,19 +28,8 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
 
     const breakpoint = useBreakpoint()
 
-    const [quantity, setQuantity] = useState(item.quantity)
-
-    function updateDataBaseQuantity(newQuantity){
-        addOrUpdateCartItem(item.product.id, newQuantity)
-            .then(
-                () => {
-                    getCartItemsList()
-                    setQuantity(quantity + newQuantity)
-                }
-            )
-            .catch(
-                (err) => console.log(err)
-            )
+    function handleQuantityChange(newQuantity){
+        updateCartItemQuantity(item.product.id, newQuantity)
     }
 
     return(
@@ -52,7 +42,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
                 />
                 {(breakpoint==='sm' && !!isModifiable) &&
                     <div className="mt-4">
-                        <QuantityInput quantity={quantity} functionToBeCalled={(newQuantity)=>updateDataBaseQuantity(newQuantity)}/>
+                        <QuantityInput quantity={item.quantity} onQuantityChanged={handleQuantityChange}/>
                     </div>
                 }
             </div>
@@ -66,13 +56,13 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
                     <div className="flex flex-col justify-between items-end mt-0">
                         {!!isModifiable &&
                             <div className="flex items-center border-gray-100">
-                                <QuantityInput quantity={quantity} functionToBeCalled={(newQuantity)=>updateDataBaseQuantity(newQuantity)}/>
+                                <QuantityInput quantity={item.quantity} onQuantityChanged={handleQuantityChange}/>
                             </div>
                         }
                         <div className="flex items-center justify-end gap-2">
                             <p className="text-sm text-right">Total: {totalPricePerItem} RON</p>
                             {!!isModifiable &&
-                                <button onClick={()=>handelDeleteCartItem(item.product.id)}>
+                                <button onClick={()=>deleteCartItem(item.product.id)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -93,7 +83,7 @@ function CartItemCard({item, getCartItemsList, handelDeleteCartItem, isModifiabl
                         <div className="flex items-center gap-2 ml-4">
                             <p className="text-sm text-right">Total: {totalPricePerItem} RON</p>
                             {!!isModifiable &&
-                                <button onClick={()=>handelDeleteCartItem(item.product.id)}>
+                                <button onClick={()=>deleteCartItem(item.product.id)}>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="h-5 w-5 cursor-pointer duration-150 hover:text-red-500">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                                     </svg>

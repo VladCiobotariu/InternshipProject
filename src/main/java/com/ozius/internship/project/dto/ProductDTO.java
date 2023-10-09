@@ -5,12 +5,16 @@ import lombok.Data;
 
 @Data
 public class ProductDTO {
-    private long id;
-    private String description;
-    private String imageName;
-    private String name;
-    private float price;
-    private CategoryDTO category;
-    private SellerDTO seller;
-    private UnitOfMeasure unitOfMeasure;
+    protected long id;
+    protected String description;
+    protected String imageName;
+    protected String name;
+    protected float price;
+    protected CategoryDTO category;
+    protected SellerDTO seller;
+    protected UnitOfMeasure unitOfMeasure;
+    protected Double productRating;
+    protected long numberReviews;
+    protected boolean isRatingApplicable;
+
 }

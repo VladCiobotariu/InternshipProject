@@ -42,7 +42,6 @@ public class BuyerController {
 
         buyerService.addFavoriteByProductId(loggedUsername, productId);
         return ResponseEntity.ok("added favorite product");
-
     }
 
     @DeleteMapping("/my-favorites")
@@ -55,12 +54,30 @@ public class BuyerController {
     }
 
     @GetMapping("/my-buyer-addresses")
+    @PreAuthorize("hasRole('CLIENT')")
     public Stream<BuyerAddressDto> retrieveBuyerAddressesByUserEmail(Principal principal){
         String loggedUserName = principal.getName();
 
         List<BuyerAddress> buyerAddresses = buyerService.getBuyerAddressesByUserEmail(loggedUserName);
         return buyerAddresses.stream()
                 .map(address -> modelMapper.map(address, BuyerAddressDto.class));
+    }
+
+    @PutMapping("/my-buyer-addresses")
+    @PreAuthorize("hasRole('CLIENT')")
+    public void updateFullBuyerAddress(Principal principal, @RequestBody BuyerAddressDto shippingAddress){
+        String loggedUserName = principal.getName();
+        long addressId = shippingAddress.getId();
+
+        buyerService.updateFullAddress(loggedUserName, shippingAddress, addressId);
+    }
+
+    @PostMapping("/my-buyer-addresses")
+    @PreAuthorize("hasRole('CLIENT')")
+    public void addBuyerAddress(Principal principal, @RequestBody BuyerAddressDto shippingAddress){
+        String loggedUserName = principal.getName();
+
+        buyerService.addBuyerAddress(loggedUserName, shippingAddress);
     }
 
 }

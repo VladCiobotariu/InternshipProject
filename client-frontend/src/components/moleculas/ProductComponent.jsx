@@ -20,9 +20,9 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
 
     const toggleFavorite = () => {
         if (!isFavorite) {
-            addToFavorite(id, name);
+            addToFavorite(id);
         } else {
-            removeFromFavorite(id, name);
+            removeFromFavorite(id);
         }
     };
 
@@ -36,7 +36,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                             src={`${baseURL}${imageName}`}
                             alt={name}
                             className="object-cover w-48 h-48 mx-auto"
-                            onClick={() => navigate(`/${sellerAlias}/products/${name}`)}
+                            onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                         />
                         {isAuthenticated &&
                             <div className="absolute top-0 left-0 p-2">
@@ -56,7 +56,7 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                         <div className="">
                             <h3
                                 className="font-bold text-xl text-zinc-800 cursor-pointer group-hover:underline group-hover:underline-offset-4"
-                                onClick={() => navigate(`/products/categories/fruits/${name}`)}
+                                onClick={() => navigate(`/${sellerAlias}/products/${id}`)}
                             >
                                 {name}
                             </h3>
@@ -65,8 +65,8 @@ const ProductComponent = ({ id, name, imageName, price, sellerAlias, toggleModal
                         </div>
                         <div>
                             <button type="button"
-                                    className="text-white bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 shadow-lg shadow-indigo-500/50 dark:shadow-lg dark:shadow-indigo-800/80 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2 mb-2"
-                                    onClick={() => toggleModal(name)}>
+                                    className="text-white bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 hover:bg-gradient-to-br focus:ring-1 focus:outline-none focus:ring-indigo-300 dark:focus:ring-indigo-800 shadow-lg shadow-indigo-500/50 dark:shadow-lg dark:shadow-indigo-800/80 font-medium rounded-lg text-sm px-3 py-1.5 text-center mr-2 mb-2"
+                                    onClick={() => toggleModal(id)}>
                                 Add to cart
                             </button>
 

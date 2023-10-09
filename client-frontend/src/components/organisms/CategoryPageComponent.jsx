@@ -13,7 +13,6 @@ const CategoryPageComponent = () => {
     const getCategoryList = () => {
         getAllCategoriesApi()
             .then((res) => {
-                console.log(res)
                 setCategories(res.data.data);
                 setTotalNumberCategories(res.data.numberOfElements);
             })

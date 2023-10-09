@@ -1,5 +1,7 @@
 package com.ozius.internship.project.service;
 
+import com.ozius.internship.project.dto.BuyerAddressDto;
+import com.ozius.internship.project.entity.Address;
 import com.ozius.internship.project.entity.buyer.Buyer;
 import com.ozius.internship.project.entity.buyer.BuyerAddress;
 import com.ozius.internship.project.entity.product.Product;
@@ -56,5 +58,31 @@ public class BuyerService {
     public List<BuyerAddress> getBuyerAddressesByUserEmail(String email){
         Buyer buyer = getBuyerByEmail(email);
         return buyer.getAddresses().stream().toList();
+    }
+
+    @Transactional
+    public void updateFullAddress(String email, BuyerAddressDto shippingAddress, long addressId){
+
+        Buyer buyer = getBuyerByEmail(email);
+
+        Address address = shippingAddress.getAddress();
+        String firstName = shippingAddress.getFirstName();
+        String lastName = shippingAddress.getLastName();
+        String telephone = shippingAddress.getTelephone();
+
+        buyer.updateAddress(address, firstName, lastName, telephone, addressId);
+    }
+
+    @Transactional
+    public void addBuyerAddress(String email, BuyerAddressDto shippingAddress){
+
+        Buyer buyer = getBuyerByEmail(email);
+
+        Address address = shippingAddress.getAddress();
+        String firstName = shippingAddress.getFirstName();
+        String lastName = shippingAddress.getLastName();
+        String telephone = shippingAddress.getTelephone();
+
+        buyer.addAddress(address, firstName, lastName, telephone);
     }
 }

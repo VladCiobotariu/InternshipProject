@@ -2,8 +2,8 @@ package com.ozius.internship.project.springcontext;
 
 import com.nimbusds.jose.jwk.RSAKey;
 import com.ozius.internship.project.SpringProfiles;
-import com.ozius.internship.project.infra.images.service.LocalDiskImageHandlingService;
 import com.ozius.internship.project.infra.images.service.ImageService;
+import com.ozius.internship.project.infra.images.service.LocalDiskImageHandlingService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

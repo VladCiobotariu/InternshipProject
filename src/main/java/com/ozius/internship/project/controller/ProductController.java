@@ -1,8 +1,8 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.ProductDTO;
+import com.ozius.internship.project.dto.ReviewDTO;
 import com.ozius.internship.project.service.ProductService;
-import com.ozius.internship.project.service.queries.JpaQueryBuilder;
 import com.ozius.internship.project.service.queries.ProductPaginationSearchQuery;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
@@ -44,16 +44,21 @@ public class ProductController {
 
         int numOfTotalProds = query.getResultList().size();
 
-        List<ProductDTO> productsDTO = query.getPagingResultList(itemsPerPage, page-1);
+        List<ProductDTO> productDTO = query.getPagingResultList(itemsPerPage, page-1);
 
-        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productsDTO);
+        return new ApiPaginationResponse<>(page, itemsPerPage, numOfTotalProds, productDTO);
     }
 
-    @GetMapping("/products/{productName}")
-    public ResponseEntity<ProductDTO> getProductByName(@PathVariable String productName) {
-        ProductDTO productDTO = productService.getProductByName(productName);
-        return ResponseEntity.ok(productDTO);
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ProductDTO> getProductWithReviews(@PathVariable long id) {
+        ProductDTO productWithRatingsDTO = productService.getProductWithReviews(id);
+        return ResponseEntity.ok(productWithRatingsDTO);
     }
 
+    @GetMapping("/products/{id}/reviews")
+    public ResponseEntity<List<ReviewDTO>> getReviewsForProduct(@PathVariable long id) {
+        List<ReviewDTO> reviews = productService.getReviewsForProduct(id);
+        return ResponseEntity.ok(reviews);
+    }
 
 }

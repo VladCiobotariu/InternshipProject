@@ -27,7 +27,7 @@ const SearchComponent = ({ handleSearchChanged, filterName }) => {
                 <input
                     type="search"
                     id="search-dropdown"
-                    className="block p-2.5 w-full z-20 text-sm text-zinc-800 bg-gray-50 rounded-lg border-l-2 border border-zinc-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-200"
+                    className="block p-2.5 w-full z-20 text-sm text-zinc-800 bg-zinc-50 rounded-lg border-l-2 border border-zinc-300 focus:ring-indigo-500 focus:border-indigo-500 dark:bg-[#1a2747] dark:border-[#1a2747] dark:text-white"
                     placeholder="Search"
                     value={searchText}
                     onChange={handleChange}

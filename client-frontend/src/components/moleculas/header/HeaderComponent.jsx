@@ -1,25 +1,25 @@
-import React, { Fragment, useRef, useState, useEffect } from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
-import { useAuth } from '../../../auth/AuthContext';
-import { getAllCategoriesApi } from "../../../api/CategoryApi";
-import { baseURL } from "../../../auth/ApiClient";
+import {useAuth} from '../../../auth/AuthContext';
+import {getAllCategoriesApi} from "../../../api/CategoryApi";
+import {baseURL} from "../../../auth/ApiClient";
 import '../../../styles/Header.css'
 
-import { Dialog, Disclosure, Popover, Transition } from '@headlessui/react';
+import {Dialog, Disclosure, Popover, Transition} from '@headlessui/react';
 import {
+    ArrowLeftOnRectangleIcon,
     Bars3Icon,
-    XMarkIcon,
-    UserCircleIcon,
     ClipboardDocumentListIcon,
     Cog6ToothIcon,
-    ArrowLeftOnRectangleIcon,
-    ShoppingBagIcon,
     HeartIcon,
+    ShoppingBagIcon,
+    UserCircleIcon,
+    XMarkIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronDownIcon } from '@heroicons/react/20/solid';
+import {ChevronDownIcon} from '@heroicons/react/20/solid';
 import {ReactComponent as Logo} from "./icon.svg";
-import {getCartItems} from "../../../api/CartApi";
 import {useFavorite} from "../../../contexts/FavoriteContext";
+import {useCart} from "../../../contexts/CartContext";
 
 const accountData = [
     { name: 'Orders', href: '/account/orders', icon: ClipboardDocumentListIcon },
@@ -39,16 +39,15 @@ export default function HeaderComponent() {
 
     const [categories, setCategories] = useState([]);
 
-    const[numberOfCartItems, setNumberOfCartItems] = useState(0)
-
-    const { isAuthenticated, username } = useAuth();
-    const auth = useAuth();
+    const { isAuthenticated, username, logout } = useAuth();
 
     const location = useLocation()
     const buttonRef = useRef();
+    const buttonRef2 = useRef();
 
     const navigate = useNavigate()
     const {allFavorites, numberOfFavorites, removeFromFavorite} = useFavorite();
+    const { numberOfCartItems } = useCart()
 
     const getCategoryList = () => {
         getAllCategoriesApi()
@@ -59,23 +58,8 @@ export default function HeaderComponent() {
     };
 
     useEffect(() => {
-        if(!!username){
-            getCartItemsList()
-        }
         getCategoryList()
     }, [location, username]);
-
-    function getCartItemsList(){
-        getCartItems()
-            .then(
-                (response) => setNumberOfCartItems(response.data.cartItems.length)
-            )
-            .catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-    }
 
     const favoriteDeleteButton = (productId) => {
         removeFromFavorite(productId)
@@ -125,7 +109,7 @@ export default function HeaderComponent() {
 
                 <Popover.Group className="hidden md:flex md:gap-x-12 lg:flex lg:gap-x-12 xl:flex xl:gap-x-12 2xl:flex 2xl:gap-x-12 text-gray-900 dark:text-gray-100">
                     <Popover className="relative">
-                        <Popover.Button ref={buttonRef} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
+                        <Popover.Button ref={buttonRef2} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
                             Categories
                             <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400 dark:text-inherit" aria-hidden="true" />
                         </Popover.Button>
@@ -157,7 +141,7 @@ export default function HeaderComponent() {
                                             <div className="flex-auto">
                                                 <div
                                                     onClick={() => {
-                                                        buttonRef.current?.click();
+                                                        buttonRef2.current?.click();
                                                         createQueryParam(item.name);
                                                     }}
                                                     className="block font-semibold text-inherit dark:text-inherit"
@@ -357,7 +341,7 @@ export default function HeaderComponent() {
                                                 <button
                                                     onClick={() => {
                                                             buttonRef.current?.click()
-                                                            auth.logout()
+                                                            logout()
                                                         }
                                                     }
                                                     className="block font-semibold text-gray-900 dark:text-inherit">
@@ -511,7 +495,7 @@ export default function HeaderComponent() {
                                                         <button
                                                             onClick={()=>{
                                                                     setMobileMenuOpen(false)
-                                                                    auth.logout()
+                                                                    logout()
                                                                 }
                                                             }
                                                             className="flex w-full rounded-lg py-2 pl-6 pr-3 text-sm font-semibold leading-7 text-inherit dark:text-inherit hover:bg-gray-50 dark:hover:bg-zinc-900"
