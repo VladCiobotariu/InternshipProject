@@ -38,6 +38,8 @@ function ProductPageComponent() {
 
     const [productId, setProductId] = useState(null);
 
+    const [isLoading, setLoading] = useState(true)
+
     const breakpoint = useBreakpoint();
 
     const toggleModal = (productId) => {
@@ -51,6 +53,7 @@ function ProductPageComponent() {
             .then((res) => {
                 setProducts(res.data.data);
                 setTotalNumberProducts(res.data.numberOfElements);
+                setLoading(false)
 
             })
             .catch((err) => console.log(err))
@@ -171,65 +174,71 @@ function ProductPageComponent() {
 
     return (
         <div className="">
-            <section>
-                <div className="mx-auto mt-16 max-w-7xl px-10">
-                    <header>
-                        <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
-                            Check the products
-                        </h2>
-                    </header>
+            {isLoading === false &&
+                <section>
+                    <div className="mx-auto mt-16 max-w-7xl px-10">
+                        <header>
+                            <h2 className="text-3xl mb-10 font-bold text-zinc-800 dark:text-white">
+                                Check the products
+                            </h2>
+                        </header>
 
-                    <div className="mb-8">
-                        <div>
-                            <FilteringComponent
-                                filterOptions={filterOptions}
-                                onFilterChanged={handleOnFilterChanged}
-                                onSortChanged={handleSortChanged}
-                            />
+                        <div className="mb-8">
+                            <div>
+                                <FilteringComponent
+                                    filterOptions={filterOptions}
+                                    onFilterChanged={handleOnFilterChanged}
+                                    onSortChanged={handleSortChanged}
+                                />
+                            </div>
+
                         </div>
 
-                    </div>
+                        {(totalNumberProducts === 0) ? (<NoEntityMessageComponent
+                            header="Products do not exist yet."
+                            paragraph="Sorry, we could not find the products you are looking for."/>) : (
+                            <div>
 
-                    {totalNumberProducts === 0 ? (<NoEntityMessageComponent
-                        header="Products do not exist yet."
-                        paragraph="Sorry, we could not find the products you are looking for."/>) : (
-                        <div>
-                            <SelectionOfNumberPerPage
-                                itemsPerPage={itemsPerPage}
-                                setItemsPerPage={setItemsPerPage}
-                                handleItemsPerPageChange={handleItemsPerPageChange}
-                            />
+                                <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full ">
+                                    {products.map((product) => (
+                                        <div key={product.id}>
+                                            <ProductComponent
+                                                key={product.id}
+                                                id={product.id}
+                                                name={product.name}
+                                                imageName={product.imageName}
+                                                price={product.price}
+                                                sellerAlias={product.seller.alias}
+                                                toggleModal={() => toggleModal(product.id)}
+                                            />
+                                        </div>
+                                    ))}
+                                </ul>
 
-                            <ul className="mt-2 grid gap-16 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 w-full sm:justify-center">
-                                {products.map((product) => (
-                                    <div key={product.id}>
-                                        <ProductComponent
-                                            key={product.id}
-                                            id={product.id}
-                                            name={product.name}
-                                            imageName={product.imageName}
-                                            price={product.price}
-                                            sellerAlias={product.seller.alias}
-                                            toggleModal={() => toggleModal(product.id)}
+                                <div className="mt-10 flex items-center justify-between pb-5">
+                                    <div className="flex-grow flex justify-center ml-44">
+                                        <PaginationComponent
+                                            className="pagination-bar"
+                                            currentPage={currentPage}
+                                            totalCount={totalNumberProducts}
+                                            itemsPerPage={itemsPerPage}
+                                            handlePageChange={page => setCurrentPage(page)}
                                         />
                                     </div>
-                                ))}
-                            </ul>
 
-                            <div className="mt-10 flex pb-10 justify-center">
-                                    <PaginationComponent
-                                        className="pagination-bar"
-                                        currentPage={currentPage}
-                                        totalCount={totalNumberProducts}
+                                    <SelectionOfNumberPerPage
                                         itemsPerPage={itemsPerPage}
-                                        handlePageChange={page => setCurrentPage(page)}
+                                        handleItemsPerPageChange={handleItemsPerPageChange}
                                     />
-                            </div>
-                        </div>
-                    )}
-                </div>
+                                </div>
 
-            </section>
+                            </div>
+                        )}
+                    </div>
+
+                </section>
+            }
+
 
             <ProductAddToCartModal
                 toggleModal={toggleModal}

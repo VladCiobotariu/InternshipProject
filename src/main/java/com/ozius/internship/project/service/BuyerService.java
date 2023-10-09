@@ -72,4 +72,17 @@ public class BuyerService {
 
         buyer.updateAddress(address, firstName, lastName, telephone, addressId);
     }
+
+    @Transactional
+    public void addBuyerAddress(String email, BuyerAddressDto shippingAddress){
+
+        Buyer buyer = getBuyerByEmail(email);
+
+        Address address = shippingAddress.getAddress();
+        String firstName = shippingAddress.getFirstName();
+        String lastName = shippingAddress.getLastName();
+        String telephone = shippingAddress.getTelephone();
+
+        buyer.addAddress(address, firstName, lastName, telephone);
+    }
 }

@@ -17,6 +17,7 @@ import CheckoutPageComponent from "./components/organisms/CheckoutPageComponent"
 import CartProvider from "./contexts/CartContext";
 import AlertProvider from "./contexts/AlertContext";
 import ProductDetailsPageComponent from "./components/organisms/ProductDetailsPageComponent";
+import OrderHistoryPageComponent from "./components/organisms/OrderHistoryPageComponent";
 
 function AuthenticatedRoute({children}) {
 
@@ -72,9 +73,9 @@ function App() {
                                             </NotAuthenticatedRoute>
                                         }/>
 
-                                    <Route path='/products/categories' element={<CategoryPageComponent/>}/>
-                                    <Route path='/products' element={<ProductPageComponent/>}/>
-                                    <Route path='/:sellerAlias/products/:productId' element={<ProductDetailsPageComponent/>}/>
+                                        <Route path='/products/categories' element={<CategoryPageComponent/>}/>
+                                        <Route path='/products' element={<ProductPageComponent/>}/>
+                                        <Route path='/:sellerAlias/products/:productId' element={<ProductDetailsPageComponent/>}/>
 
                                         <Route path='/account/cart' element={
                                             <AuthenticatedRoute>
@@ -87,6 +88,13 @@ function App() {
                                                 <CheckoutPageComponent/>
                                             </AuthenticatedRoute>
                                         }/>
+
+                                        <Route path='/order-history' element={
+                                            <AuthenticatedRoute>
+                                                <OrderHistoryPageComponent/>
+                                            </AuthenticatedRoute>
+                                        }/>
+
                                     </Routes>
                                 </AlertProvider>
 

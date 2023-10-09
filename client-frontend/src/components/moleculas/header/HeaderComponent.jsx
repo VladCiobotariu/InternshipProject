@@ -43,6 +43,7 @@ export default function HeaderComponent() {
 
     const location = useLocation()
     const buttonRef = useRef();
+    const buttonRef2 = useRef();
 
     const navigate = useNavigate()
     const {allFavorites, numberOfFavorites, removeFromFavorite} = useFavorite();
@@ -108,7 +109,7 @@ export default function HeaderComponent() {
 
                 <Popover.Group className="hidden md:flex md:gap-x-12 lg:flex lg:gap-x-12 xl:flex xl:gap-x-12 2xl:flex 2xl:gap-x-12 text-gray-900 dark:text-gray-100">
                     <Popover className="relative">
-                        <Popover.Button ref={buttonRef} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
+                        <Popover.Button ref={buttonRef2} className="flex items-center gap-x-1 text-sm font-semibold leading-6">
                             Categories
                             <ChevronDownIcon className="h-5 w-5 flex-none text-gray-400 dark:text-inherit" aria-hidden="true" />
                         </Popover.Button>
@@ -140,7 +141,7 @@ export default function HeaderComponent() {
                                             <div className="flex-auto">
                                                 <div
                                                     onClick={() => {
-                                                        buttonRef.current?.click();
+                                                        buttonRef2.current?.click();
                                                         createQueryParam(item.name);
                                                     }}
                                                     className="block font-semibold text-inherit dark:text-inherit"

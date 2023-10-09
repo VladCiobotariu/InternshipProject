@@ -15,11 +15,7 @@ public class DomainEventPublisherProvider implements ApplicationContextAware {
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        if(DomainEventPublisherProvider.applicationContext != null) {
-//            throw new IllegalStateException("Only one initialization expected at startup!");
-//        }
+    public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
         DomainEventPublisherProvider.applicationContext = applicationContext;
-
     }
 }

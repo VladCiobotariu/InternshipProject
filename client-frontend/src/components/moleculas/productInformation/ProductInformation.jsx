@@ -4,7 +4,7 @@ import ProductSpecificInfo from "./ProductSpecificInfo";
 import {useCart} from "../../../contexts/CartContext";
 import {useAuth} from "../../../auth/AuthContext";
 import {useNavigate} from "react-router-dom";
-import AddRemoveWishlist from "../../atoms/buttons/AddRemoveWishlist";
+import AddRemoveWishlist from "../../atoms/button/AddRemoveWishlist";
 import {useAlert} from "../../../contexts/AlertContext";
 
 const ProductInformation = ({description, price, category, producer, city, productId}) => {

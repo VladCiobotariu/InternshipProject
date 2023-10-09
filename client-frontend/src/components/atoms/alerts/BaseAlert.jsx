@@ -1,7 +1,7 @@
 function BaseAlert({type, title, paragraph, onCloseButton}){
     return(
 
-        <div className="max-w-[1100px] z-10 absolute sm:sticky sm:top-6 sm:mt-4 w-full transform sm:transform-none translate-y-2 mx-auto left-0 right-0 flex justify-end">
+        <div className="max-w-[1100px] md:mr-4 lg:mr-6 z-10 absolute sm:sticky sm:top-6 sm:mt-4 w-full transform sm:transform-none translate-y-2 mx-auto left-0 right-0 flex justify-end">
             <div role="alert" className={`max-w-sm sm:max-w-sm sm:mx-auto p-4 rounded-xl
                       border border-gray-100 bg-gray-200 dark:bg-white
                       ${type==='danger' ? 'border-red-500 border-s-4 bg-red-50' : ''}

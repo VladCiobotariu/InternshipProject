@@ -1,13 +1,14 @@
 package com.ozius.internship.project.entity.seller;
 
-import com.ozius.internship.project.entity.*;
+import com.ozius.internship.project.entity.Address;
+import com.ozius.internship.project.entity.BaseEntity;
+import com.ozius.internship.project.entity.DomainEventPublisherProvider;
+import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.exception.IllegalItemException;
 import com.ozius.internship.project.entity.exception.IllegalRatingException;
-
+import com.ozius.internship.project.entity.exception.IllegalSellerDetails;
 import com.ozius.internship.project.entity.product.Product;
-import com.ozius.internship.project.entity.DomainEventPublisherProvider;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -147,7 +148,7 @@ public class Seller extends BaseEntity {
         this.reviews.add(reviewNew);
 
         DomainEventPublisherProvider.getEventPublisher().publishEvent(new ReviewAddedEvent(product.getId()));
-        // todo - reviews shouldnt be tight to seller anymore, so when we add a review we will have another listener that will add the review in its repository
+
         return reviewNew;
     }
 

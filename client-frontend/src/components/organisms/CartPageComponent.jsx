@@ -4,11 +4,14 @@ import CartItemCard from "../moleculas/cart/CartItemCard";
 import CartSummary from "../moleculas/cart/CartSummary";
 import ErrorComponent from "../moleculas/error/ErrorComponent";
 import {useCart} from "../../contexts/CartContext";
+import {useNavigate} from "react-router-dom";
 
 function Cart(){
 
     const {allCartItems, numberOfCartItems, cartTotalPrice} = useCart()
     const shippingPrice = 10
+
+    const navigate = useNavigate()
 
     return(
         <div className="pt-10">
@@ -22,7 +25,9 @@ function Cart(){
                             <CartItemCard key={cartItem.id} item={cartItem} isModifiable={true}/>
                         ))}
                     </div>
-                    <CartSummary cartTotalPrice={cartTotalPrice} shippingPrice={shippingPrice}/>
+                    <CartSummary cartTotalPrice={cartTotalPrice} shippingPrice={shippingPrice} className="md:mt-0 md:w-1/3 lg:mt-0 lg:w-1/3 xl:mt-0 xl:w-1/3 2xl:mt-0 2xl:w-1/3 h-full">
+                        <button onClick={()=>navigate('/checkout')} className="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Check out</button>
+                    </CartSummary>
                 </div>
             }
 

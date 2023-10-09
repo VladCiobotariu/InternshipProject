@@ -72,4 +72,12 @@ public class BuyerController {
         buyerService.updateFullAddress(loggedUserName, shippingAddress, addressId);
     }
 
+    @PostMapping("/my-buyer-addresses")
+    @PreAuthorize("hasRole('CLIENT')")
+    public void addBuyerAddress(Principal principal, @RequestBody BuyerAddressDto shippingAddress){
+        String loggedUserName = principal.getName();
+
+        buyerService.addBuyerAddress(loggedUserName, shippingAddress);
+    }
+
 }
