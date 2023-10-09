@@ -6,7 +6,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 @SpringBootApplication
 public class ProjectApplicationWebAppEmbeddedDb {
 
-
 	public static void main(String[] args) {
 		new SpringApplicationBuilder()
 				.sources(ProjectApplicationWebAppEmbeddedDb.class)
