@@ -1,4 +1,4 @@
-package com.ozius.internship.project.infra.events;
+package com.ozius.internship.project.entity;
 
 public interface DomainEventPublisher {
 

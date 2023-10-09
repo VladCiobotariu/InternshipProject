@@ -4,11 +4,13 @@ import com.ozius.internship.project.infra.JpaHelper;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceUnit;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
+@DependsOn("domainEventPublisherProvider")
 @Profile(SpringProfiles.TEST_DATA_SEED)
 public class TestDataSeed {
 
