@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.ozius.internship.project.service.queries.filter.*;
 import com.ozius.internship.project.service.queries.filter.converter.FilterConfiguration;
 import com.ozius.internship.project.service.queries.filter.converter.FilterValueConverter;
+import jakarta.annotation.Nullable;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +28,7 @@ public class FilterSpecsConverter implements Converter<String, FilterSpecs> {
     }
 
     @Override
-    public FilterSpecs convert(String source) {
+    public FilterSpecs convert(@Nullable String source) {
         TypeFactory typeFactory = objectMapper.getTypeFactory();
 
         try {

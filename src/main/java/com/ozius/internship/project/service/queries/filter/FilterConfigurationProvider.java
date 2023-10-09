@@ -14,6 +14,9 @@ public class FilterConfigurationProvider {
 
     private final Map<String, FilterConfiguration<?>> filterConfigurationMap = new HashMap<>();
 
+    //TODO ask about multiple criteria for price,
+    // i could not make just one criteria because in query builder it is predefined to make 'OR' building of query if found multiple criteria
+
     public FilterConfigurationProvider() {
         mapCriteriaToFormatInDataBase("productName", new FilterConfiguration<>(Operation.STARTS_WITH, new CapitalizeConverter()));
         mapCriteriaToFormatInDataBase("categoryName", new FilterConfiguration<>(Operation.EQ, new NoTransformationConverter()));

@@ -1,5 +1,6 @@
-package com.ozius.internship.project.service.queries;
+package com.ozius.internship.project.service.queries.buiders;
 
+import com.ozius.internship.project.service.queries.transformers.ResultTransformer;
 import jakarta.persistence.EntityManager;
 
 public abstract class JpaDtoBasedQueryBuilder<E> extends JpaQueryBuilder<E,E> {

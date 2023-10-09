@@ -1,4 +1,4 @@
-package com.ozius.internship.project.service.queries;
+package com.ozius.internship.project.service.queries.buiders;
 
 import com.ozius.internship.project.service.queries.filter.FilterCriteria;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
@@ -148,14 +148,14 @@ public class QueryBuilder {
             String filterName = entry.getKey();
             Set<FilterCriteria> filterCriteriaForFilter = entry.getValue();
 
-            /***
+            /**
              * Builds condition for a certain filter and set of criterias
              * example:
              * (filter1 = val1 or filter1 like val2 or filter1=val3)
              *
              * example:
              * filter 1 = val1 --- for a single filter criteria
-             */
+             **/
 
             QueryBuilder filterConditionBuilder = setStartOrQuery(filterCriteriaForFilter.size()) ;
 
