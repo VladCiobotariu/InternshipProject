@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -31,16 +32,17 @@ public class WebConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/authenticate").permitAll()
-                .requestMatchers("/register-client").permitAll()
-                .requestMatchers("/users/{email}").permitAll()
-                .requestMatchers("/images/**").permitAll()
-                .requestMatchers("/categories/**").permitAll()
-                .requestMatchers("/products/**").permitAll()
-                .requestMatchers("/cities").permitAll()
-                .requestMatchers("/products-test").permitAll()
-                .requestMatchers("/error").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/authenticate")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/authenticate")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/register-client")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/users/{email}")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/images/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/categories/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/products/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/cities")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/products-test")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/**")).permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest().authenticated());
 

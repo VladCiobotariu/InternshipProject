@@ -7,6 +7,7 @@ import QuantityInput from "../../atoms/input/QuantityInput";
 import {useCart} from "../../../contexts/CartContext";
 import {useTranslation} from "react-i18next";
 import BaseModal from "../../atoms/BaseModal";
+import ProductRating from "../../atoms/starReviews/ProductRating";
 
 const ProductAddToCartModal = ({isModalOpen, toggleModal, setIsModalOpen, productId}) => {
 
@@ -18,6 +19,8 @@ const ProductAddToCartModal = ({isModalOpen, toggleModal, setIsModalOpen, produc
 
     const {isAuthenticated} = useAuth();
     const {t} = useTranslation();
+
+    const isRatingDisplayed=true;
 
     const getProductById = (productId) => {
         getProductByIdApi(productId)
@@ -80,6 +83,15 @@ const ProductAddToCartModal = ({isModalOpen, toggleModal, setIsModalOpen, produc
                                             <h2 className="text-lg font-bold text-gray-900 dark:text-zinc-100">{product.name}</h2>
                                             <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">Price
                                                 per {t(`enums.unitOfMeasure.${product.unitOfMeasure}`)}: {product.price} RON</p>
+
+                                           <div className="mt-1">
+                                               <ProductRating
+                                                   rating={product.productRating}
+                                                   isRatingDisplayed={isRatingDisplayed}
+                                                   viewType="simple"
+                                               />
+                                           </div>
+
                                             <div className="mt-7">
                                                 <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">{product.seller.city}</p>
                                                 <p className="mt-1 text-xs text-gray-700  dark:text-zinc-300">{product.seller.alias}</p>

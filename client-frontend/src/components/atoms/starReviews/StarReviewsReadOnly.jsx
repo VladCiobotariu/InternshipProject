@@ -18,6 +18,7 @@ const StarReviewsReadOnly = ({rating}) => {
     }
 
 
+
     return (
         <div className="flex">
             {[...Array(fullStars)].map((_, index) => (
