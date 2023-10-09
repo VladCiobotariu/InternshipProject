@@ -1,6 +1,6 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.dto.OrderDTO;
+import com.ozius.internship.project.dto.OrderFromCartItemsDTO;
 import com.ozius.internship.project.service.OrderService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,9 +17,9 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    @PreAuthorize("hasRole('CLIENT') and #orderDTO.email == authentication.name")
-    public void makeOrders(@RequestBody OrderDTO orderDTO) {
+    @PreAuthorize("hasRole('CLIENT') and #orderFromCartItemsDTO.email == authentication.name")
+    public void makeOrders(@RequestBody OrderFromCartItemsDTO orderFromCartItemsDTO) {
 
-        orderService.makeOrdersFromCheckout(orderDTO.getEmail(), orderDTO.getShippingAddress(), orderDTO.getProducts());
+        orderService.makeOrdersFromCheckout(orderFromCartItemsDTO.getEmail(), orderFromCartItemsDTO.getShippingAddress(), orderFromCartItemsDTO.getProducts());
     }
 }

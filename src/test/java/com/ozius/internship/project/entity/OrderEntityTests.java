@@ -145,7 +145,7 @@ public class OrderEntityTests extends JpaBaseEntity {
 
         assertThat(persistedOrderItem).isEqualTo(item);
         assertThat(persistedOrderItem.getProduct()).isEqualTo(product);
-        assertThat(persistedOrderItem.getItemName()).isEqualTo(product.getName());
+        assertThat(persistedOrderItem.getProductName()).isEqualTo(product.getName());
         assertThat(persistedOrderItem.getDescription()).isEqualTo(product.getDescription());
     }
 

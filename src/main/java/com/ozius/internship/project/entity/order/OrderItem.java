@@ -27,7 +27,7 @@ public class OrderItem extends BaseEntity {
     private float quantity;
 
     @Column(name = Columns.ITEM_NAME, nullable = false)
-    private String itemName;
+    private String productName;
 
     @Column(name = Columns.ITEM_PRICE, nullable = false)
     private float itemPrice;
@@ -41,7 +41,7 @@ public class OrderItem extends BaseEntity {
     OrderItem(Product product, float quantity) {
         this.product = product;
         this.quantity = quantity;
-        this.itemName = product.getName();
+        this.productName = product.getName();
         this.itemPrice = product.getPrice();
         this.description = product.getDescription();
     }
@@ -54,8 +54,8 @@ public class OrderItem extends BaseEntity {
         return quantity;
     }
 
-    public String getItemName() {
-        return itemName;
+    public String getProductName() {
+        return productName;
     }
 
     public float getItemPrice() {
@@ -72,7 +72,7 @@ public class OrderItem extends BaseEntity {
         return "OrderItem{" +
                 "product=" + product.getName() +
                 ", quantity=" + quantity +
-                ", name='" + itemName + '\'' +
+                ", name='" + productName + '\'' +
                 ", price=" + itemPrice +
                 ", description='" + description + '\'' +
                 '}';

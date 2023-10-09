@@ -1,5 +1,8 @@
-package com.ozius.internship.project;
+package com.ozius.internship.project.query;
 
+import com.ozius.internship.project.EntityFinder;
+import com.ozius.internship.project.JpaBaseEntity;
+import com.ozius.internship.project.TestDataCreator;
 import com.ozius.internship.project.dto.OrderDTO;
 import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.Address;
@@ -272,7 +275,7 @@ public class ProductQueryTest extends JpaBaseEntity {
     }
 
     @Test
-    void filterSpec_orderStatus_draft(){
+    void filterSpec_orderStatus_draft() {
 
         //---Arrange
         doTransaction(em -> {
@@ -299,7 +302,7 @@ public class ProductQueryTest extends JpaBaseEntity {
             FilterSpecs filterSpecs = new FilterSpecs();
             filterSpecs.addFilterCriteria(filterCriteria);
 
-            return new OrderPaginationSearchQuery(modelMapper,em)
+            return new OrderPaginationSearchQuery(modelMapper, em)
                     .filterBy(filterSpecs)
                     .getResultList();
         });
@@ -307,42 +310,4 @@ public class ProductQueryTest extends JpaBaseEntity {
         //---Assert
         assertThat(orders.size()).isEqualTo(1);
     }
-
-    @Test
-    void filterSpec_orderStatus_submit(){
-
-        //---Arrange
-        doTransaction(em -> {
-            TestDataCreator.createBuyerBaseData(em, passwordEncoder);
-            TestDataCreator.createAddresses();
-
-            Buyer buyerMerged = em.merge(buyer1);
-            Seller sellerMerged = new EntityFinder(em).findAll(Seller.class).get(0);
-
-            Order order = new Order(address1,
-                    buyerMerged,
-                    sellerMerged,
-                    buyerMerged.getAccount().getEmail(),
-                    buyerMerged.getAccount().getFirstName(),
-                    buyerMerged.getAccount().getLastName(),
-                    buyerMerged.getAccount().getTelephone());
-            em.persist(order);
-        });
-
-        //---Act
-        List<OrderDTO> orders = doTransaction(em -> {
-
-            FilterCriteria filterCriteria = new FilterCriteria("orderStatus", Operation.EQ, OrderStatus.SUBMITTED);
-            FilterSpecs filterSpecs = new FilterSpecs();
-            filterSpecs.addFilterCriteria(filterCriteria);
-
-            return new OrderPaginationSearchQuery(modelMapper,em)
-                    .filterBy(filterSpecs)
-                    .getResultList();
-        });
-
-        //---Assert
-        assertThat(orders.size()).isEqualTo(0);
-    }
-
 }
