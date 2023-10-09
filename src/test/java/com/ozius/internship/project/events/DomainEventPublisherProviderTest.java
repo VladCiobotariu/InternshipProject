@@ -24,7 +24,5 @@ public class DomainEventPublisherProviderTest {
         DomainEventPublisherProvider.getEventPublisher().publishEvent(myTestEvent);
 
         assertThat(eventListener.getReceivedMessages()).containsExactly(myTestEvent);
-
-        // todo - not working
     }
 }
