@@ -1,10 +1,10 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.dto.BuyerAddressDto;
-import com.ozius.internship.project.entity.Address;
-import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.buyer.BuyerAddress;
-import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.domain.Address;
+import com.ozius.internship.project.domain.buyer.Buyer;
+import com.ozius.internship.project.domain.buyer.BuyerAddress;
+import com.ozius.internship.project.domain.product.Product;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.ProductRepository;
 import com.ozius.internship.project.repository.UserAccountRepository;

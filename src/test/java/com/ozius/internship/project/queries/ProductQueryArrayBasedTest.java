@@ -1,11 +1,11 @@
 package com.ozius.internship.project.queries;
 
 import com.ozius.internship.project.JpaBaseEntity;
-import com.ozius.internship.project.entity.Address;
-import com.ozius.internship.project.entity.Category;
-import com.ozius.internship.project.entity.UserAccount;
-import com.ozius.internship.project.entity.product.UnitOfMeasure;
-import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.domain.Address;
+import com.ozius.internship.project.domain.Category;
+import com.ozius.internship.project.domain.UserAccount;
+import com.ozius.internship.project.domain.product.UnitOfMeasure;
+import com.ozius.internship.project.domain.seller.Seller;
 import com.ozius.internship.project.dto.ProductBaseDto;
 import com.ozius.internship.project.service.queries.ProductSearchQueryArrayBased;
 import jakarta.persistence.EntityManager;

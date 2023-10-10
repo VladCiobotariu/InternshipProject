@@ -239,7 +239,6 @@ function ProductPageComponent() {
                 </section>
             }
 
-
             <ProductAddToCartModal
                 toggleModal={toggleModal}
                 isModalOpen={isModalOpen}

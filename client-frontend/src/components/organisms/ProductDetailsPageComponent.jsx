@@ -24,6 +24,13 @@ const ProductDetailsPageComponent = () => {
         getProduct(productId);
     }, []);
 
+    const updateProductRating = (newRating) => {
+        setProduct({
+            ...product,
+            productRating: newRating,
+        });
+    };
+
     return (
         product && (<div className="mx-auto mt-16 max-w-7xl px-10">
             <div className={`flex justify-center items-center sm:flex-col gap-8`}>
@@ -81,6 +88,7 @@ const ProductDetailsPageComponent = () => {
                     className="w-full mt-10">
                     <ReviewItems
                         productId={product.id}
+                        updateProductRating={updateProductRating}
                     />
                 </div>
             </div>

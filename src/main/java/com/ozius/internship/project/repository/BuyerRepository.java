@@ -1,6 +1,6 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.entity.buyer.Buyer;
+import com.ozius.internship.project.domain.buyer.Buyer;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

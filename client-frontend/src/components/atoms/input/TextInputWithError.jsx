@@ -19,7 +19,8 @@ function TextInputWithError({fieldName, errorName, labelName, onBlur, fieldType}
                                                     ring-1 ring-inset
                                                     placeholder:text-gray-400  
                                                     focus:ring-2 focus:ring-inset focus:ring-indigo-600 
-                                                    sm:text-sm sm:leading-6`}
+                                                    sm:text-sm sm:leading-6
+                                                    ${fieldType==='textarea' ? 'h-[100px] overflow-y-auto pl-3 cursor-vertical-text' : ''}`}
                     onBlur={onBlur}
                 >
                 </Field>

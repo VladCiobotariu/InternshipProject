@@ -1,6 +1,6 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.entity.Category;
+import com.ozius.internship.project.domain.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

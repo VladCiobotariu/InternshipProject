@@ -1,21 +1,19 @@
 package com.ozius.internship.project;
 
-import com.ozius.internship.project.entity.*;
-import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.cart.Cart;
-import com.ozius.internship.project.entity.order.Order;
-import com.ozius.internship.project.entity.product.Product;
-import com.ozius.internship.project.entity.product.UnitOfMeasure;
-import com.ozius.internship.project.entity.seller.LegalDetails;
-import com.ozius.internship.project.entity.seller.Review;
-import com.ozius.internship.project.entity.seller.Seller;
-import com.ozius.internship.project.entity.seller.SellerType;
+import com.ozius.internship.project.domain.*;
+import com.ozius.internship.project.domain.buyer.Buyer;
+import com.ozius.internship.project.domain.cart.Cart;
+import com.ozius.internship.project.domain.order.Order;
+import com.ozius.internship.project.domain.product.Product;
+import com.ozius.internship.project.domain.product.UnitOfMeasure;
+import com.ozius.internship.project.domain.seller.LegalDetails;
+import com.ozius.internship.project.domain.seller.Review;
+import com.ozius.internship.project.domain.seller.Seller;
+import com.ozius.internship.project.domain.seller.SellerType;
 import jakarta.persistence.EntityManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static com.ozius.internship.project.TestDataCreator.Buyers.buyer2;
 import static com.ozius.internship.project.TestDataCreator.Products.product1;
-import static com.ozius.internship.project.TestDataCreator.Products.product2;
 
 public class TestDataCreator {
 
@@ -189,8 +187,7 @@ public class TestDataCreator {
     public static Review createReview(EntityManager em, Buyer buyer, String description, float rating, Product product){
 
         Seller seller = product.getSeller();
-        Review review = seller.addReview(buyer, description, rating, product);
-        return review;
+        return seller.addReview(buyer, description, rating, product);
     }
 
     private static Cart createCart(EntityManager em, Buyer buyer){

@@ -39,6 +39,7 @@ public class WebConfig {
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/images/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/categories/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/products/**")).permitAll()
+                .requestMatchers(AntPathRequestMatcher.antMatcher("/reviews/**")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/cities")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/products-test")).permitAll()
                 .requestMatchers(AntPathRequestMatcher.antMatcher("/error")).permitAll()

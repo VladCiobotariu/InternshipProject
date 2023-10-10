@@ -1,6 +1,6 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.domain.seller.Seller;
 import com.ozius.internship.project.repository.SellerRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

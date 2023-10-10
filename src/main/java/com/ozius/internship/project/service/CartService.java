@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.entity.cart.Cart;
-import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.domain.cart.Cart;
+import com.ozius.internship.project.domain.product.Product;
 import com.ozius.internship.project.repository.CartRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

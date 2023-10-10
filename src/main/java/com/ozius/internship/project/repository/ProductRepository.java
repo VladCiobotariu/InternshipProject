@@ -1,7 +1,7 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.entity.product.Product;
-import com.ozius.internship.project.entity.seller.Review;
+import com.ozius.internship.project.domain.product.Product;
+import com.ozius.internship.project.domain.seller.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

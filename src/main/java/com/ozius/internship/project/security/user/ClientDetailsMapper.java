@@ -1,8 +1,8 @@
 package com.ozius.internship.project.security.user;
 
-import com.ozius.internship.project.entity.UserAccount;
-import com.ozius.internship.project.entity.buyer.Buyer;
-import com.ozius.internship.project.entity.seller.Seller;
+import com.ozius.internship.project.domain.UserAccount;
+import com.ozius.internship.project.domain.buyer.Buyer;
+import com.ozius.internship.project.domain.seller.Seller;
 import com.ozius.internship.project.repository.BuyerRepository;
 import com.ozius.internship.project.repository.SellerRepository;
 import org.springframework.security.core.userdetails.User;

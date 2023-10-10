@@ -22,7 +22,6 @@ public class ProductController {
 
     private final ModelMapper modelMapper;
     private final EntityManager entityManager;
-
     private final ProductService productService;
 
     public ProductController(ModelMapper modelMapper, EntityManager entityManager, ProductService productService) {

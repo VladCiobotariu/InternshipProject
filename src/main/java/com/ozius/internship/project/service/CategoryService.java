@@ -1,10 +1,7 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.entity.Category;
+import com.ozius.internship.project.domain.Category;
 import com.ozius.internship.project.repository.CategoryRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

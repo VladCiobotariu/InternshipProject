@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import ReviewComponent from "./ReviewComponent";
 import {getReviewsApi} from "../../../api/ReviewApi";
 
-const ReviewItems = ({productId}) => {
+const ReviewItems = ({productId, updateProductRating}) => {
 
     const [reviews, setReviews] = useState([]);
 
@@ -20,6 +20,18 @@ const ReviewItems = ({productId}) => {
         getReviewItems(productId)
     }, []);
 
+    const updateReviewInState = (updatedReview) => {
+        const updatedReviewIndex = reviews.findIndex((review) => review.id === updatedReview.id);
+
+        if (updatedReviewIndex !== -1) {
+            const updatedReviews = [...reviews];
+            updatedReviews[updatedReviewIndex] = updatedReview;
+            setReviews(updatedReviews);
+
+            const newProductRating = updatedReviews.reduce((sum, review) => sum + review.rating, 0) / updatedReviews.length;
+            updateProductRating(newProductRating)
+        }
+    };
 
     return (
         <div id="reviews">
@@ -32,16 +44,21 @@ const ReviewItems = ({productId}) => {
                         <div key={review.id}>
                             <ReviewComponent
                                 key={review.id}
+                                reviewId={review.id}
                                 firstName={review.buyer.firstName}
                                 lastName={review.buyer.lastName}
                                 imageName={review.buyer.imageName}
                                 rating={review.rating}
                                 description={review.description}
+                                publishDate={review.publishDate}
+                                updateReviewInState={updateReviewInState}
                             />
                         </div>
                     ))}
                 </div>
             </div>
+
+
         </div>
 
     );

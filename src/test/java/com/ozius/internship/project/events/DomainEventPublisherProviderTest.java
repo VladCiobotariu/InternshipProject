@@ -1,7 +1,7 @@
 package com.ozius.internship.project.events;
 
 import com.ozius.internship.project.ProjectApplicationTest;
-import com.ozius.internship.project.entity.DomainEventPublisherProvider;
+import com.ozius.internship.project.domain.DomainEventPublisherProvider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

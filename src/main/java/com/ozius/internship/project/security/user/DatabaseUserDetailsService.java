@@ -1,6 +1,6 @@
 package com.ozius.internship.project.security.user;
 
-import com.ozius.internship.project.entity.UserAccount;
+import com.ozius.internship.project.domain.UserAccount;
 import com.ozius.internship.project.repository.UserAccountRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

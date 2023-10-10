@@ -1,9 +1,8 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.entity.Category;
+import com.ozius.internship.project.domain.Category;
 import com.ozius.internship.project.repository.CategoryRepository;
 import com.ozius.internship.project.service.CategoryService;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

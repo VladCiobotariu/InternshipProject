@@ -2,7 +2,7 @@ package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.CartDTO;
 import com.ozius.internship.project.dto.CartItemDTO;
-import com.ozius.internship.project.entity.cart.Cart;
+import com.ozius.internship.project.domain.cart.Cart;
 import com.ozius.internship.project.service.CartService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Comparator;
 
 @RestController
