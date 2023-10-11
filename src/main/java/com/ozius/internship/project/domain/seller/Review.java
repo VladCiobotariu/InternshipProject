@@ -2,6 +2,7 @@ package com.ozius.internship.project.domain.seller;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ozius.internship.project.domain.BaseEntity;
+import com.ozius.internship.project.domain.DomainEventPublisherProvider;
 import com.ozius.internship.project.domain.buyer.Buyer;
 import com.ozius.internship.project.domain.product.Product;
 import com.ozius.internship.project.domain.exception.IllegalRatingException;
@@ -23,7 +24,7 @@ public class Review extends BaseEntity {
         String PUBLISH_DATE = "PUBLISH_DATE";
 
     }
-    @Column(name = Columns.DESCRIPTION, length = 250, nullable = false)
+    @Column(name = Columns.DESCRIPTION, nullable = false)
     private String description;
 
     @Column(name = Columns.RATING, nullable = false)
@@ -78,7 +79,9 @@ public class Review extends BaseEntity {
         }
         this.description = description;
         this.rating = rating;
-        // todo - maybe change the date too
+        this.publishDate = LocalDate.now();
+
+        DomainEventPublisherProvider.getEventPublisher().publishEvent(new ReviewUpdatedEvent(product.getId()));
     }
 
     @Override

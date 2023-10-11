@@ -11,11 +11,13 @@ const ProductDetailsPageComponent = () => {
 
     const {productId} = useParams();
     const [product, setProduct] = useState(null);
+    const [productRating, setProductRating] = useState(null);
 
     const getProduct = (productId) => {
         getProductByIdApi(productId)
             .then((res) => {
                 setProduct(res.data)
+                setProductRating(res.data.productRating)
             })
             .catch((err) => console.log(err))
     }
