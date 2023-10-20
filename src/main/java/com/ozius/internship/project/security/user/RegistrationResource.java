@@ -21,6 +21,12 @@ public class RegistrationResource {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @CrossOrigin(origins = "*")
+    @GetMapping(path = "/")
+    public String returnSuccessForRootUrl() {
+        return "Success";
+    }
+
     @PostMapping("/register-client")
     @ResponseStatus(code = HttpStatus.CREATED)
     public void register(@Valid @RequestBody UserAccountDto userAccountDto){

@@ -26,10 +26,10 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@Nullable CorsRegistry registry) {
-                assert registry != null;
+                if (registry == null) throw new AssertionError();
                 registry.addMapping("/**")
                         .allowedMethods("*")
-                        .allowedOrigins("http://localhost:3000");
+                        .allowedOrigins("http://piazza-client-frontend.s3-website.eu-central-1.amazonaws.com:80");
             }
         };
     }
@@ -39,6 +39,7 @@ public class WebConfig {
 
         return http
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/authenticate")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/register-client")).permitAll()
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/users/{email}")).permitAll()
