@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service;
 
 import com.ozius.internship.project.dto.ReviewDTO;
-import com.ozius.internship.project.domain.seller.Review;
+import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.repository.ReviewRepository;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;

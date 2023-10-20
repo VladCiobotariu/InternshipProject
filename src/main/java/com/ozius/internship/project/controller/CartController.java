@@ -2,7 +2,7 @@ package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.CartDTO;
 import com.ozius.internship.project.dto.CartItemDTO;
-import com.ozius.internship.project.domain.cart.Cart;
+import com.ozius.internship.project.entity.cart.Cart;
 import com.ozius.internship.project.service.CartService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

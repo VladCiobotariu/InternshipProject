@@ -1,6 +1,6 @@
 package com.ozius.internship.project.springcontext;
 
-import com.ozius.internship.project.domain.DomainEventPublisher;
+import com.ozius.internship.project.entity.DomainEventPublisher;
 import com.ozius.internship.project.infra.SpringDomainEventPublisher;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Primary;

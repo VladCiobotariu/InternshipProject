@@ -1,6 +1,6 @@
 package com.ozius.internship.project;
 
-import com.ozius.internship.project.domain.EntityFinder;
+import com.ozius.internship.project.entity.EntityFinder;
 import com.ozius.internship.project.infra.JpaCallback;
 import com.ozius.internship.project.infra.JpaCallbackVoid;
 import com.ozius.internship.project.infra.JpaHelper;

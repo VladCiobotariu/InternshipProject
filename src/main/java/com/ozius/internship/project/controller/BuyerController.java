@@ -2,8 +2,8 @@ package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.BuyerAddressDto;
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.domain.buyer.BuyerAddress;
-import com.ozius.internship.project.domain.product.Product;
+import com.ozius.internship.project.entity.buyer.BuyerAddress;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.service.BuyerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;

@@ -1,6 +1,6 @@
 package com.ozius.internship.project.controller;
 
-import com.ozius.internship.project.domain.UserAccount;
+import com.ozius.internship.project.entity.UserAccount;
 import com.ozius.internship.project.repository.UserAccountRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,6 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.domain.cart.Cart;
+import com.ozius.internship.project.entity.cart.Cart;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

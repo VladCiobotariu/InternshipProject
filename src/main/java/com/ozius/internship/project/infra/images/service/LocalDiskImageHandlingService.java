@@ -60,4 +60,5 @@ public class LocalDiskImageHandlingService implements ImageService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 }

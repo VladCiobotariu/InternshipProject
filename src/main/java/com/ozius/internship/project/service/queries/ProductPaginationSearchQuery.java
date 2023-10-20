@@ -1,7 +1,7 @@
 package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.dto.ProductDTO;
-import com.ozius.internship.project.domain.product.Product;
+import com.ozius.internship.project.entity.product.Product;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
 import jakarta.persistence.EntityManager;

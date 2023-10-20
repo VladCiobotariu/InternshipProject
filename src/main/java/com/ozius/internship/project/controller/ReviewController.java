@@ -1,7 +1,7 @@
 package com.ozius.internship.project.controller;
 
 import com.ozius.internship.project.dto.ReviewDTO;
-import com.ozius.internship.project.domain.seller.Review;
+import com.ozius.internship.project.entity.seller.Review;
 import com.ozius.internship.project.service.ReviewService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

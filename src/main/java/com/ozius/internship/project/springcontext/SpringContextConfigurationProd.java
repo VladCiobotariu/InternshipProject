@@ -1,5 +1,6 @@
 package com.ozius.internship.project.springcontext;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.ozius.internship.project.SpringProfiles;
 import com.ozius.internship.project.infra.images.service.AwsS3ImageHandlingService;
@@ -15,9 +16,15 @@ import java.security.KeyStoreException;
 @Profile(SpringProfiles.PROD)
 public class SpringContextConfigurationProd {
 
+    private final AmazonS3 amazonS3;
+
+    public SpringContextConfigurationProd(AmazonS3 amazonS3) {
+        this.amazonS3 = amazonS3;
+    }
+
     @Bean
     public ImageService imageService() {
-        return new AwsS3ImageHandlingService();
+        return new AwsS3ImageHandlingService(amazonS3);
     }
 
     @Bean //TODO implement valid keystore for prod profile

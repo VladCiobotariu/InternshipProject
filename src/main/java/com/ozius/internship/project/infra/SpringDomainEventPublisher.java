@@ -1,6 +1,6 @@
 package com.ozius.internship.project.infra;
 
-import com.ozius.internship.project.domain.DomainEventPublisher;
+import com.ozius.internship.project.entity.DomainEventPublisher;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 

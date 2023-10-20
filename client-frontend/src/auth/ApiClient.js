@@ -1,7 +1,9 @@
 import axios from 'axios'
 import qs from "qs";
 
-export const baseURL = 'http://localhost:8080'
+// export const baseURL = 'http://localhost:8080'
+export const baseURL = 'http://piazza.eu-central-1.elasticbeanstalk.com/'
+
 export const api = axios.create(
     {
         baseURL: baseURL,

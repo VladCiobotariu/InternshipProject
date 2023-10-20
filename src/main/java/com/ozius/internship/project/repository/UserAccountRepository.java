@@ -1,6 +1,6 @@
 package com.ozius.internship.project.repository;
 
-import com.ozius.internship.project.domain.UserAccount;
+import com.ozius.internship.project.entity.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package com.ozius.internship.project.service.queries.filter.converter;
 
-import com.ozius.internship.project.domain.order.OrderStatus;
+import com.ozius.internship.project.entity.order.OrderStatus;
 
 public class OrderStatusConverter implements FilterValueConverter<OrderStatus>{
     @Override

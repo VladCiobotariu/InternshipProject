@@ -1,6 +1,6 @@
 package com.ozius.internship.project.dto;
 
-import com.ozius.internship.project.domain.product.UnitOfMeasure;
+import com.ozius.internship.project.entity.product.UnitOfMeasure;
 import lombok.Data;
 
 @Data

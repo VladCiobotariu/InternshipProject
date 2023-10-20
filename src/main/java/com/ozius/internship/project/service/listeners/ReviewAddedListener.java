@@ -1,6 +1,6 @@
 package com.ozius.internship.project.service.listeners;
 
-import com.ozius.internship.project.domain.seller.ReviewAddedEvent;
+import com.ozius.internship.project.entity.seller.ReviewAddedEvent;
 import com.ozius.internship.project.service.ProductService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;

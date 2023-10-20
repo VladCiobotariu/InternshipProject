@@ -1,6 +1,6 @@
 package com.ozius.internship.project.service;
 
-import com.ozius.internship.project.domain.Category;
+import com.ozius.internship.project.entity.Category;
 import com.ozius.internship.project.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
