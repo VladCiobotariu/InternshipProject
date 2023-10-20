@@ -1,7 +1,6 @@
 package com.ozius.internship.project.security;
 
 import com.ozius.internship.project.security.jwt.FusedClaimConverter;
-import jakarta.annotation.Nullable;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,26 +12,10 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableMethodSecurity(jsr250Enabled = true, securedEnabled = true)
-//this annotation can be put on any config class but this is the best place
 public class WebConfig {
-
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(@Nullable CorsRegistry registry) {
-                if (registry == null) throw new AssertionError();
-                registry.addMapping("/**")
-                        .allowedMethods("*")
-                        .allowedOrigins("http://piazza-client-frontend.s3-website.eu-central-1.amazonaws.com/");
-            }
-        };
-    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

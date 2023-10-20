@@ -4,11 +4,14 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.ozius.internship.project.SpringProfiles;
 import com.ozius.internship.project.infra.images.service.ImageService;
 import com.ozius.internship.project.infra.images.service.LocalDiskImageHandlingService;
+import jakarta.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.security.*;
@@ -28,6 +31,21 @@ public class SpringContextConfigurationDev {
     private String KEY_STORE_PASSWORD;
     @Value("${keystore.alias}")
     private String KEY_STORE_ALIAS;
+    @Value("${frontend.url}")
+    private String FRONT_END_URL;
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@Nullable CorsRegistry registry) {
+                if (registry == null) throw new AssertionError();
+                registry.addMapping("/**")
+                        .allowedMethods("*")
+                        .allowedOrigins(FRONT_END_URL);
+            }
+        };
+    }
 
     @Bean
     public ImageService imageService() {
