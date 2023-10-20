@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Table(name = BuyerAddress.TABLE_NAME)
 public class BuyerAddress extends BaseEntity {
 
-    public static final String TABLE_NAME = "BUYER_ADDRESS";
+    public static final String TABLE_NAME = "buyer_address";
 
     interface Columns {
         String BUYER_ID = "BUYER_ID";

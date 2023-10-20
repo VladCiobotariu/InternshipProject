@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 @Table(name = UserAccount.TABLE_NAME)
 public class UserAccount extends BaseEntity{
 
-    public static final String TABLE_NAME = "USER_ACCOUNT";
+    public static final String TABLE_NAME = "user_account";
 
     interface Columns{
         String FIRST_NAME = "FIRST_NAME";

@@ -8,7 +8,7 @@ import jakarta.persistence.*;
 @Table(name = OrderItem.TABLE_NAME)
 public class OrderItem extends BaseEntity {
 
-    public static final String TABLE_NAME = "ORDER_ITEM";
+    public static final String TABLE_NAME = "order_item";
 
     interface Columns{
         String PRODUCT_ID = "PRODUCT_ID";

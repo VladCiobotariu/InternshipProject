@@ -22,7 +22,7 @@ import java.util.Set;
             { Seller.Columns.COUNTRY, Seller.Columns.STATE, Seller.Columns.CITY, Seller.Columns.ADDRESS_LINE_1, Seller.Columns.ADDRESS_LINE_2, Seller.Columns.ZIP_CODE})})
 public class Seller extends BaseEntity {
 
-    public static final String TABLE_NAME = "SELLER";
+    public static final String TABLE_NAME = "seller";
 
     interface Columns{
         String ACCOUNT_ID = "ACCOUNT_ID";

@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = Order.TABLE_NAME)
 public class Order extends BaseEntity {
 
-    public static final String TABLE_NAME = "CUSTOMER_ORDER";
+    public static final String TABLE_NAME = "customer_order";
 
     interface Columns {
         String BUYER_EMAIL = "BUYER_EMAIL";

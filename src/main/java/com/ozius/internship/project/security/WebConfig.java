@@ -29,7 +29,7 @@ public class WebConfig {
                 if (registry == null) throw new AssertionError();
                 registry.addMapping("/**")
                         .allowedMethods("*")
-                        .allowedOrigins("http://piazza-client-frontend.s3-website.eu-central-1.amazonaws.com:80");
+                        .allowedOrigins("http://piazza-client-frontend.s3-website.eu-central-1.amazonaws.com/");
             }
         };
     }

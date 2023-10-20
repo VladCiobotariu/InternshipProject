@@ -16,8 +16,8 @@ import java.util.Set;
 @Table(name = Buyer.TABLE_NAME)
 public class Buyer extends BaseEntity {
 
-    public static final String TABLE_NAME = "BUYER";
-    public static final String JOIN_TABLE_NAME = "BUYER_FAVORITES";
+    public static final String TABLE_NAME = "buyer";
+    public static final String JOIN_TABLE_NAME = "buyer_favorites";
 
     interface Columns{
         String ACCOUNT_ID = "ACCOUNT_ID";
