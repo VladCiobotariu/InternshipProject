@@ -1,5 +1,6 @@
-package com.ozius.internship.project.service.queries;
+package com.ozius.internship.project.service.queries.buiders;
 
+import com.ozius.internship.project.service.queries.transformers.ResultTransformer;
 import com.ozius.internship.project.service.queries.sort.SortOrder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;

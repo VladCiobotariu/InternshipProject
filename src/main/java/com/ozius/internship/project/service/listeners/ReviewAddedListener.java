@@ -17,12 +17,12 @@ public class ReviewAddedListener {
     }
 
     /**
+     * @param event
      * Requires new transaction because current transaction resources are not yet closed but commited already. Any changes made would not be persisted.
      * See Warning message on TransactionalEventListener.
-     * @param event
      */
-   @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-   @Transactional(value = Transactional.TxType.REQUIRES_NEW) //Requires new will always open a new transaction even if one already exists.
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @Transactional(value = Transactional.TxType.REQUIRES_NEW) //Requires new will always open a new transaction even if one already exists.
     public void handleAddReview(ReviewAddedEvent event) {
         productService.recalculateProductRating(event.getProductId()); // the service will reuse the transaction opened by listener. (see default TxType = REQUIRED)
     }

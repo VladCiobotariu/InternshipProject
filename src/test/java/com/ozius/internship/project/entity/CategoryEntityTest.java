@@ -1,15 +1,18 @@
 package com.ozius.internship.project.entity;
 
+import com.ozius.internship.project.EntityFinder;
 import com.ozius.internship.project.JpaBaseEntity;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CategoryEntityTest extends JpaBaseEntity {
 
     @Override
     public void createTestData(EntityManager em) {
+        super.createTestData(em);
     }
 
     @Test
@@ -63,7 +66,7 @@ public class CategoryEntityTest extends JpaBaseEntity {
         });
 
         // ----Assert
-        assertThat(entityFinder.findAll(Category.class).isEmpty());
+        assertTrue(entityFinder.findAll(Category.class).isEmpty());
     }
 
 }

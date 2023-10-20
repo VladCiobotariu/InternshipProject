@@ -2,6 +2,9 @@ package com.ozius.internship.project.service.queries;
 
 import com.ozius.internship.project.dto.ProductDTO;
 import com.ozius.internship.project.entity.product.Product;
+import com.ozius.internship.project.service.queries.transformers.ModelMapperBasedResultTransformer;
+import com.ozius.internship.project.service.queries.buiders.PagingJpaQueryBuilder;
+import com.ozius.internship.project.service.queries.transformers.ResultTransformer;
 import com.ozius.internship.project.service.queries.filter.FilterSpecs;
 import com.ozius.internship.project.service.queries.sort.SortSpecs;
 import jakarta.persistence.EntityManager;
@@ -17,10 +20,10 @@ public class ProductPaginationSearchQuery extends PagingJpaQueryBuilder<Product,
         super("select p from Product p ", em, Product.class);
         this.modelMapper = modelMapper;
 
-        mapCriteriaToPropertyPath("productPrice", "p.price");
         mapCriteriaToPropertyPath("productName", "p.name");
         mapCriteriaToPropertyPath("categoryName", "p.category.name");
         mapCriteriaToPropertyPath("cityName", "p.seller.legalAddress.city");
+        mapCriteriaToPropertyPath("productPrice", "p.price");
         mapCriteriaToPropertyPath("priceFrom", "p.price");
         mapCriteriaToPropertyPath("priceTo", "p.price");
     }

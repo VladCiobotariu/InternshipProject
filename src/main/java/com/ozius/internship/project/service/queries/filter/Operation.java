@@ -6,13 +6,12 @@ public enum Operation {
     GTE(">="),
     LT("<"),
     LTE("<="),
-    LIKE("like"),
     CONTAINS("like"), // % sdas %
     STARTS_WITH("like"), // sdsa %
     ENDS_WITH("like"); // % dsad
 
 
-    private String sqlOperator;
+    private final String sqlOperator;
 
     Operation(String sqlOperator) {
         this.sqlOperator = sqlOperator;

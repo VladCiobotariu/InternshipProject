@@ -1,5 +1,6 @@
-package com.ozius.internship.project.service.queries;
+package com.ozius.internship.project.service.queries.buiders;
 
+import com.ozius.internship.project.service.queries.transformers.ResultTransformer;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -25,6 +26,7 @@ public abstract class JpaQueryBuilder<E,R> extends QueryBuilder {
     }
 
     protected TypedQuery<E> buildQuery() {
+        @SuppressWarnings("SqlSourceToSinkFlow")
         TypedQuery<E> query = em.createQuery(sqlQueryBuilder.toString(), queryResultClassType);
 
         for (String paramName : params.keySet()) {

@@ -22,11 +22,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 public class JwtSecurityConfiguration {
 
     private final DatabaseUserDetailsService databaseUserDetailsService;
-    private final RSAKey rsaKey;    //TODO how to get rid of warning
 
-    public JwtSecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService, RSAKey rsaKey) {
+    public JwtSecurityConfiguration(DatabaseUserDetailsService databaseUserDetailsService) {
         this.databaseUserDetailsService = databaseUserDetailsService;
-        this.rsaKey = rsaKey;
     }
 
     @Bean
