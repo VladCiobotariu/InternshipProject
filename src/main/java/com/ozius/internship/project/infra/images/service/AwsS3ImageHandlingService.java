@@ -59,7 +59,7 @@ public class AwsS3ImageHandlingService implements ImageService {
     }
 
     @Override
-    public ResponseEntity<byte[]> retrieve(String fileName) throws FileDownloadException {
+    public Object retrieve(String fileName) throws FileDownloadException {
         if (bucketIsEmpty()) {
             throw new FileDownloadException("Requested bucket does not exist or is empty");
         }
@@ -76,7 +76,7 @@ public class AwsS3ImageHandlingService implements ImageService {
             Resource resource = new UrlResource(pathObject.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                return ResponseEntity.ok(resource.getContentAsByteArray());
+                return resource;
             } else {
                 throw new FileDownloadException("Could not find the file!");
             }

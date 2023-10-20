@@ -10,6 +10,7 @@ public interface ImageService {
 
     String upload(MultipartFile file) throws FileNotFoundException;
 
-    ResponseEntity<byte[]> retrieve(String imageName) throws FileDownloadException;
+//    ResponseEntity<byte[]> retrieve(String imageName) throws FileDownloadException;
+    Object retrieve(String imageName) throws FileDownloadException;
 
 }

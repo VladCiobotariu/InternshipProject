@@ -23,7 +23,7 @@ public class ImageHandlingController {
     }
 
     @GetMapping("/images/{imageName}")
-    public ResponseEntity<byte[]> retrieve(@PathVariable String imageName) throws FileDownloadException {
+    public Object retrieve(@PathVariable String imageName) throws FileDownloadException {
         return imageService.retrieve(imageName);
     }
 
